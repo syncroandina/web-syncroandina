@@ -4,8 +4,13 @@ namespace App\Models;
 use Core\Model;
 
 class Slider extends Model {
+    protected $table = 'sliders';
+
     public function getActive() {
-        $stmt = $this->db->query("SELECT * FROM sliders WHERE is_active = 1 ORDER BY order_index ASC");
-        return $stmt->fetchAll();
+        return $this->where('is_active', 1, '=', 'order_index ASC');
+    }
+
+    public function getAll() {
+        return $this->all('order_index ASC');
     }
 }

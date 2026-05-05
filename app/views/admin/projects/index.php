@@ -30,64 +30,58 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-50 text-sm">
-                <!-- Data de ejemplo simulando AJAX render -->
-                <tr class="hover:bg-blue-50/30 transition-colors group">
-                    <td class="px-8 py-5">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-gray-200 overflow-hidden shadow-sm">
-                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover">
+                <?php if(!empty($projects)): ?>
+                    <?php foreach($projects as $project): ?>
+                    <tr class="hover:bg-blue-50/30 transition-colors group">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-gray-200 overflow-hidden shadow-sm">
+                                    <?php if(!empty($project['main_image'])): ?>
+                                        <img src="<?= asset($project['main_image']) ?>" class="w-full h-full object-cover">
+                                    <?php else: ?>
+                                        <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div>
+                                    <span class="block font-extrabold text-gray-900 group-hover:text-secondary transition-colors"><?= htmlspecialchars($project['title']) ?></span>
+                                    <span class="block text-xs text-gray-400 mt-0.5">Slug: <?= htmlspecialchars($project['slug']) ?></span>
+                                </div>
                             </div>
-                            <div>
-                                <span class="block font-extrabold text-gray-900 group-hover:text-secondary transition-colors">Plataforma Bancaria NextGen</span>
-                                <span class="block text-xs text-gray-500 mt-0.5">Slug: plataforma-bancaria</span>
+                        </td>
+                        <td class="px-8 py-5 font-medium text-gray-600"><?= htmlspecialchars($project['client'] ?? 'N/A') ?></td>
+                        <td class="px-8 py-5">
+                            <?php if($project['is_active']): ?>
+                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold border border-green-200">Publicado</span>
+                            <?php else: ?>
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold border border-yellow-200">Borrador</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="px-8 py-5 font-medium text-gray-500">
+                            <?= $project['completion_date'] ? date('d M, Y', strtotime($project['completion_date'])) : 'Pendiente' ?>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <div class="flex justify-end gap-2">
+                                <button class="w-8 h-8 rounded-lg bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Editar">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </button>
+                                <form action="<?= url('admin/projects/delete') ?>" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto? Se borrará permanentemente la imagen asociada.');" class="inline-block">
+                                    <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                                    <input type="hidden" name="id" value="<?= $project['id'] ?>">
+                                    <button type="submit" class="w-8 h-8 rounded-lg bg-gray-100 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Eliminar">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </form>
                             </div>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5 font-medium text-gray-600">Banco Nacional</td>
-                    <td class="px-8 py-5">
-                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold border border-green-200">Publicado</span>
-                    </td>
-                    <td class="px-8 py-5 font-medium text-gray-500">10 Abr, 2026</td>
-                    <td class="px-8 py-5 text-right">
-                        <div class="flex justify-end gap-2">
-                            <button class="w-8 h-8 rounded-lg bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Editar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg bg-gray-100 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Eliminar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr class="hover:bg-blue-50/30 transition-colors group">
-                    <td class="px-8 py-5">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-gray-200 overflow-hidden shadow-sm">
-                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=100&q=80" class="w-full h-full object-cover">
-                            </div>
-                            <div>
-                                <span class="block font-extrabold text-gray-900 group-hover:text-secondary transition-colors">Dashboard Logístico AI</span>
-                                <span class="block text-xs text-gray-500 mt-0.5">Slug: dashboard-logistico</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-8 py-5 font-medium text-gray-600">Global Transport</td>
-                    <td class="px-8 py-5">
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold border border-yellow-200">Borrador</span>
-                    </td>
-                    <td class="px-8 py-5 font-medium text-gray-500">22 Mar, 2026</td>
-                    <td class="px-8 py-5 text-right">
-                        <div class="flex justify-end gap-2">
-                            <button class="w-8 h-8 rounded-lg bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Editar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                            </button>
-                            <button class="w-8 h-8 rounded-lg bg-gray-100 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Eliminar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" class="px-8 py-10 text-center text-gray-400 italic">No se encontraron proyectos activos.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

@@ -8,31 +8,72 @@
     <meta name="keywords" content="transformación digital, desarrollo web, software a medida, aplicaciones corporativas">
     <meta name="author" content="Syncro Andina">
     
+    <?php
+    $settingModel = new \App\Models\Setting();
+    $settings = $settingModel->getAll();
+    $faviconUrl = $settings['favicon_url'] ?? null;
+    
+    $basePath = dirname($_SERVER['SCRIPT_NAME']);
+    $basePath = ($basePath === '/' || $basePath === '\\') ? '' : $basePath;
+
+    if ($faviconUrl): ?>
+        <link rel="icon" href="<?= asset($faviconUrl) ?>">
+    <?php endif; ?>
+
+    <!-- Fuentes Dinámicas (Google Fonts) -->
+    <?php 
+    $fonts = array_unique([
+        $settings['font_h1'] ?? 'Inter',
+        $settings['font_h2'] ?? 'Inter',
+        $settings['font_h3'] ?? 'Inter',
+        $settings['font_h4'] ?? 'Inter',
+        $settings['font_h5'] ?? 'Inter',
+        $settings['font_h6'] ?? 'Inter',
+        $settings['font_body'] ?? 'Inter'
+    ]);
+    $fontFamilyString = implode('|', array_map(function($f) { return str_replace(' ', '+', $f) . ':wght@300;400;500;600;700;800'; }, $fonts));
+    ?>
+    <link href="https://fonts.googleapis.com/css2?family=<?= $fontFamilyString ?>&display=swap" rel="stylesheet">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- Estilos Globales Dinámicos -->
+    <link rel="stylesheet" href="<?= asset('assets/css/theme.css') ?>?v=<?= time() ?>">
+    
     <!-- Open Graph (Redes Sociales) -->
     <meta property="og:title" content="<?= htmlspecialchars($title ?? 'Syncro Andina') ?>">
     <meta property="og:description" content="<?= htmlspecialchars($description ?? 'Soluciones integrales diseñadas para impulsar el crecimiento corporativo.') ?>">
     <meta property="og:type" content="website">
-    <!-- Tailwind CSS CDN para la fase de prototipado -->
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#0f172a',
-                        secondary: '#3b82f6',
-                        accent: '#0ea5e9'
+                        primary: '<?= $settings['color_primary'] ?? '#0f172a' ?>',
+                        secondary: '<?= $settings['color_secondary'] ?? '#3b82f6' ?>',
+                        accent: '<?= $settings['color_accent'] ?? '#0ea5e9' ?>',
+                        'light-gray': '<?= $settings['color_light_gray'] ?? '#f8fafc' ?>',
+                        'gray-medium': '<?= $settings['color_gray'] ?? '#64748b' ?>',
+                        'dark-gray': '<?= $settings['color_dark_gray'] ?? '#1e293b' ?>'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['<?= $settings['font_body'] ?? 'Inter' ?>', 'sans-serif'],
+                        headings: ['<?= $settings['font_h1'] ?? 'Inter' ?>', 'sans-serif']
                     }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        :root {
+            --primary: <?= $settings['color_primary'] ?? '#0f172a' ?>;
+            --secondary: <?= $settings['color_secondary'] ?? '#3b82f6' ?>;
+            --accent: <?= $settings['color_accent'] ?? '#0ea5e9' ?>;
+        }
     </style>
 </head>
 <body class="antialiased text-gray-800 bg-gray-50">

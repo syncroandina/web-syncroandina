@@ -1,6 +1,15 @@
 <?php
 session_start();
+
+// Si se usa el servidor integrado de PHP, permitir que sirva archivos estáticos directamente
+if (php_sapi_name() === 'cli-server') {
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if (is_file(__DIR__ . $path)) {
+        return false;
+    }
+}
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../app/helpers.php';
 
 use Core\Router;
 
