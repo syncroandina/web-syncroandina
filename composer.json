@@ -1,0 +1,10 @@
+{
+    "name": "syncroandina/web",
+    "description": "Modular Corporate Website",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Core\\": "core/"
+        }
+    }
+}

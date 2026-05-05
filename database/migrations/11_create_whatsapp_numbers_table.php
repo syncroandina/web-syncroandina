@@ -1,0 +1,12 @@
+<?php
+return "
+CREATE TABLE IF NOT EXISTS whatsapp_numbers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    number VARCHAR(50) NOT NULL,
+    agent_name VARCHAR(100),
+    default_message TEXT,
+    is_active BOOLEAN DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+";

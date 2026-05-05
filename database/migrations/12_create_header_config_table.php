@@ -1,0 +1,11 @@
+<?php
+return "
+CREATE TABLE IF NOT EXISTS header_config (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    logo_path VARCHAR(255),
+    menu_json JSON,
+    is_sticky BOOLEAN DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+";
