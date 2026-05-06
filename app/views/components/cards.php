@@ -16,11 +16,11 @@
                 </h2>
                 
                 <p class="text-gray-600 mb-8 leading-relaxed line-clamp-3">
-                    <?= htmlspecialchars($service['content']) ?>
+                    <?= htmlspecialchars(strip_tags($service['content'])) ?>
                 </p>
                 
                 <div class="mt-auto">
-                    <a href="/services/<?= $service['slug'] ?>" class="inline-flex items-center text-sm font-bold text-secondary hover:gap-3 transition-all duration-300">
+                    <a href="/servicios/<?= $service['slug'] ?>" class="inline-flex items-center text-sm font-bold text-secondary hover:gap-3 transition-all duration-300">
                         Ver Detalles
                         <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </a>

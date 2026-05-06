@@ -45,7 +45,7 @@
                 Imágenes de Identidad
             </h3>
             
-            <form action="<?= url('admin/identity/images') ?>" method="POST" enctype="multipart/form-data" class="space-y-8 flex-grow">
+            <form action="<?= url('admin/identidad/images') ?>" method="POST" enctype="multipart/form-data" class="space-y-8 flex-grow">
                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                 
                 <!-- Logo -->
@@ -129,7 +129,7 @@
             </h3>
             <p class="text-sm text-gray-500 mb-8">Define la paleta cromática global de la interfaz pública.</p>
             
-            <form action="<?= url('admin/identity/colors') ?>" method="POST" class="space-y-6 flex-grow">
+            <form action="<?= url('admin/identidad/colors') ?>" method="POST" class="space-y-6 flex-grow">
                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
@@ -181,7 +181,7 @@
             </h3>
             <p class="text-sm text-gray-500 mb-8">Personaliza las fuentes del sitio. Ingresa el nombre exacto (ej: <em>Montserrat</em>, <em>Open Sans</em>).</p>
 
-            <form action="<?= url('admin/identity/typography') ?>" method="POST">
+            <form action="<?= url('admin/identidad/typography') ?>" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8 mb-10">
@@ -210,7 +210,7 @@
 </div>
 
 <!-- Formulario Oculto para Eliminación -->
-<form id="delete-image-form" action="<?= url('admin/identity/images/delete') ?>" method="POST" class="hidden">
+<form id="delete-image-form" action="<?= url('admin/identidad/images/delete') ?>" method="POST" class="hidden">
     <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
     <input type="hidden" name="type" id="delete-type">
 </form>

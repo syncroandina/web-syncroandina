@@ -35,4 +35,20 @@ class Security {
         }
         return $data;
     }
+
+    /**
+     * Sanitiza HTML rico para permitir solo etiquetas de formato seguras
+     */
+    public static function sanitizeHTML($data) {
+        if (is_array($data)) {
+            foreach ($data as $key => $value) {
+                $data[$key] = self::sanitizeHTML($value);
+            }
+        } else {
+            // Permitir solo etiquetas básicas seguras para texto enriquecido
+            $allowed_tags = '<p><br><strong><em><u><s><ul><ol><li><a><h1><h2><h3><h4><h5><h6>';
+            $data = strip_tags(trim($data), $allowed_tags);
+        }
+        return $data;
+    }
 }

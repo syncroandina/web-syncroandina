@@ -40,7 +40,7 @@
                 <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Número actual mostrado en la web</span>
             </div>
 
-            <form action="<?= url('admin/header/phone') ?>" method="POST" class="mt-auto">
+            <form action="<?= url('admin/cabecera/phone') ?>" method="POST" class="mt-auto">
                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Número de Teléfono</label>
@@ -59,7 +59,7 @@
                     <h4 class="font-bold text-blue-900 mb-1">Configuración del Header</h4>
                     <p class="text-sm text-blue-700 leading-relaxed">
                         Aquí puedes gestionar el número de contacto directo y los enlaces de navegación del sitio. 
-                        Para cambiar el logo o favicon, dirígete a la sección de <a href="<?= url('admin/identity') ?>" class="font-bold underline hover:text-blue-800">Identidad Corporativa</a>.
+                        Para cambiar el logo o favicon, dirígete a la sección de <a href="<?= url('admin/identidad') ?>" class="font-bold underline hover:text-blue-800">Identidad Corporativa</a>.
                     </p>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button type="button" onclick="editMenuLink(<?= $link['id'] ?>, '<?= htmlspecialchars(addslashes($link['title'])) ?>', '<?= htmlspecialchars(addslashes($link['url'])) ?>', '')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors mr-2">Editar</button>
-                            <form action="<?= url('admin/header/menu/delete') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este enlace?');">
+                            <form action="<?= url('admin/cabecera/menu/delete') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este enlace?');">
                                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                 <input type="hidden" name="id" value="<?= $link['id'] ?>">
                                 <button type="submit" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">Eliminar</button>
@@ -127,7 +127,7 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button type="button" onclick="editMenuLink(<?= $child['id'] ?>, '<?= htmlspecialchars(addslashes($child['title'])) ?>', '<?= htmlspecialchars(addslashes($child['url'])) ?>', '<?= $link['id'] ?>')" class="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-colors mr-2">Editar</button>
-                                    <form action="<?= url('admin/header/menu/delete') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este enlace?');">
+                                    <form action="<?= url('admin/cabecera/menu/delete') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este enlace?');">
                                         <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                         <input type="hidden" name="id" value="<?= $child['id'] ?>">
                                         <button type="submit" class="text-red-400 hover:text-red-600 transition-colors">Eliminar</button>
@@ -153,7 +153,7 @@
             </button>
         </div>
         
-        <form id="menu-form" action="<?= url('admin/header/menu') ?>" method="POST" class="p-6 space-y-4">
+        <form id="menu-form" action="<?= url('admin/cabecera/menu') ?>" method="POST" class="p-6 space-y-4">
             <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
             <input type="hidden" name="id" id="form-id" value="">
             
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if(id) orderIds.push(id);
             });
 
-            fetch('<?= url('admin/header/menu/reorder') ?>', {
+            fetch('<?= url('admin/cabecera/menu/reorder') ?>', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order: orderIds })

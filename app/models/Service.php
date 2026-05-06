@@ -7,8 +7,12 @@ use PDO;
 class Service extends Model {
     protected $table = 'services_pages';
 
-    public function getActive() {
-        return $this->where('is_active', 1, '=', 'created_at DESC');
+    public function getActive($limit = null) {
+        $order = 'sort_order ASC, id ASC';
+        if ($limit) {
+            $order .= " LIMIT " . (int)$limit;
+        }
+        return $this->where('is_active', 1, '=', $order);
     }
 
     public function getFullDetails($id) {

@@ -36,7 +36,7 @@ class AdminController extends Controller {
     public function services() {
         $serviceModel = new \App\Models\Service();
         $settingModel = new \App\Models\Setting();
-        $services = $serviceModel->getActive();
+        $services = $serviceModel->all('sort_order ASC, id ASC');
         $settings = $settingModel->getAll();
         
         return $this->adminView('services/index', [
@@ -52,14 +52,14 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['services_label', 'services_title', 'services_description'];
+        $keys = ['services_label', 'services_title', 'services_description', 'services_limit', 'page_services_title', 'page_services_description'];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
             $settingModel->updateSetting($key, $value);
         }
 
-        header('Location: /admin/services?success=settings_saved');
+        header('Location: /admin/servicios?success=settings_saved');
         exit;
     }
 
@@ -87,8 +87,13 @@ class AdminController extends Controller {
         $data = [
             'title' => \Core\Security::sanitizeInput($_POST['title'] ?? ''),
             'slug' => \Core\Security::sanitizeInput($_POST['slug'] ?? ''),
-            'content' => \Core\Security::sanitizeInput($_POST['content'] ?? ''),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0
+            'content' => \Core\Security::sanitizeHTML($_POST['content'] ?? ''),
+            'is_active' => isset($_POST['is_active']) ? 1 : 0,
+            'heading_description' => \Core\Security::sanitizeInput($_POST['heading_description'] ?? ''),
+            'heading_details' => \Core\Security::sanitizeInput($_POST['heading_details'] ?? ''),
+            'heading_gallery' => \Core\Security::sanitizeInput($_POST['heading_gallery'] ?? ''),
+            'heading_cta' => \Core\Security::sanitizeInput($_POST['heading_cta'] ?? ''),
+            'cta_description' => \Core\Security::sanitizeInput($_POST['cta_description'] ?? '')
         ];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -146,7 +151,7 @@ class AdminController extends Controller {
             }
         }
 
-        header('Location: /admin/services?success=service_saved');
+        header('Location: /admin/servicios?success=service_saved');
         exit;
     }
 
@@ -167,7 +172,141 @@ class AdminController extends Controller {
             }
         }
 
-        header('Location: /admin/services?success=service_deleted');
+        header('Location: /admin/servicios?success=service_deleted');
+        exit;
+    }
+
+    public function duplicateService() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $serviceModel = new \App\Models\Service();
+            $service = $serviceModel->getFullDetails($id);
+            if ($service) {
+                // 1. Duplicar la imagen principal en el disco
+                $newImagePath = null;
+                if (!empty($service['image'])) {
+                    $cleanPath = explode('?', $service['image'])[0];
+                    $sourceFile = __DIR__ . '/../public' . $cleanPath;
+                    if (file_exists($sourceFile) && is_file($sourceFile)) {
+                        $extension = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                        $folder = 'assets/images/services/';
+                        $uploadDir = __DIR__ . '/../public/' . $folder;
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+                        $newFileName = bin2hex(random_bytes(8)) . '.' . $extension;
+                        $destFile = $uploadDir . $newFileName;
+                        if (copy($sourceFile, $destFile)) {
+                            $newImagePath = '/' . $folder . $newFileName;
+                        }
+                    }
+                }
+
+                $newSlug = $service['slug'] . '-copia-' . bin2hex(random_bytes(2));
+
+                $serviceData = [
+                    'title' => $service['title'] . ' (Copia)',
+                    'slug' => $newSlug,
+                    'content' => $service['content'],
+                    'image' => $newImagePath ?: $service['image'],
+                    'is_active' => 0,
+                    'heading_description' => $service['heading_description'] ?? null,
+                    'heading_details' => $service['heading_details'] ?? null,
+                    'heading_gallery' => $service['heading_gallery'] ?? null,
+                    'heading_cta' => $service['heading_cta'] ?? null,
+                    'cta_description' => $service['cta_description'] ?? null
+                ];
+
+                $newServiceId = $serviceModel->save($serviceData);
+
+                if ($newServiceId) {
+                    // 2. Duplicar los ítems de detalle
+                    if (!empty($service['items'])) {
+                        $itemModel = new \App\Models\ServiceItem();
+                        foreach ($service['items'] as $item) {
+                            $itemModel->save([
+                                'service_id' => $newServiceId,
+                                'title' => $item['title'],
+                                'description' => $item['description'],
+                                'sort_order' => $item['sort_order']
+                            ]);
+                        }
+                    }
+
+                    // 3. Duplicar las imágenes físicas y registros de la galería
+                    if (!empty($service['gallery'])) {
+                        $galleryModel = new \App\Models\ServiceGallery();
+                        foreach ($service['gallery'] as $galleryItem) {
+                            $newGalleryPath = null;
+                            if (!empty($galleryItem['image_path'])) {
+                                $cleanGalPath = explode('?', $galleryItem['image_path'])[0];
+                                $sourceGalFile = __DIR__ . '/../public' . $cleanGalPath;
+                                if (file_exists($sourceGalFile) && is_file($sourceGalFile)) {
+                                    $extension = strtolower(pathinfo($cleanGalPath, PATHINFO_EXTENSION));
+                                    $folder = 'assets/images/services/gallery/';
+                                    $uploadDir = __DIR__ . '/../public/' . $folder;
+                                    if (!is_dir($uploadDir)) {
+                                        mkdir($uploadDir, 0755, true);
+                                    }
+                                    $newFileName = bin2hex(random_bytes(8)) . '.' . $extension;
+                                    $destFile = $uploadDir . $newFileName;
+                                    if (copy($sourceGalFile, $destFile)) {
+                                        $newGalleryPath = '/' . $folder . $newFileName;
+                                    }
+                                }
+                            }
+
+                            $galleryModel->save([
+                                'service_id' => $newServiceId,
+                                'image_path' => $newGalleryPath ?: $galleryItem['image_path'],
+                                'sort_order' => $galleryItem['sort_order']
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+
+        header('Location: /admin/servicios?success=service_duplicated');
+        exit;
+    }
+
+    public function toggleServiceStatus() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $id = $data['id'] ?? null;
+            $status = $data['status'] ?? 0;
+
+            if ($id) {
+                $serviceModel = new \App\Models\Service();
+                $serviceModel->save(['id' => $id, 'is_active' => $status]);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
+        exit;
+    }
+
+    public function reorderServices() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            if(isset($data['order']) && is_array($data['order'])) {
+                $serviceModel = new \App\Models\Service();
+                foreach($data['order'] as $index => $id) {
+                    $serviceModel->save(['id' => $id, 'sort_order' => $index + 1]);
+                }
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
         exit;
     }
 
@@ -254,6 +393,54 @@ class AdminController extends Controller {
         exit;
     }
 
+    public function duplicateSlider() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $sliderModel = new \App\Models\Slider();
+            $slider = $sliderModel->find($id);
+            if ($slider) {
+                $newImagePath = null;
+                if (!empty($slider['image_path'])) {
+                    $cleanPath = explode('?', $slider['image_path'])[0];
+                    $sourceFile = __DIR__ . '/../public' . $cleanPath;
+                    if (file_exists($sourceFile) && is_file($sourceFile)) {
+                        $extension = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                        $folder = 'assets/images/sliders/';
+                        $uploadDir = __DIR__ . '/../public/' . $folder;
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+                        $newFileName = bin2hex(random_bytes(8)) . '.' . $extension;
+                        $destFile = $uploadDir . $newFileName;
+                        if (copy($sourceFile, $destFile)) {
+                            $newImagePath = '/' . $folder . $newFileName;
+                        }
+                    }
+                }
+
+                $data = [
+                    'title' => $slider['title'] . ' (Copia)',
+                    'top_label' => $slider['top_label'],
+                    'subtitle' => $slider['subtitle'],
+                    'button_text' => $slider['button_text'],
+                    'button_link' => $slider['button_link'],
+                    'image_path' => $newImagePath ?: $slider['image_path'],
+                    'order_index' => (int)$slider['order_index'] + 1,
+                    'is_active' => 0
+                ];
+
+                $sliderModel->save($data);
+            }
+        }
+
+        header('Location: /admin/sliders?success=slider_duplicated');
+        exit;
+    }
+
     public function toggleSliderStatus() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
@@ -320,7 +507,7 @@ class AdminController extends Controller {
         if ($id) $data['id'] = $id;
         $projectModel->save($data);
 
-        header('Location: /admin/projects?success=project_saved');
+        header('Location: /admin/proyectos?success=project_saved');
         exit;
     }
 
@@ -340,7 +527,7 @@ class AdminController extends Controller {
             }
         }
 
-        header('Location: /admin/projects?success=project_deleted');
+        header('Location: /admin/proyectos?success=project_deleted');
         exit;
     }
 
@@ -406,11 +593,11 @@ class AdminController extends Controller {
         }
 
         if ($error) {
-            header('Location: /admin/identity?error=' . $error);
+            header('Location: /admin/identidad?error=' . $error);
         } elseif ($updated) {
-            header('Location: /admin/identity?success=images_saved');
+            header('Location: /admin/identidad?success=images_saved');
         } else {
-            header('Location: /admin/identity?info=no_changes');
+            header('Location: /admin/identidad?info=no_changes');
         }
         exit;
     }
@@ -428,9 +615,9 @@ class AdminController extends Controller {
         if ($currentPath) {
             \Core\FileHelper::delete($currentPath);
             $settingModel->updateSetting($key, '');
-            header('Location: /admin/identity?success=image_deleted');
+            header('Location: /admin/identidad?success=image_deleted');
         } else {
-            header('Location: /admin/identity?error=not_found');
+            header('Location: /admin/identidad?error=not_found');
         }
         exit;
     }
@@ -455,7 +642,7 @@ class AdminController extends Controller {
 
         $this->generateDynamicCSS();
 
-        header('Location: /admin/identity?success=colors_saved');
+        header('Location: /admin/identidad?success=colors_saved');
         exit;
     }
 
@@ -478,7 +665,7 @@ class AdminController extends Controller {
 
         $this->generateDynamicCSS();
 
-        header('Location: /admin/identity?success=typography_saved');
+        header('Location: /admin/identidad?success=typography_saved');
         exit;
     }
 
@@ -523,7 +710,7 @@ class AdminController extends Controller {
         $settingModel = new \App\Models\Setting();
         $settingModel->updateSetting('contact_phone', $phone);
 
-        header('Location: /admin/header?success=phone_saved');
+        header('Location: /admin/cabecera?success=phone_saved');
         exit;
     }
 
@@ -541,7 +728,7 @@ class AdminController extends Controller {
         $menuLinkModel = new \App\Models\MenuLink();
         $menuLinkModel->saveLink($id, $title, $url, $order, $parent_id);
 
-        header('Location: /admin/header?success=link_saved');
+        header('Location: /admin/cabecera?success=link_saved');
         exit;
     }
     
@@ -556,7 +743,7 @@ class AdminController extends Controller {
             $menuLinkModel->deleteLink($id);
         }
         
-        header('Location: /admin/header?success=link_deleted');
+        header('Location: /admin/cabecera?success=link_deleted');
         exit;
     }
 
@@ -574,6 +761,142 @@ class AdminController extends Controller {
         }
         http_response_code(400);
         echo json_encode(['success' => false]);
+        exit;
+    }
+
+    public function aboutConfig() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        
+        return $this->adminView('about_config', [
+            'title' => 'Configuración de Página Nosotros',
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveAboutConfig() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = [
+            'about_seo_title',
+            'about_seo_description',
+            'about_seo_keywords',
+            'about_title',
+            'about_description',
+            'about_image_title',
+            'about_image_subtitle',
+            'about_mission_title',
+            'about_mission_desc',
+            'about_impact_title',
+            'about_impact_desc'
+        ];
+
+        foreach ($keys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        if (isset($_FILES['about_image']) && $_FILES['about_image']['error'] === UPLOAD_ERR_OK) {
+            $newPath = \Core\FileHelper::upload($_FILES['about_image'], 'assets/images/about/', ['webp', 'jpg', 'jpeg', 'png']);
+            if ($newPath) {
+                $settingModel->updateSetting('about_image', '/' . $newPath);
+            }
+        }
+
+        header('Location: /admin/nosotros?success=settings_saved');
+        exit;
+    }
+
+    public function contactConfig() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        
+        return $this->adminView('contact_config', [
+            'title' => 'Configuración de Página Contacto',
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveContactConfig() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = [
+            'contact_seo_title',
+            'contact_seo_description',
+            'contact_seo_keywords',
+            'contact_heading',
+            'contact_description',
+            'contact_address_label',
+            'contact_address_value',
+            'contact_email_label',
+            'contact_email_value',
+            'contact_phone_label',
+            'contact_phone_value',
+            'contact_form_heading'
+        ];
+
+        foreach ($keys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/contacto?success=settings_saved');
+        exit;
+    }
+
+    public function footerConfigAction() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        
+        return $this->adminView('footer_config', [
+            'title' => 'Configuración de Pie de Página',
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveFooterConfig() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        
+        // Save single configurations
+        $singleKeys = [
+            'footer_description',
+            'footer_facebook',
+            'footer_instagram',
+            'footer_linkedin',
+            'footer_twitter',
+            'footer_youtube',
+            'footer_menu_heading'
+        ];
+
+        foreach ($singleKeys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        // Save ordered array links
+        $titles = $_POST['footer_link_titles'] ?? [];
+        $urls = $_POST['footer_link_urls'] ?? [];
+
+        for ($i = 1; $i <= 5; $i++) {
+            $index = $i - 1;
+            $titleVal = \Core\Security::sanitizeInput($titles[$index] ?? '');
+            $urlVal = \Core\Security::sanitizeInput($urls[$index] ?? '');
+
+            $settingModel->updateSetting('footer_link_title_' . $i, $titleVal);
+            $settingModel->updateSetting('footer_link_url_' . $i, $urlVal);
+        }
+
+        header('Location: /admin/pie-pagina?success=settings_saved');
         exit;
     }
 }

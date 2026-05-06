@@ -3,7 +3,7 @@ $settingModel = new \App\Models\Setting();
 $menuLinkModel = new \App\Models\MenuLink();
 
 $logoUrl = $settingModel->get('logo_url', '/assets/images/logo.webp');
-$contactPhone = $settingModel->get('contact_phone', '+573001234567');
+$contactPhone = $settingModel->get('contact_phone_value', '+57 300 123 4567');
 $menuLinks = $menuLinkModel->getActive();
 ?>
 <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 border-b border-gray-100">

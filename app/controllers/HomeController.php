@@ -19,8 +19,9 @@ class HomeController extends Controller {
         $sliders = $sliderModel->getActive();
         $latestProjects = $projectModel->getLatest(3);
         $latestPosts = $blogModel->getLatest(3);
-        $services = $serviceModel->getActive();
         $settings = $settingModel->getAll();
+        $limit = isset($settings['services_limit']) ? (int)$settings['services_limit'] : 6;
+        $services = $serviceModel->getActive($limit);
 
         return $this->view('pages/home', [
             'title' => 'Inicio - Syncro Andina',

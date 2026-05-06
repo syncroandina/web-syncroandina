@@ -14,6 +14,15 @@
         </div>
         
         <?php $this->component('cards', ['services' => $services ?? []]); ?>
+
+        <div class="text-center mt-16 animate-fade-in">
+            <a href="/servicios" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+                Ver Todos los Servicios
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </a>
+        </div>
     </section>
 
     <!-- Sección CTA Dinámica -->
@@ -39,11 +48,11 @@
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-                <a href="/contact" class="group relative px-8 py-5 bg-secondary text-white font-bold rounded-2xl shadow-2xl shadow-secondary/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                <a href="/contacto" class="group relative px-8 py-5 bg-secondary text-white font-bold rounded-2xl shadow-2xl shadow-secondary/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
                     Consulta Gratuita
                     <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
-                <a href="/services" class="px-8 py-5 bg-white/5 backdrop-blur-sm border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all">
+                <a href="/servicios" class="px-8 py-5 bg-white/5 backdrop-blur-sm border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all">
                     Ver Catálogo
                 </a>
             </div>
@@ -93,7 +102,7 @@
             </div>
             
             <div class="text-center mt-12">
-                <a href="/projects" class="inline-flex items-center gap-2 font-bold text-secondary hover:text-blue-700 transition-colors">
+                <a href="/proyectos" class="inline-flex items-center gap-2 font-bold text-secondary hover:text-blue-700 transition-colors">
                     Ver todos los proyectos
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </a>

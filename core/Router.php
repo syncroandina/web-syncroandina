@@ -22,10 +22,23 @@ class Router {
             );
         }
 
+        // Buscar coincidencia dinámica (ej: servicios/{slug})
+        foreach ($this->routes[$requestType] as $route => $controller) {
+            $pattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([^/]+)', $route);
+            $pattern = "#^" . $pattern . "$#";
+
+            if (preg_match($pattern, $uri, $matches)) {
+                array_shift($matches); // Eliminar coincidencia global
+                return $this->callAction(
+                    ...array_merge(explode('@', $controller), $matches)
+                );
+            }
+        }
+
         throw new \Exception('No se definió ninguna ruta para esta URI.');
     }
 
-    protected function callAction($controller, $action) {
+    protected function callAction($controller, $action, ...$parameters) {
         $controller = "App\\Controllers\\{$controller}";
         $controller = new $controller;
 
@@ -35,6 +48,6 @@ class Router {
             );
         }
 
-        return $controller->$action();
+        return $controller->$action(...$parameters);
     }
 }

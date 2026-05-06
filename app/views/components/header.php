@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title ?? 'Syncro Andina | Innovación Corporativa') ?></title>
     <meta name="description" content="<?= htmlspecialchars($description ?? 'Syncro Andina: Desarrollo de software premium, transformación digital y modernización cloud para corporaciones.') ?>">
-    <meta name="keywords" content="transformación digital, desarrollo web, software a medida, aplicaciones corporativas">
+    <meta name="keywords" content="<?= htmlspecialchars($keywords ?? 'transformación digital, desarrollo web, software a medida, aplicaciones corporativas') ?>">
     <meta name="author" content="Syncro Andina">
     
     <?php

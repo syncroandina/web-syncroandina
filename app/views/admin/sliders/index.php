@@ -62,6 +62,13 @@
                                     <button onclick="editSlider(<?= htmlspecialchars(json_encode($slider)) ?>)" class="w-9 h-9 rounded-xl bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-all shadow-sm" title="Editar">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                     </button>
+                                    <form action="<?= url('admin/sliders/duplicate') ?>" method="POST" class="inline-block">
+                                        <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                                        <input type="hidden" name="id" value="<?= $slider['id'] ?>">
+                                        <button type="submit" class="w-9 h-9 rounded-xl bg-gray-100 text-teal-600 hover:bg-teal-600 hover:text-white flex items-center justify-center transition-all shadow-sm" title="Duplicar">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                                        </button>
+                                    </form>
                                     <form action="<?= url('admin/sliders/delete') ?>" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este slider? Se borrará permanentemente la imagen asociada.');" class="inline-block">
                                         <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                         <input type="hidden" name="id" value="<?= $slider['id'] ?>">
@@ -85,7 +92,7 @@
 
 <!-- Modal para Sliders -->
 <div id="slider-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
-    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300" id="modal-container">
+    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-3xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300" id="modal-container">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <h4 id="modal-title" class="text-xl font-extrabold text-gray-900">Nuevo Slider</h4>
             <button onclick="closeSliderModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white rounded-xl">
@@ -97,63 +104,77 @@
             <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
             <input type="hidden" name="id" id="slider-id" value="">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Título Principal</label>
-                            <input type="text" name="title" id="slider-title" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: Ingeniería de Vanguardia">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Etiqueta Superior</label>
-                            <input type="text" name="top_label" id="slider-top-label" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: SYNCRO ANDINA">
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Columna Izquierda: Información del Slider -->
+                <div class="space-y-5">
+                    <div class="border-b border-gray-100 pb-3">
+                        <span class="text-xs font-extrabold text-secondary uppercase tracking-widest">1. Contenido Escrito</span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Etiqueta Superior</label>
+                        <input type="text" name="top_label" id="slider-top-label" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: SYNCRO ANDINA">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Título Principal</label>
+                        <input type="text" name="title" id="slider-title" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: Ingeniería de Vanguardia">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Subtítulo / Descripción</label>
-                        <textarea name="subtitle" id="slider-subtitle" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white resize-none" placeholder="Breve descripción..."></textarea>
+                        <textarea name="subtitle" id="slider-subtitle" rows="4" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white resize-none leading-relaxed" placeholder="Breve descripción que se mostrará sobre la imagen del slider..."></textarea>
                     </div>
                 </div>
                 
-                <div class="space-y-4">
+                <!-- Columna Derecha: Imagen del Slider y Acción -->
+                <div class="space-y-5">
+                    <div class="border-b border-gray-100 pb-3">
+                        <span class="text-xs font-extrabold text-secondary uppercase tracking-widest">2. Aspecto Visual y Acción</span>
+                    </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Imagen del Slider</label>
                         <div class="relative group">
-                            <div class="w-full aspect-video rounded-2xl bg-gray-100 border-2 border-dashed border-gray-200 overflow-hidden flex flex-col items-center justify-center relative cursor-pointer hover:border-secondary transition-colors" onclick="document.getElementById('slider-image').click()">
+                            <div class="w-full h-44 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 overflow-hidden flex flex-col items-center justify-center relative cursor-pointer hover:border-secondary hover:bg-white transition-all duration-300" onclick="document.getElementById('slider-image').click()">
                                 <img id="image-preview" src="" class="hidden w-full h-full object-cover">
-                                <div id="upload-placeholder" class="text-center">
-                                    <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase">Click para subir</span>
+                                <div id="upload-placeholder" class="text-center p-4">
+                                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-2 text-secondary group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </div>
+                                    <span class="text-xs font-extrabold text-gray-700 block mb-0.5">Seleccionar Imagen</span>
+                                    <span class="text-[10px] font-bold text-gray-400 uppercase">Recomendado: 1920x1080 px</span>
+                                </div>
+                                <div class="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white text-xs font-bold gap-2">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    <span>Cambiar Imagen</span>
                                 </div>
                             </div>
                             <input type="file" name="image" id="slider-image" class="hidden" accept="image/*" onchange="previewSliderImage(this)">
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-50">
-                <div class="md:col-span-1">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Estado Inicial</label>
-                    <div class="h-[52px] flex items-center px-4 bg-gray-50 border border-gray-200 rounded-2xl">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="is_active" id="slider-active" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-secondary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
-                            <span class="ml-3 text-xs font-bold text-gray-500">Activo</span>
-                        </label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto del Botón</label>
+                            <input type="text" name="button_text" id="slider-btn-text" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all" placeholder="Ej: Ver Servicios">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Link del Botón</label>
+                            <input type="text" name="button_link" id="slider-btn-link" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all" placeholder="Ej: /servicios">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Estado del Slider</label>
+                        <div class="h-[52px] flex items-center justify-between px-4 bg-gray-50 border border-gray-200 rounded-2xl">
+                            <span class="text-xs font-bold text-gray-500">¿Mostrar en la página de inicio?</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" name="is_active" id="slider-active" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-secondary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto del Botón</label>
-                    <input type="text" name="button_text" id="slider-btn-text" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: Ver Servicios">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Link del Botón</label>
-                    <input type="text" name="button_link" id="slider-btn-link" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: /servicios">
-                </div>
             </div>
 
-            <div class="flex gap-4 pt-4">
+            <div class="flex gap-4 pt-6 border-t border-gray-100">
                 <button type="button" onclick="closeSliderModal()" class="flex-1 px-6 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all">Cancelar</button>
                 <button type="submit" class="flex-[2] px-6 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-secondary transition-all shadow-lg shadow-primary/20">Guardar Slider</button>
             </div>
@@ -213,7 +234,12 @@ function editSlider(slider) {
     
     if(slider.image_path) {
         const preview = document.getElementById('image-preview');
-        preview.src = '<?= asset('') ?>' + slider.image_path;
+        let basePath = '<?= asset('') ?>';
+        if (basePath.endsWith('/') && slider.image_path.startsWith('/')) {
+            preview.src = basePath + slider.image_path.substring(1);
+        } else {
+            preview.src = basePath + slider.image_path;
+        }
         preview.classList.remove('hidden');
         document.getElementById('upload-placeholder').classList.add('hidden');
     }

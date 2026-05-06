@@ -6,7 +6,7 @@ use Core\Controller;
 class AuthController extends Controller {
     public function login() {
         if(isset($_SESSION['user'])) {
-            header('Location: /admin/dashboard');
+            header('Location: /admin/escritorio');
             exit;
         }
         return $this->view('pages/login', ['title' => 'Portal de Clientes - Syncro Andina']);
@@ -18,7 +18,7 @@ class AuthController extends Controller {
         $csrf_token = $_POST['csrf_token'] ?? '';
 
         if (!\Core\Security::verifyCSRFToken($csrf_token)) {
-            header('Location: /login?error=csrf');
+            header('Location: /iniciar-sesion?error=csrf');
             exit;
         }
 
@@ -29,17 +29,17 @@ class AuthController extends Controller {
                 'name' => 'Administrador Syncro',
                 'role' => 'admin'
             ];
-            header('Location: /admin/dashboard');
+            header('Location: /admin/escritorio');
             exit;
         }
 
-        header('Location: /login?error=1');
+        header('Location: /iniciar-sesion?error=1');
         exit;
     }
 
     public function logout() {
         session_destroy();
-        header('Location: /login');
+        header('Location: /iniciar-sesion');
         exit;
     }
 }

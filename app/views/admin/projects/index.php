@@ -66,7 +66,7 @@
                                 <button class="w-8 h-8 rounded-lg bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Editar">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
-                                <form action="<?= url('admin/projects/delete') ?>" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto? Se borrará permanentemente la imagen asociada.');" class="inline-block">
+                                <form action="<?= url('admin/proyectos/delete') ?>" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto? Se borrará permanentemente la imagen asociada.');" class="inline-block">
                                     <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                     <input type="hidden" name="id" value="<?= $project['id'] ?>">
                                     <button type="submit" class="w-8 h-8 rounded-lg bg-gray-100 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Eliminar">
