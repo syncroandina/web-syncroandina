@@ -138,6 +138,9 @@
                             <div class="relative group rounded-2xl overflow-hidden border border-gray-100 shadow-sm aspect-[4/3] bg-gray-50 flex flex-col items-center justify-center cursor-pointer mb-6" onclick="document.getElementById('about-img-file').click()">
                                 <?php 
                                 $imgSrc = $settings['about_image'] ?? 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80';
+                                if (str_starts_with($imgSrc, '//')) {
+                                    $imgSrc = '/' . ltrim($imgSrc, '/');
+                                }
                                 ?>
                                 <img id="about-img-preview" src="<?= htmlspecialchars($imgSrc) ?>" class="w-full h-full object-cover">
                                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-2">

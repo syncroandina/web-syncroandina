@@ -35,42 +35,41 @@
 
         <div class="container mx-auto px-4 relative z-10 text-center">
             <div class="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] font-bold uppercase tracking-[0.2em] mb-8 animate-bounce">
-                ¿Listo para transformar tu empresa?
+                <?= htmlspecialchars($settings['home_cta_tagline'] ?? '¿Listo para transformar tu empresa?') ?>
             </div>
             
             <h2 class="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight leading-tight max-w-4xl mx-auto">
-                Impulsa tu negocio con <br> 
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">tecnología de vanguardia</span>
+                <?= isset($settings['home_cta_headline']) ? $settings['home_cta_headline'] : 'Impulsa tu negocio con <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">tecnología de vanguardia</span>' ?>
             </h2>
 
             <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
-                Nuestro equipo de expertos está listo para ayudarte a encontrar las mejores soluciones tecnológicas para tus necesidades empresariales.
+                <?= htmlspecialchars($settings['home_cta_description'] ?? 'Nuestro equipo de expertos está listo para ayudarte a encontrar las mejores soluciones tecnológicas para tus necesidades empresariales.') ?>
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-                <a href="/contacto" class="group relative px-8 py-5 bg-secondary text-white font-bold rounded-2xl shadow-2xl shadow-secondary/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
-                    Consulta Gratuita
+                <a href="<?= htmlspecialchars($settings['home_cta_btn1_url'] ?? '/contacto') ?>" class="group relative px-8 py-5 bg-secondary text-white font-bold rounded-2xl shadow-2xl shadow-secondary/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3">
+                    <?= htmlspecialchars($settings['home_cta_btn1_title'] ?? 'Consulta Gratuita') ?>
                     <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
-                <a href="/servicios" class="px-8 py-5 bg-white/5 backdrop-blur-sm border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all">
-                    Ver Catálogo
+                <a href="<?= htmlspecialchars($settings['home_cta_btn2_url'] ?? '/servicios') ?>" class="px-8 py-5 bg-white/5 backdrop-blur-sm border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all">
+                    <?= htmlspecialchars($settings['home_cta_btn2_title'] ?? 'Ver Catálogo') ?>
                 </a>
             </div>
 
             <!-- Datos de Contacto Inferiores -->
             <div class="flex flex-wrap items-center justify-center gap-8 md:gap-16 pt-8 border-t border-white/5">
-                <div class="flex items-center gap-4 group">
+                <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', $settings['contact_phone_value'] ?? '+573001234567')) ?>" class="flex items-center gap-4 group">
                     <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                     </div>
-                    <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">+57 300 123 4567</span>
-                </div>
-                <div class="flex items-center gap-4 group">
+                    <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors"><?= htmlspecialchars($settings['contact_phone_value'] ?? '+57 300 123 4567') ?></span>
+                </a>
+                <a href="mailto:<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?>" class="flex items-center gap-4 group">
                     <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
-                    <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors">info@syncroandina.com</span>
-                </div>
+                    <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?></span>
+                </a>
             </div>
         </div>
     </section>
@@ -79,14 +78,14 @@
     <section class="py-24 bg-white">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-primary mb-4">Nuestros Proyectos Recientes</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.</p>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-primary mb-4"><?= htmlspecialchars($settings['projects_home_title'] ?? 'Nuestros Proyectos Recientes') ?></h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg"><?= htmlspecialchars($settings['projects_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <?php if(!empty($latestProjects)): ?>
                     <?php foreach($latestProjects as $index => $project): ?>
-                    <div class="group relative rounded-3xl overflow-hidden shadow-lg cursor-pointer animate-fade-in-up" style="animation-delay: <?= $index * 100 ?>ms;">
+                    <a href="/proyectos/<?= htmlspecialchars($project['slug']) ?>" class="group relative rounded-3xl overflow-hidden shadow-lg cursor-pointer animate-fade-in-up block" style="animation-delay: <?= $index * 100 ?>ms;">
                         <img src="<?= htmlspecialchars($project['main_image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>" loading="lazy" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent opacity-80"></div>
                         <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
@@ -94,7 +93,7 @@
                             <h3 class="text-2xl font-bold text-white mb-2"><?= htmlspecialchars($project['title']) ?></h3>
                             <p class="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2"><?= htmlspecialchars($project['description']) ?></p>
                         </div>
-                    </div>
+                    </a>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="col-span-full text-center text-gray-500">Aún no hay proyectos publicados.</div>

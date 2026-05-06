@@ -26,11 +26,37 @@ class AdminController extends Controller {
 
     public function projects() {
         $projectModel = new \App\Models\Project();
+        $settingModel = new \App\Models\Setting();
+        $galleryModel = new \App\Models\ProjectGallery();
         $projects = $projectModel->getAllActive();
+        $settings = $settingModel->getAll();
+
+        foreach ($projects as &$project) {
+            $project['gallery'] = $galleryModel->getByProject($project['id']);
+        }
+
         return $this->adminView('projects/index', [
             'title' => 'Gestión de Proyectos',
-            'projects' => $projects
+            'projects' => $projects,
+            'settings' => $settings
         ]);
+    }
+
+    public function saveProjectSettings() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = ['projects_home_title', 'projects_home_subtitle', 'projects_page_title', 'projects_page_subtitle'];
+
+        foreach ($keys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/proyectos?success=settings_saved');
+        exit;
     }
 
     public function services() {
@@ -331,10 +357,13 @@ class AdminController extends Controller {
 
     public function sliders() {
         $sliderModel = new \App\Models\Slider();
+        $settingModel = new \App\Models\Setting();
         $sliders = $sliderModel->getAll();
+        $settings = $settingModel->getAll();
         return $this->adminView('sliders/index', [
             'title' => 'Gestión de Sliders',
-            'sliders' => $sliders
+            'sliders' => $sliders,
+            'settings' => $settings
         ]);
     }
 
@@ -406,11 +435,11 @@ class AdminController extends Controller {
                 $newImagePath = null;
                 if (!empty($slider['image_path'])) {
                     $cleanPath = explode('?', $slider['image_path'])[0];
-                    $sourceFile = __DIR__ . '/../public' . $cleanPath;
+                    $sourceFile = __DIR__ . '/../../public' . $cleanPath;
                     if (file_exists($sourceFile) && is_file($sourceFile)) {
                         $extension = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
                         $folder = 'assets/images/sliders/';
-                        $uploadDir = __DIR__ . '/../public/' . $folder;
+                        $uploadDir = __DIR__ . '/../../public/' . $folder;
                         if (!is_dir($uploadDir)) {
                             mkdir($uploadDir, 0755, true);
                         }
@@ -490,8 +519,14 @@ class AdminController extends Controller {
             'slug' => \Core\Security::sanitizeInput($_POST['slug'] ?? ''),
             'description' => \Core\Security::sanitizeInput($_POST['description'] ?? ''),
             'client' => \Core\Security::sanitizeInput($_POST['client'] ?? ''),
-            'completion_date' => \Core\Security::sanitizeInput($_POST['completion_date'] ?? ''),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0
+            'completion_date' => !empty($_POST['completion_date']) ? \Core\Security::sanitizeInput($_POST['completion_date']) : null,
+            'is_active' => isset($_POST['is_active']) ? 1 : 0,
+            'challenge_title' => \Core\Security::sanitizeInput($_POST['challenge_title'] ?? 'El Reto'),
+            'challenge_desc' => \Core\Security::sanitizeInput($_POST['challenge_desc'] ?? ''),
+            'solution_title' => \Core\Security::sanitizeInput($_POST['solution_title'] ?? 'La Solución'),
+            'solution_desc' => \Core\Security::sanitizeInput($_POST['solution_desc'] ?? ''),
+            'impact_label' => \Core\Security::sanitizeInput($_POST['impact_label'] ?? 'Impacto Logrado'),
+            'impact_value' => \Core\Security::sanitizeInput($_POST['impact_value'] ?? '100% Optimizado')
         ];
 
         if (isset($_FILES['main_image']) && $_FILES['main_image']['error'] === UPLOAD_ERR_OK) {
@@ -505,7 +540,32 @@ class AdminController extends Controller {
         }
 
         if ($id) $data['id'] = $id;
-        $projectModel->save($data);
+        $projectId = $projectModel->save($data);
+
+        // Guardar Galería (Imágenes nuevas)
+        $projectGalleryModel = new \App\Models\ProjectGallery();
+        if (isset($_FILES['project_gallery_images'])) {
+            $files = $_FILES['project_gallery_images'];
+            for ($i = 0; $i < count($files['name']); $i++) {
+                if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                    $file = [
+                        'name' => $files['name'][$i],
+                        'type' => $files['type'][$i],
+                        'tmp_name' => $files['tmp_name'][$i],
+                        'error' => $files['error'][$i],
+                        'size' => $files['size'][$i]
+                    ];
+                    $path = \Core\FileHelper::upload($file, 'assets/images/projects/gallery/', ['webp', 'jpg', 'jpeg', 'png']);
+                    if ($path) {
+                        $projectGalleryModel->save([
+                            'project_id' => $projectId ?: $id,
+                            'image_path' => $path,
+                            'order_index' => 99
+                        ]);
+                    }
+                }
+            }
+        }
 
         header('Location: /admin/proyectos?success=project_saved');
         exit;
@@ -528,6 +588,75 @@ class AdminController extends Controller {
         }
 
         header('Location: /admin/proyectos?success=project_deleted');
+        exit;
+    }
+
+    public function deleteProjectGalleryImage() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $galleryModel = new \App\Models\ProjectGallery();
+            $image = $galleryModel->find($id);
+            if ($image) {
+                \Core\FileHelper::delete($image['image_path']);
+                $galleryModel->delete($id);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
+        exit;
+    }
+
+    public function duplicateProject() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $projectModel = new \App\Models\Project();
+            $project = $projectModel->find($id);
+            if ($project) {
+                $newImagePath = null;
+                if (!empty($project['main_image'])) {
+                    $cleanPath = explode('?', $project['main_image'])[0];
+                    $sourceFile = __DIR__ . '/../../public/' . $cleanPath;
+                    if (file_exists($sourceFile) && is_file($sourceFile)) {
+                        $extension = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                        $folder = 'assets/images/projects/';
+                        $uploadDir = __DIR__ . '/../../public/' . $folder;
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+                        $newFileName = bin2hex(random_bytes(8)) . '.' . $extension;
+                        $destFile = $uploadDir . $newFileName;
+                        if (copy($sourceFile, $destFile)) {
+                            $newImagePath = $folder . $newFileName;
+                        }
+                    }
+                }
+
+                $randomSuffix = bin2hex(random_bytes(3));
+                $data = [
+                    'title' => $project['title'] . ' (Copia)',
+                    'slug' => $project['slug'] . '-copia-' . $randomSuffix,
+                    'description' => $project['description'],
+                    'client' => $project['client'],
+                    'completion_date' => $project['completion_date'],
+                    'main_image' => $newImagePath ?: $project['main_image'],
+                    'is_active' => 0
+                ];
+
+                $projectModel->save($data);
+            }
+        }
+
+        header('Location: /admin/proyectos?success=project_duplicated');
         exit;
     }
 
@@ -802,7 +931,7 @@ class AdminController extends Controller {
         if (isset($_FILES['about_image']) && $_FILES['about_image']['error'] === UPLOAD_ERR_OK) {
             $newPath = \Core\FileHelper::upload($_FILES['about_image'], 'assets/images/about/', ['webp', 'jpg', 'jpeg', 'png']);
             if ($newPath) {
-                $settingModel->updateSetting('about_image', '/' . $newPath);
+                $settingModel->updateSetting('about_image', '/' . ltrim($newPath, '/'));
             }
         }
 
@@ -897,6 +1026,44 @@ class AdminController extends Controller {
         }
 
         header('Location: /admin/pie-pagina?success=settings_saved');
+        exit;
+    }
+
+    public function ctaConfig() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        return $this->adminView('cta_config', [
+            'title' => 'Llamada a la Acción (CTA) de Inicio',
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveHomeCTA() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = [
+            'home_cta_tagline',
+            'home_cta_headline',
+            'home_cta_description',
+            'home_cta_btn1_title',
+            'home_cta_btn1_url',
+            'home_cta_btn2_title',
+            'home_cta_btn2_url'
+        ];
+
+        foreach ($keys as $key) {
+            if ($key === 'home_cta_headline') {
+                $value = \Core\Security::sanitizeHTML($_POST[$key] ?? '');
+            } else {
+                $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            }
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/cta?success=cta_saved');
         exit;
     }
 }

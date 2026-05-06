@@ -55,11 +55,39 @@ class PageController extends Controller {
 
     public function projects() {
         $projectModel = new \App\Models\Project();
+        $settingModel = new \App\Models\Setting();
         $projects = $projectModel->getAllActive();
+        $settings = $settingModel->getAll();
 
         return $this->view('pages/projects', [
             'title' => 'Proyectos - Syncro Andina',
-            'projects' => $projects
+            'projects' => $projects,
+            'settings' => $settings
+        ]);
+    }
+
+    public function projectDetail($slug) {
+        $projectModel = new \App\Models\Project();
+        $settingModel = new \App\Models\Setting();
+        
+        $results = $projectModel->where('slug', $slug);
+        $project = !empty($results) ? $results[0] : null;
+        
+        if (!$project || !$project['is_active']) {
+            http_response_code(404);
+            echo "<h1>404 Not Found</h1><p>El proyecto solicitado no existe o no está activo.</p>";
+            exit;
+        }
+        
+        $settings = $settingModel->getAll();
+        $galleryModel = new \App\Models\ProjectGallery();
+        $gallery = $galleryModel->getByProject($project['id']);
+        
+        return $this->view('pages/project_detail', [
+            'title' => $project['title'] . ' - Syncro Andina',
+            'project' => $project,
+            'settings' => $settings,
+            'gallery' => $gallery
         ]);
     }
 

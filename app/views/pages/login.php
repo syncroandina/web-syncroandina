@@ -27,7 +27,7 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 animate-fade-in-up" style="animation-delay: 100ms;">
         <div class="bg-white/80 backdrop-blur-xl py-10 px-4 shadow-2xl sm:rounded-3xl sm:px-10 border border-white">
-            <form class="space-y-6" action="/login" method="POST">
+            <form class="space-y-6" action="/iniciar-sesion" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                 
                 <?php if(isset($_GET['error'])): ?>

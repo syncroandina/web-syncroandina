@@ -4,6 +4,8 @@ namespace App\Models;
 use Core\Model;
 
 class Project extends Model {
+    protected $table = 'projects';
+
     public function getAllActive() {
         $stmt = $this->db->query("SELECT * FROM projects WHERE is_active = 1 AND deleted_at IS NULL ORDER BY created_at DESC");
         return $stmt->fetchAll();

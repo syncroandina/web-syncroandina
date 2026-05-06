@@ -1,6 +1,6 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold text-gray-800">Configuración de Header y Menú</h2>
+        <h2 class="text-2xl font-bold text-gray-800">Menú Principal</h2>
     </div>
 
     <?php if(isset($_GET['success'])): ?>
@@ -27,44 +27,6 @@
             </div>
         </div>
     <?php endif; ?>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Botón de Llamada -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Botón de Llamada</h3>
-            
-            <div class="mb-6 flex flex-col items-center justify-center bg-blue-50 p-6 rounded-xl border border-blue-100 min-h-[120px]">
-                <span class="text-2xl font-black text-secondary tracking-tight mb-1">
-                    <?= htmlspecialchars($settings['contact_phone'] ?? '+00 000 000 000') ?>
-                </span>
-                <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Número actual mostrado en la web</span>
-            </div>
-
-            <form action="<?= url('admin/cabecera/phone') ?>" method="POST" class="mt-auto">
-                <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Número de Teléfono</label>
-                    <input type="text" name="contact_phone" value="<?= htmlspecialchars($settings['contact_phone'] ?? '') ?>" placeholder="+573001234567" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all">
-                </div>
-                <button type="submit" class="w-full bg-secondary text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-600 transition-colors">Guardar Teléfono</button>
-            </form>
-        </div>
-
-        <div class="bg-blue-50 rounded-2xl p-6 border border-blue-100 flex flex-col justify-center">
-            <div class="flex items-start gap-4">
-                <div class="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
-                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-blue-900 mb-1">Configuración del Header</h4>
-                    <p class="text-sm text-blue-700 leading-relaxed">
-                        Aquí puedes gestionar el número de contacto directo y los enlaces de navegación del sitio. 
-                        Para cambiar el logo o favicon, dirígete a la sección de <a href="<?= url('admin/identidad') ?>" class="font-bold underline hover:text-blue-800">Identidad Corporativa</a>.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Enlaces del Menú -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">

@@ -6,6 +6,7 @@ $router->get('nosotros', 'PageController@about');
 $router->get('servicios', 'PageController@services');
 $router->get('servicios/{slug}', 'PageController@serviceDetail');
 $router->get('proyectos', 'PageController@projects');
+$router->get('proyectos/{slug}', 'PageController@projectDetail');
 $router->get('blog', 'PageController@blog');
 $router->get('contacto', 'PageController@contact');
 $router->get('iniciar-sesion', 'AuthController@login');
@@ -23,6 +24,8 @@ $router->post('admin/sliders/delete', 'AdminController@deleteSlider');
 $router->post('admin/sliders/duplicate', 'AdminController@duplicateSlider');
 $router->post('admin/sliders/toggle', 'AdminController@toggleSliderStatus');
 $router->post('admin/sliders/reorder', 'AdminController@reorderSliders');
+$router->get('admin/cta', 'AdminController@ctaConfig');
+$router->post('admin/cta/save', 'AdminController@saveHomeCTA');
 
 // Servicios
 $router->get('admin/servicios', 'AdminController@services');
@@ -39,6 +42,9 @@ $router->post('admin/servicios/settings', 'AdminController@saveServiceSettings')
 $router->get('admin/proyectos', 'AdminController@projects');
 $router->post('admin/proyectos', 'AdminController@saveProject');
 $router->post('admin/proyectos/delete', 'AdminController@deleteProject');
+$router->post('admin/proyectos/duplicate', 'AdminController@duplicateProject');
+$router->post('admin/proyectos/settings', 'AdminController@saveProjectSettings');
+$router->post('admin/proyectos/gallery/delete', 'AdminController@deleteProjectGalleryImage');
 
 // Identidad Corporativa
 $router->get('admin/identidad', 'AdminController@identityConfig');

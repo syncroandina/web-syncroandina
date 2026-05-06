@@ -20,6 +20,9 @@
             <div class="relative rounded-3xl overflow-hidden shadow-2xl animate-fade-in-up">
                 <?php 
                 $imgSrc = $settings['about_image'] ?? 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80';
+                if (str_starts_with($imgSrc, '//')) {
+                    $imgSrc = '/' . ltrim($imgSrc, '/');
+                }
                 ?>
                 <img src="<?= htmlspecialchars($imgSrc) ?>" alt="Equipo" class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
