@@ -92,7 +92,50 @@ class PageController extends Controller {
     }
 
     public function blog() {
-        return $this->view('pages/blog', ['title' => 'Blog - Syncro Andina']);
+        $postModel = new \App\Models\BlogPost();
+        $settingModel = new \App\Models\Setting();
+        $posts = $postModel->getPublished();
+        $settings = $settingModel->getAll();
+
+        return $this->view('pages/blog', [
+            'title' => 'Blog - Syncro Andina',
+            'posts' => $posts,
+            'settings' => $settings
+        ]);
+    }
+
+    public function blogDetail($slug) {
+        $postModel = new \App\Models\BlogPost();
+        $settingModel = new \App\Models\Setting();
+        
+        $results = $postModel->where('slug', $slug);
+        $post = !empty($results) ? $results[0] : null;
+
+        if (!$post || $post['status'] !== 'published' || !empty($post['deleted_at'])) {
+            http_response_code(404);
+            echo "<h1>404 Not Found</h1><p>El artículo solicitado no existe o no se encuentra disponible.</p>";
+            exit;
+        }
+
+        // Obtener posts recomendados (los últimos 3 excluyendo el actual)
+        $db = (new \App\Models\BlogPost());
+        $recSql = "SELECT p.*, u.name as author_name 
+                   FROM blog_posts p 
+                   LEFT JOIN users u ON p.author_id = u.id
+                   WHERE p.status = 'published' AND p.deleted_at IS NULL AND p.id != ? 
+                   ORDER BY p.published_at DESC LIMIT 3";
+        $stmt = $db->db->prepare($recSql);
+        $stmt->execute([$post['id']]);
+        $recommended = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $settings = $settingModel->getAll();
+
+        return $this->view('pages/blog_detail', [
+            'title' => $post['title'] . ' - Syncro Andina',
+            'post' => $post,
+            'recommended' => $recommended,
+            'settings' => $settings
+        ]);
     }
 
     public function contact() {

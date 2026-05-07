@@ -100,27 +100,22 @@
                 <?php endif; ?>
             </div>
             
-            <div class="text-center mt-12">
-                <a href="/proyectos" class="inline-flex items-center gap-2 font-bold text-secondary hover:text-blue-700 transition-colors">
-                    Ver todos los proyectos
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            <div class="text-center mt-16 animate-fade-in">
+                <a href="<?= url('proyectos') ?>" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+                    Ver Todos los Proyectos
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
                 </a>
             </div>
         </div>
     </section>
     <!-- Sección de Blog -->
     <section class="py-24 container mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div class="max-w-2xl">
-                <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3">Actualidad y Conocimiento</p>
-                <h2 class="text-3xl md:text-5xl font-extrabold text-primary">Nuestro Blog Corporativo</h2>
-            </div>
-            <a href="/blog" class="group flex items-center gap-3 font-bold text-gray-900 hover:text-secondary transition-all">
-                Explorar todos los artículos
-                <div class="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-secondary group-hover:text-white flex items-center justify-center transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                </div>
-            </a>
+        <div class="text-center mb-16">
+            <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['home_blog_tagline'] ?? 'Actualidad y Conocimiento') ?></p>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['home_blog_title'] ?? 'Nuestro Blog Corporativo') ?></h2>
+            <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -128,7 +123,7 @@
                 <?php foreach($latestPosts as $index => $post): ?>
                 <article class="group bg-white rounded-[2.5rem] p-4 shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col h-full animate-fade-in-up" style="animation-delay: <?= $index * 150 ?>ms;">
                     <div class="relative overflow-hidden rounded-[2rem] aspect-[16/10] mb-6">
-                        <img src="<?= htmlspecialchars($post['image'] ?: asset('assets/img/blog-placeholder.jpg')) ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="<?= asset($post['image'] ?: 'assets/images/blog-placeholder.jpg') ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute top-4 left-4">
                             <span class="bg-white/90 backdrop-blur-md text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
                                 <?= date('d M, Y', strtotime($post['published_at'] ?? $post['created_at'])) ?>
@@ -138,7 +133,7 @@
                     
                     <div class="px-4 pb-4 flex flex-col flex-grow">
                         <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-2">
-                            <?= htmlspecialchars($post['title']) ?>
+                            <a href="<?= url('blog/' . $post['slug']) ?>"><?= htmlspecialchars($post['title']) ?></a>
                         </h3>
                         <p class="text-gray-600 mb-8 line-clamp-3 text-sm leading-relaxed">
                             <?= htmlspecialchars($post['excerpt']) ?>
@@ -151,7 +146,7 @@
                                 </div>
                                 <span class="text-xs font-bold text-gray-400"><?= htmlspecialchars($post['author_name'] ?? 'Syncro Team') ?></span>
                             </div>
-                            <a href="/blog/<?= $post['slug'] ?>" class="text-secondary font-black text-xs uppercase tracking-widest hover:underline">Leer más</a>
+                            <a href="<?= url('blog/' . $post['slug']) ?>" class="text-secondary font-black text-xs uppercase tracking-widest hover:underline">Leer más</a>
                         </div>
                     </div>
                 </article>
@@ -164,6 +159,15 @@
                     <p class="text-gray-400 font-medium">Estamos preparando contenido increíble para ti.</p>
                 </div>
             <?php endif; ?>
+        </div>
+
+        <div class="text-center mt-16 animate-fade-in">
+            <a href="<?= url('blog') ?>" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+                Ver Todos los Artículos
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </a>
         </div>
     </section>
 </main>

@@ -1004,7 +1004,9 @@ class AdminController extends Controller {
             'footer_linkedin',
             'footer_twitter',
             'footer_youtube',
-            'footer_menu_heading'
+            'footer_menu_heading',
+            'footer_brand_name',
+            'footer_copyright'
         ];
 
         foreach ($singleKeys as $key) {
@@ -1064,6 +1066,250 @@ class AdminController extends Controller {
         }
 
         header('Location: /admin/cta?success=cta_saved');
+        exit;
+    }
+
+    public function blog() {
+        $postModel = new \App\Models\BlogPost();
+        $settingModel = new \App\Models\Setting();
+        $posts = $postModel->getAllActive();
+        $settings = $settingModel->getAll();
+
+        return $this->adminView('blog/index', [
+            'title' => 'Gestión de Blog',
+            'posts' => $posts,
+            'settings' => $settings
+        ]);
+    }
+
+    public function savePost() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        $postModel = new \App\Models\BlogPost();
+        $oldPost = $id ? $postModel->find($id) : null;
+
+        $title = \Core\Security::sanitizeInput($_POST['title'] ?? '');
+        $slug = \Core\Security::sanitizeInput($_POST['slug'] ?? '');
+        if (empty($slug)) {
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $title)));
+        }
+        $slug = preg_replace('/-+/', '-', $slug);
+
+        // Garantizar que el slug sea completamente único en la base de datos
+        $originalSlug = $slug;
+        $count = 1;
+        while (true) {
+            $existingQuery = "SELECT id FROM blog_posts WHERE slug = ? AND deleted_at IS NULL";
+            $params = [$slug];
+            if ($id) {
+                $existingQuery .= " AND id != ?";
+                $params[] = $id;
+            }
+            $stmt = $postModel->db->prepare($existingQuery);
+            $stmt->execute($params);
+            if (!$stmt->fetch()) {
+                break;
+            }
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        $author_id = $_SESSION['user']['id'] ?? null;
+        if ($author_id) {
+            $stmt = $postModel->db->prepare("SELECT id FROM users WHERE id = ?");
+            $stmt->execute([$author_id]);
+            if (!$stmt->fetch()) {
+                try {
+                    $insertStmt = $postModel->db->prepare("INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)");
+                    $insertStmt->execute([
+                        $author_id,
+                        $_SESSION['user']['name'] ?? 'Administrador Syncro',
+                        'admin@syncroandina.com',
+                        password_hash('admin123', PASSWORD_BCRYPT),
+                        'admin'
+                    ]);
+                } catch (\Exception $e) {
+                    $author_id = null;
+                }
+            }
+        }
+
+        $data = [
+            'title' => $title,
+            'slug' => $slug,
+            'excerpt' => \Core\Security::sanitizeInput($_POST['excerpt'] ?? ''),
+            'content' => \Core\Security::sanitizeHTML($_POST['content'] ?? ''),
+            'status' => \Core\Security::sanitizeInput($_POST['status'] ?? 'draft'),
+            'author_id' => $author_id
+        ];
+
+        if ($data['status'] === 'published') {
+            $data['published_at'] = $oldPost['published_at'] ?? date('Y-m-d H:i:s');
+        } else {
+            $data['published_at'] = $oldPost['published_at'] ?? null;
+        }
+
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $newPath = \Core\FileHelper::upload($_FILES['image'], 'assets/images/blog/', ['webp', 'jpg', 'jpeg', 'png']);
+            if ($newPath) {
+                if ($oldPost && !empty($oldPost['image'])) {
+                    \Core\FileHelper::delete($oldPost['image']);
+                }
+                $data['image'] = $newPath;
+            }
+        }
+
+        if (!$id && !isset($data['image'])) {
+            $data['image'] = null;
+        }
+
+        try {
+            if ($id) $data['id'] = $id;
+            $postModel->save($data);
+        } catch (\Exception $e) {
+            die("Error de Base de Datos al guardar el artículo: " . $e->getMessage() . " en " . $e->getFile() . " línea " . $e->getLine());
+        }
+
+        header('Location: /admin/blog?success=post_saved');
+        exit;
+    }
+
+    public function deletePost() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $postModel = new \App\Models\BlogPost();
+            $post = $postModel->find($id);
+            if ($post) {
+                $postModel->save([
+                    'id' => $id,
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+
+        header('Location: /admin/blog?success=post_deleted');
+        exit;
+    }
+
+    public function togglePostStatus() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $id = $data['id'] ?? null;
+            $status = $data['status'] ?? 'draft';
+
+            if ($id) {
+                $postModel = new \App\Models\BlogPost();
+                $updateData = ['id' => $id, 'status' => $status];
+                if ($status === 'published') {
+                    $post = $postModel->find($id);
+                    $updateData['published_at'] = $post['published_at'] ?? date('Y-m-d H:i:s');
+                }
+                $postModel->save($updateData);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
+        exit;
+    }
+
+    public function duplicatePost() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $postModel = new \App\Models\BlogPost();
+            $post = $postModel->find($id);
+            if ($post) {
+                $newImagePath = null;
+                if (!empty($post['image'])) {
+                    $cleanPath = explode('?', $post['image'])[0];
+                    $sourceFile = __DIR__ . '/../../public/' . $cleanPath;
+                    if (file_exists($sourceFile) && is_file($sourceFile)) {
+                        $extension = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                        $folder = 'assets/images/blog/';
+                        $uploadDir = __DIR__ . '/../../public/' . $folder;
+                        if (!is_dir($uploadDir)) {
+                            mkdir($uploadDir, 0755, true);
+                        }
+                        $newFileName = bin2hex(random_bytes(8)) . '.' . $extension;
+                        $destFile = $uploadDir . $newFileName;
+                        if (copy($sourceFile, $destFile)) {
+                            $newImagePath = $folder . $newFileName;
+                        }
+                    }
+                }
+
+                $author_id = $_SESSION['user']['id'] ?? null;
+                if ($author_id) {
+                    $stmt = $postModel->db->prepare("SELECT id FROM users WHERE id = ?");
+                    $stmt->execute([$author_id]);
+                    if (!$stmt->fetch()) {
+                        try {
+                            $insertStmt = $postModel->db->prepare("INSERT INTO users (id, name, email, password, role) VALUES (?, ?, ?, ?, ?)");
+                            $insertStmt->execute([
+                                $author_id,
+                                $_SESSION['user']['name'] ?? 'Administrador Syncro',
+                                'admin@syncroandina.com',
+                                password_hash('admin123', PASSWORD_BCRYPT),
+                                'admin'
+                            ]);
+                        } catch (\Exception $e) {
+                            $author_id = null;
+                        }
+                    }
+                }
+
+                $randomSuffix = bin2hex(random_bytes(3));
+                $data = [
+                    'title' => $post['title'] . ' (Copia)',
+                    'slug' => $post['slug'] . '-copia-' . $randomSuffix,
+                    'excerpt' => $post['excerpt'],
+                    'content' => $post['content'],
+                    'image' => $newImagePath ?: $post['image'],
+                    'status' => 'draft',
+                    'author_id' => $author_id,
+                    'published_at' => null
+                ];
+
+                $postModel->save($data);
+            }
+        }
+
+        header('Location: /admin/blog?success=post_duplicated');
+        exit;
+    }
+
+    public function saveBlogSettings() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = [
+            'home_blog_tagline',
+            'home_blog_title',
+            'blog_page_tagline',
+            'blog_page_title',
+            'blog_page_description'
+        ];
+
+        foreach ($keys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/blog?success=settings_saved');
         exit;
     }
 }

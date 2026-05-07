@@ -18,4 +18,27 @@ class BlogPost extends Model {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAllActive() {
+        $sql = "SELECT p.*, u.name as author_name 
+                FROM {$this->table} p
+                LEFT JOIN users u ON p.author_id = u.id
+                WHERE p.deleted_at IS NULL 
+                ORDER BY p.created_at DESC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getPublished($limit = null) {
+        $sql = "SELECT p.*, u.name as author_name 
+                FROM {$this->table} p
+                LEFT JOIN users u ON p.author_id = u.id
+                WHERE p.status = 'published' AND p.deleted_at IS NULL 
+                ORDER BY p.published_at DESC";
+        if ($limit) {
+            $sql .= " LIMIT " . (int)$limit;
+        }
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

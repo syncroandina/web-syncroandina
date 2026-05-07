@@ -8,6 +8,7 @@ $router->get('servicios/{slug}', 'PageController@serviceDetail');
 $router->get('proyectos', 'PageController@projects');
 $router->get('proyectos/{slug}', 'PageController@projectDetail');
 $router->get('blog', 'PageController@blog');
+$router->get('blog/{slug}', 'PageController@blogDetail');
 $router->get('contacto', 'PageController@contact');
 $router->get('iniciar-sesion', 'AuthController@login');
 $router->post('iniciar-sesion', 'AuthController@authenticate');
@@ -71,3 +72,11 @@ $router->post('admin/contacto/save', 'AdminController@saveContactConfig');
 // Footer
 $router->get('admin/pie-pagina', 'AdminController@footerConfigAction');
 $router->post('admin/pie-pagina/save', 'AdminController@saveFooterConfig');
+
+// Blog CRUD Admin
+$router->get('admin/blog', 'AdminController@blog');
+$router->post('admin/blog/save', 'AdminController@savePost');
+$router->post('admin/blog/delete', 'AdminController@deletePost');
+$router->post('admin/blog/toggle', 'AdminController@togglePostStatus');
+$router->post('admin/blog/duplicate', 'AdminController@duplicatePost');
+$router->post('admin/blog/settings', 'AdminController@saveBlogSettings');

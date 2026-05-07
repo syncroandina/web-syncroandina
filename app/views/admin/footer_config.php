@@ -23,21 +23,33 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Bloque Informativo de Contacto -->
             <div class="lg:col-span-2 space-y-8">
-                <!-- Descripción de la Marca -->
+                <!-- Textos e Identidad del Footer -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                     <div class="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
                         <div class="w-10 h-10 rounded-xl bg-blue-50 text-secondary flex items-center justify-center">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800">Descripción de la Marca</h3>
-                            <p class="text-xs text-gray-500">Un breve párrafo sobre el propósito de tu empresa que se muestra en la primera columna.</p>
+                            <h3 class="text-lg font-bold text-gray-800">Identidad y Textos del Footer</h3>
+                            <p class="text-xs text-gray-500">Configura los textos corporativos principales que aparecen en las columnas del pie de página.</p>
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Descripción del Footer</label>
-                        <textarea name="footer_description" rows="4" placeholder="Escribe aquí el texto del footer..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['footer_description'] ?? 'Transformando negocios con soluciones tecnológicas innovadoras. Llevamos tu corporación al siguiente nivel de eficiencia y seguridad.') ?></textarea>
+                    <div class="space-y-5">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Nombre de la Marca</label>
+                            <input type="text" name="footer_brand_name" value="<?= htmlspecialchars($settings['footer_brand_name'] ?? 'Syncro Andina') ?>" placeholder="Syncro Andina" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Descripción del Footer</label>
+                            <textarea name="footer_description" rows="3" placeholder="Escribe aquí el texto del footer..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['footer_description'] ?? 'Transformando negocios con soluciones tecnológicas innovadoras. Llevamos tu corporación al siguiente nivel de eficiencia y seguridad.') ?></textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Texto de Derechos Reservados (Copyright)</label>
+                            <input type="text" name="footer_copyright" value="<?= htmlspecialchars($settings['footer_copyright'] ?? '© 2026 Syncro Andina. Todos los derechos reservados.') ?>" placeholder="© 2026 Syncro Andina. Todos los derechos reservados." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white">
+                        </div>
                     </div>
                 </div>
 

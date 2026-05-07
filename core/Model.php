@@ -5,7 +5,7 @@ use PDO;
 use PDOException;
 
 class Model {
-    protected $db;
+    public $db;
     protected $table;
 
     public function __construct() {

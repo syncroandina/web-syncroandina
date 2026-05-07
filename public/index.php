@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 session_start();
 
 // Si se usa el servidor integrado de PHP, permitir que sirva archivos estáticos directamente

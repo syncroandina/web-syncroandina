@@ -5,7 +5,16 @@
 ]); ?>
 <?php $this->component('navbar'); ?>
 
-<main class="min-h-screen bg-white relative overflow-hidden">
+<style>
+  body {
+    background-color: #f9fafb !important;
+  }
+  footer {
+    margin-top: 0 !important;
+  }
+</style>
+
+<main class="min-h-[80vh] bg-gray-50 relative overflow-hidden">
     <!-- Elementos decorativos (Glassmorphism blobs) -->
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-40">
         <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-blue-100 blur-3xl"></div>

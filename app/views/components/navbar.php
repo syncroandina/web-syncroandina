@@ -8,16 +8,22 @@ $menuLinks = $menuLinkModel->getActive();
 ?>
 <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 border-b border-gray-100">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <!-- Logo -->
-        <a href="<?= url() ?>" class="flex items-center">
-            <?php if(!empty($logoUrl)): ?>
-                <img src="<?= asset($logoUrl) ?>" alt="Syncro Andina Logo" class="h-12 md:h-16 w-auto transition-transform hover:scale-105">
-            <?php else: ?>
-                <div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
-                    <span class="text-white text-2xl font-bold">S</span>
-                </div>
-            <?php endif; ?>
-        </a>
+         <!-- Logo con Contenedor Moderno Sobresaliente -->
+        <div class="relative z-50 flex items-center h-12 md:h-16">
+            <div class="absolute left-0 top-[-16px]">
+                <a href="<?= url() ?>" class="bg-white px-2.5 pb-3.5 pt-1.5 md:px-3 md:pb-4 md:pt-1.5 lg:px-4 lg:pb-5 lg:pt-2 rounded-b-[2rem] md:rounded-b-[2.5rem] lg:rounded-b-[2.75rem] shadow-[0_12px_40px_rgba(0,0,0,0.1)] border-x border-b border-gray-100 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-[0_24px_48px_rgba(0,0,0,0.15)]">
+                    <?php if(!empty($logoUrl)): ?>
+                        <img src="<?= asset($logoUrl) ?>" alt="Syncro Andina Logo" class="h-28 md:h-32 lg:h-38 w-auto object-contain transition-transform">
+                    <?php else: ?>
+                        <div class="w-14 h-14 bg-secondary rounded-xl flex items-center justify-center">
+                            <span class="text-white text-3xl font-bold">S</span>
+                        </div>
+                    <?php endif; ?>
+                </a>
+            </div>
+            <!-- Espaciador para reservar el ancho del logo en el flexbox -->
+            <div class="w-32 md:w-44 lg:w-48 h-1"></div>
+        </div>
 
         <!-- Desktop Menu -->
         <div class="hidden lg:flex space-x-8">
@@ -61,7 +67,7 @@ $menuLinks = $menuLinkModel->getActive();
 
     <!-- Mobile Menu Container -->
     <div id="mobile-menu" class="lg:hidden fixed inset-x-0 top-[81px] bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-2xl opacity-0 invisible -translate-y-4 transition-all duration-300 z-40 overflow-y-auto max-h-[80vh] rounded-b-[2rem]">
-        <div class="px-6 py-6 space-y-4 text-center">
+        <div class="px-6 pt-12 pb-6 space-y-4 text-center">
             <div class="flex flex-col space-y-1">
                 <?php foreach($menuLinks as $link): ?>
                     <?php if(!empty($link['children'])): ?>
