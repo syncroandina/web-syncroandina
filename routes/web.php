@@ -10,6 +10,8 @@ $router->get('proyectos/{slug}', 'PageController@projectDetail');
 $router->get('blog', 'PageController@blog');
 $router->get('blog/{slug}', 'PageController@blogDetail');
 $router->get('contacto', 'PageController@contact');
+$router->post('contacto', 'PageController@saveContact');
+$router->get('gracias', 'PageController@thanks');
 $router->get('iniciar-sesion', 'AuthController@login');
 $router->post('iniciar-sesion', 'AuthController@authenticate');
 $router->get('cerrar-sesion', 'AuthController@logout');
@@ -69,6 +71,12 @@ $router->post('admin/nosotros/save', 'AdminController@saveAboutConfig');
 $router->get('admin/contacto', 'AdminController@contactConfig');
 $router->post('admin/contacto/save', 'AdminController@saveContactConfig');
 
+// Gestión de Leads / Contactos
+$router->get('admin/contactos', 'AdminController@leadsList');
+$router->post('admin/contactos/toggle-read', 'AdminController@toggleLeadRead');
+$router->post('admin/contactos/delete', 'AdminController@deleteLead');
+$router->get('admin/contactos/exportar', 'AdminController@exportLeads');
+
 // Footer
 $router->get('admin/pie-pagina', 'AdminController@footerConfigAction');
 $router->post('admin/pie-pagina/save', 'AdminController@saveFooterConfig');
@@ -80,3 +88,11 @@ $router->post('admin/blog/delete', 'AdminController@deletePost');
 $router->post('admin/blog/toggle', 'AdminController@togglePostStatus');
 $router->post('admin/blog/duplicate', 'AdminController@duplicatePost');
 $router->post('admin/blog/settings', 'AdminController@saveBlogSettings');
+
+// Clientes (Logos)
+$router->get('admin/clientes', 'AdminController@clientsList');
+$router->post('admin/clientes/save', 'AdminController@saveClientLogo');
+$router->post('admin/clientes/delete', 'AdminController@deleteClientLogo');
+$router->post('admin/clientes/reorder', 'AdminController@reorderClientLogos');
+$router->post('admin/clientes/settings', 'AdminController@saveClientSliderSettings');
+

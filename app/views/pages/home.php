@@ -1,7 +1,7 @@
 <?php $this->component('header', ['title' => $title ?? 'Inicio']); ?>
 <?php $this->component('navbar'); ?>
 
-<main class="min-h-screen bg-gray-50">
+<main class="min-h-screen bg-white">
     <?php $this->component('hero', ['sliders' => $sliders ?? []]); ?>
     
     <!-- Sección de Servicios (Ahora arriba) -->
@@ -75,10 +75,10 @@
     </section>
 
     <!-- Sección de Proyectos (Ahora abajo) -->
-    <section class="py-24 bg-white">
+    <section class="py-24 bg-gray-50 border-y border-gray-100">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-primary mb-4"><?= htmlspecialchars($settings['projects_home_title'] ?? 'Nuestros Proyectos Recientes') ?></h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['projects_home_title'] ?? 'Nuestros Proyectos Recientes') ?></h2>
                 <p class="text-gray-600 max-w-2xl mx-auto text-lg"><?= htmlspecialchars($settings['projects_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></p>
             </div>
 
@@ -110,8 +110,74 @@
             </div>
         </div>
     </section>
+
+    <!-- Sección de Logos de Clientes (Carrusel Infinito Premium) -->
+    <section class="py-24 bg-white overflow-hidden relative">
+        <div class="container mx-auto px-4 mb-16 text-center">
+            <p class="text-xs font-bold tracking-[0.2em] text-secondary uppercase mb-3 animate-fade-in">RESPALDO CORPORATIVO</p>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in">Confían en Syncro Andina</h2>
+            <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
+        </div>
+
+        <div class="relative w-full overflow-hidden">
+            <!-- Gradientes de desvanecimiento laterales para un efecto Glassmorphism y profundidad -->
+            <div class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+            <div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+
+            <style>
+                @keyframes infiniteScroll {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .logo-slider-track {
+                    display: flex;
+                    width: max-content;
+                    animation: infiniteScroll <?= htmlspecialchars($settings['clients_slider_speed'] ?? '40s') ?> linear infinite;
+                }
+            </style>
+
+            <div class="logo-slider-track <?= htmlspecialchars($settings['clients_slider_gap'] ?? 'gap-6') ?> py-4 flex items-center">
+                <?php 
+                // Si la base de datos está vacía, mostrar logos de demostración espectaculares
+                $logosToDisplay = !empty($clientLogos) ? $clientLogos : [
+                    ['name' => 'Global Corp', 'logo_path' => '/assets/images/clients/logo1.webp'],
+                    ['name' => 'Apex Solutions', 'logo_path' => '/assets/images/clients/logo2.webp'],
+                    ['name' => 'NextGen Tech', 'logo_path' => '/assets/images/clients/logo3.webp'],
+                    ['name' => 'Innova Tech', 'logo_path' => '/assets/images/clients/logo4.webp'],
+                    ['name' => 'Alpha Group', 'logo_path' => '/assets/images/clients/logo5.webp'],
+                    ['name' => 'Delta Systems', 'logo_path' => '/assets/images/clients/logo6.webp']
+                ];
+                // Asegurar que el array tenga suficientes elementos para cubrir pantallas ultra-amplias sin dejar espacios vacíos
+                $doubleLogos = [];
+                if (!empty($logosToDisplay)) {
+                    while (count($doubleLogos) < 24) {
+                        $doubleLogos = array_merge($doubleLogos, $logosToDisplay);
+                    }
+                }
+                ?>
+
+                <?php foreach($doubleLogos as $logo): ?>
+                    <div class="flex items-center justify-center px-4 grayscale opacity-45 hover:grayscale-0 hover:opacity-100 transition-all duration-300 transform hover:scale-110 cursor-pointer">
+                        <?php if (empty($clientLogos)): ?>
+                            <!-- Logos Mockup con Texto e Icono Elegante si no se han subido reales -->
+                            <div class="flex items-center gap-4 border border-gray-150 bg-white px-8 py-5 rounded-[24px] shadow-md hover:shadow-lg transition-shadow">
+                                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-lg">
+                                    <?= substr($logo['name'], 0, 1) ?>
+                                </div>
+                                <span class="text-xl font-black text-primary tracking-tight"><?= htmlspecialchars($logo['name']) ?></span>
+                            </div>
+                        <?php else: ?>
+                            <img src="<?= htmlspecialchars($logo['logo_path']) ?>" alt="<?= htmlspecialchars($logo['name']) ?>" class="h-16 md:h-20 max-w-[240px] object-contain select-none pointer-events-none">
+                        <?php endif; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
     <!-- Sección de Blog -->
-    <section class="py-24 container mx-auto px-4">
+    <section class="py-24 bg-gray-50 border-t border-gray-100">
+        <div class="container mx-auto px-4">
         <div class="text-center mb-16">
             <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['home_blog_tagline'] ?? 'Actualidad y Conocimiento') ?></p>
             <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['home_blog_title'] ?? 'Nuestro Blog Corporativo') ?></h2>
@@ -168,6 +234,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                 </svg>
             </a>
+        </div>
         </div>
     </section>
 </main>

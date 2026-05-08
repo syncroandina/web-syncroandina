@@ -175,7 +175,7 @@
                             </div>
                         </div>
                         
-                        <button onclick="openContactModal('Información sobre el servicio: <?= htmlspecialchars($service['title']) ?>')" class="w-full py-4 bg-primary hover:bg-secondary text-white font-bold rounded-2xl shadow-xl shadow-primary/10 hover:shadow-secondary/20 flex items-center justify-center gap-3 transition-all duration-300 relative z-10 hover:scale-105">
+                        <button onclick="openContactModal('Información sobre el servicio: <?= addslashes(htmlspecialchars($service['title'])) ?>', '<?= addslashes(htmlspecialchars($service['title'])) ?>')" class="w-full py-4 bg-primary hover:bg-secondary text-white font-bold rounded-2xl shadow-xl shadow-primary/10 hover:shadow-secondary/20 flex items-center justify-center gap-3 transition-all duration-300 relative z-10 hover:scale-105">
                             Solicitar Información
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>

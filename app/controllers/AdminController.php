@@ -6,7 +6,7 @@ use Core\Controller;
 class AdminController extends Controller {
     public function __construct() {
         if (!isset($_SESSION['user'])) {
-            header('Location: /login');
+            header('Location: /iniciar-sesion');
             exit;
         }
     }
@@ -1310,6 +1310,261 @@ class AdminController extends Controller {
         }
 
         header('Location: /admin/blog?success=settings_saved');
+        exit;
+    }
+
+    public function leadsList() {
+        $contactModel = new \App\Models\Contact();
+        $stmt = $contactModel->db->query("
+            SELECT c.*, s.title as service_title 
+            FROM contacts c 
+            LEFT JOIN services_pages s ON c.service_id = s.id 
+            ORDER BY c.created_at DESC
+        ");
+        $leads = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $this->adminView('contacts/index', [
+            'title' => 'Gestión de Leads',
+            'leads' => $leads
+        ]);
+    }
+
+    public function toggleLeadRead() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        $contactModel = new \App\Models\Contact();
+        $lead = $contactModel->find($id);
+
+        if ($lead) {
+            $newStatus = $lead['is_read'] ? 0 : 1;
+            $contactModel->save([
+                'id' => $id,
+                'is_read' => $newStatus
+            ]);
+            
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'is_read' => $newStatus]);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Lead no encontrado.']);
+        exit;
+    }
+
+    public function deleteLead() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        $contactModel = new \App\Models\Contact();
+        
+        if ($contactModel->delete($id)) {
+            header('Location: /admin/contactos?success=lead_deleted');
+            exit;
+        }
+
+        header('Location: /admin/contactos?error=lead_not_deleted');
+        exit;
+    }
+
+    public function exportLeads() {
+        $contactModel = new \App\Models\Contact();
+        $stmt = $contactModel->db->query("
+            SELECT c.*, s.title as service_title 
+            FROM contacts c 
+            LEFT JOIN services_pages s ON c.service_id = s.id 
+            ORDER BY c.created_at DESC
+        ");
+        $leads = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $filename = 'leads_syncroandina_' . date('Ymd_His') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        
+        // Output UTF-8 BOM so Excel opens it with correct encoding (accented characters like ñ, á, é, í, ó, ú)
+        echo "\xEF\xBB\xBF";
+
+        $output = fopen('php://output', 'w');
+        
+        // Headers
+        fputcsv($output, [
+            'ID',
+            'Nombre',
+            'Correo',
+            'Telefono',
+            'Tipo de Persona',
+            'RUC',
+            'Servicio de Interes',
+            'Asunto',
+            'Mensaje',
+            'Estado',
+            'Fecha de Registro'
+        ], ';', '"', '\\');
+
+        foreach ($leads as $lead) {
+            $clientType = ($lead['client_type'] === 'empresa') ? 'Empresa' : 'Persona Natural';
+            $status = ($lead['is_read'] == 1) ? 'Atendido' : 'No Leido';
+            
+            // Format phone and RUC as Excel text formulas to prevent scientific notation and preserve leading zeros
+            $phone = !empty($lead['phone']) ? '="' . $lead['phone'] . '"' : 'N/A';
+            $ruc = !empty($lead['ruc']) ? '="' . $lead['ruc'] . '"' : 'N/A';
+            
+            // Clean up messages to avoid line breaks within the cell
+            $message = str_replace(["\r", "\n"], " ", $lead['message'] ?? '');
+            
+            fputcsv($output, [
+                $lead['id'],
+                $lead['name'],
+                $lead['email'],
+                $phone,
+                $clientType,
+                $ruc,
+                $lead['service_title'] ?? 'Consulta General',
+                $lead['subject'] ?? 'Sin Asunto',
+                $message,
+                $status,
+                $lead['created_at']
+            ], ';', '"', '\\');
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    public function clientsList() {
+        $clientLogoModel = new \App\Models\ClientLogo();
+        $settingModel = new \App\Models\Setting();
+        $logos = $clientLogoModel->all('sort_order ASC, id DESC');
+        $settings = $settingModel->getAll();
+        
+        return $this->adminView('clients/index', [
+            'title' => 'Gestión de Clientes (Logos)',
+            'logos' => $logos,
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveClientLogo() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+        $name = \Core\Security::sanitizeInput($_POST['name'] ?? '');
+        $isActive = isset($_POST['is_active']) ? 1 : 0;
+        
+        $clientLogoModel = new \App\Models\ClientLogo();
+        $logoPath = '';
+
+        if ($id) {
+            $existing = $clientLogoModel->find($id);
+            $logoPath = $existing['logo_path'] ?? '';
+        }
+
+        // Subida de imagen
+        if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../public/uploads/clients/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $extension = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
+            $filename = 'client_' . uniqid() . '.' . $extension;
+            $targetPath = $uploadDir . $filename;
+
+            if (move_uploaded_file($_FILES['logo']['tmp_name'], $targetPath)) {
+                $logoPath = '/uploads/clients/' . $filename;
+            }
+        }
+
+        if (empty($logoPath)) {
+            header('Location: /admin/clientes?error=missing_logo');
+            exit;
+        }
+
+        $data = [
+            'name' => $name,
+            'logo_path' => $logoPath,
+            'is_active' => $isActive
+        ];
+
+        if ($id) {
+            $clientLogoModel->update($id, $data);
+            $success = 'updated';
+        } else {
+            $stmt = $clientLogoModel->db->query("SELECT MAX(sort_order) as max_order FROM clients_logos");
+            $maxOrder = $stmt->fetch()['max_order'] ?? 0;
+            $data['sort_order'] = $maxOrder + 1;
+
+            $clientLogoModel->save($data);
+            $success = 'saved';
+        }
+
+        header('Location: /admin/clientes?success=' . $success);
+        exit;
+    }
+
+    public function deleteClientLogo() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+        if ($id) {
+            $clientLogoModel = new \App\Models\ClientLogo();
+            $clientLogoModel->delete($id);
+        }
+
+        header('Location: /admin/clientes?success=deleted');
+        exit;
+    }
+
+    public function reorderClientLogos() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Método no permitido.']);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+
+        if (empty($ids)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'No se enviaron IDs válidos.']);
+            exit;
+        }
+
+        $clientLogoModel = new \App\Models\ClientLogo();
+        foreach ($ids as $index => $id) {
+            $clientLogoModel->update((int)$id, ['sort_order' => $index]);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Orden de los logos actualizado con éxito.']);
+        exit;
+    }
+
+    public function saveClientSliderSettings() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = ['clients_slider_speed', 'clients_slider_gap'];
+
+        foreach ($keys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/clientes?success=settings_saved');
         exit;
     }
 }

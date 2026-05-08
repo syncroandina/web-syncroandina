@@ -58,7 +58,13 @@
                         accent: '<?= $settings['color_accent'] ?? '#0ea5e9' ?>',
                         'light-gray': '<?= $settings['color_light_gray'] ?? '#f8fafc' ?>',
                         'gray-medium': '<?= $settings['color_gray'] ?? '#64748b' ?>',
-                        'dark-gray': '<?= $settings['color_dark_gray'] ?? '#1e293b' ?>'
+                        'dark-gray': '<?= $settings['color_dark_gray'] ?? '#1e293b' ?>',
+                        red: {
+                            500: '<?= $settings['color_accent'] ?? '#ef4444' ?>',
+                            600: '<?= $settings['color_accent'] ?? '#dc2626' ?>',
+                            700: '<?= $settings['color_secondary'] ?? '#b91c1c' ?>',
+                            800: '<?= $settings['color_secondary'] ?? '#991b1b' ?>'
+                        }
                     },
                     fontFamily: {
                         sans: ['<?= $settings['font_body'] ?? 'Inter' ?>', 'sans-serif'],

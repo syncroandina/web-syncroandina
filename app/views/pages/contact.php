@@ -79,32 +79,121 @@
                 </div>
             </div>
 
-            <!-- Formulario -->
+            <!-- Formulario con Lógica Condicional Premium -->
             <div class="md:w-3/5 p-12 lg:p-16">
-                <h3 class="text-3xl font-extrabold text-gray-900 mb-8">
+                <h3 class="text-3xl font-extrabold text-gray-900 mb-8" id="form-title-heading">
                     <?= htmlspecialchars($settings['contact_form_heading'] ?? 'Envíanos un mensaje') ?>
                 </h3>
-                <form class="space-y-6">
+
+                <!-- Contenedores de Estado de Envío -->
+                <div id="contact-alert-success" class="hidden bg-green-50/50 backdrop-blur-md border border-green-200/50 text-green-800 p-8 rounded-3xl flex-col items-center text-center animate-fade-in-up shadow-lg">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-500 mb-5 animate-bounce">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-black mb-2 text-gray-900">¡Mensaje Enviado!</h4>
+                    <p class="text-sm text-gray-600 max-w-sm leading-relaxed" id="success-msg"></p>
+                </div>
+
+                <form id="contact-interactive-form" class="space-y-6">
+                    <!-- CSRF Token -->
+                    <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+
+                    <!-- Alerta de Error -->
+                    <div id="contact-alert-error" class="hidden bg-red-50 border border-red-200 text-red-800 px-5 py-4 rounded-xl text-sm flex items-center gap-3">
+                        <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <span id="error-msg"></span>
+                    </div>
+
+                    <!-- Nombre y Email -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-sm font-semibold text-gray-700">Nombre completo</label>
-                            <input type="text" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-shadow shadow-sm" placeholder="Ej. Juan Pérez">
+                            <label class="text-sm font-semibold text-gray-700">Nombre completo <span class="text-red-500">*</span></label>
+                            <input type="text" name="name" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="Ej. Juan Pérez">
                         </div>
                         <div class="space-y-2">
-                            <label class="text-sm font-semibold text-gray-700">Correo Corporativo</label>
-                            <input type="email" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-shadow shadow-sm" placeholder="ejemplo@empresa.com">
+                            <label class="text-sm font-semibold text-gray-700">Correo Corporativo <span class="text-red-500">*</span></label>
+                            <input type="email" name="email" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="ejemplo@empresa.com">
                         </div>
                     </div>
+
+                    <!-- Teléfono (Ancho Completo) -->
                     <div class="space-y-2">
-                        <label class="text-sm font-semibold text-gray-700">Asunto</label>
-                        <input type="text" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-shadow shadow-sm" placeholder="¿En qué podemos ayudarte?">
+                        <label class="text-sm font-semibold text-gray-700">Teléfono / WhatsApp <span class="text-red-500">*</span></label>
+                        <input type="text" name="phone" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="Ej. +51 000 000 000">
                     </div>
+
+                    <!-- Tipo de Persona (Lógica Condicional) -->
+                    <div class="space-y-3">
+                        <label class="text-sm font-semibold text-gray-700 block">Tipo de Persona <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Persona Natural -->
+                            <label class="relative flex items-center justify-between p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl cursor-pointer hover:bg-white hover:border-secondary/30 transition-all shadow-sm group">
+                                <span class="flex items-center gap-3">
+                                    <span class="p-2.5 bg-blue-50 text-secondary rounded-xl group-hover:bg-blue-100 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    </span>
+                                    <span class="font-bold text-gray-800 text-sm">Persona Natural</span>
+                                </span>
+                                <span class="flex items-center h-5">
+                                    <input type="radio" name="client_type" value="persona" checked class="text-secondary focus:ring-secondary w-4 h-4 cursor-pointer m-0">
+                                </span>
+                            </label>
+                            
+                            <!-- Empresa -->
+                            <label class="relative flex items-center justify-between p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl cursor-pointer hover:bg-white hover:border-secondary/30 transition-all shadow-sm group">
+                                <span class="flex items-center gap-3">
+                                    <span class="p-2.5 bg-blue-50 text-secondary rounded-xl group-hover:bg-blue-100 transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                                    </span>
+                                    <span class="font-bold text-gray-800 text-sm">Empresa</span>
+                                </span>
+                                <span class="flex items-center h-5">
+                                    <input type="radio" name="client_type" value="empresa" class="text-secondary focus:ring-secondary w-4 h-4 cursor-pointer m-0">
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- RUC de la Empresa (Oculto Condicionalmente - Ancho Completo) -->
+                    <div class="space-y-2 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="company-fields">
+                        <label class="text-sm font-semibold text-gray-700">RUC de la Empresa <span class="text-red-500">*</span></label>
+                        <input type="text" id="ruc-input" name="ruc" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="Ej. 00000000000">
+                    </div>
+
+                    <!-- Selección de Servicio de Interés -->
                     <div class="space-y-2">
-                        <label class="text-sm font-semibold text-gray-700">Mensaje</label>
-                        <textarea rows="5" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-shadow shadow-sm resize-none" placeholder="Cuéntanos más sobre tu proyecto..."></textarea>
+                        <label class="text-sm font-semibold text-gray-700">¿En qué servicio estás interesado?</label>
+                        <div class="relative">
+                            <select name="service_id" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
+                                <option value="">Pregunta libre / Consulta general</option>
+                                <?php if(!empty($services)): ?>
+                                    <?php foreach($services as $serv): ?>
+                                        <option value="<?= $serv['id'] ?>"><?= htmlspecialchars($serv['title']) ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
                     </div>
-                    <button type="button" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-xl transition-colors duration-300 shadow-lg mt-4 flex justify-center items-center gap-2 group">
-                        Enviar Mensaje Seguro
+
+                    <!-- Asunto -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-gray-700">Asunto <span class="text-red-500">*</span></label>
+                        <input type="text" name="subject" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="¿En qué podemos ayudarte?">
+                    </div>
+
+                    <!-- Mensaje -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-gray-700">Mensaje <span class="text-red-500">*</span></label>
+                        <textarea name="message" rows="4" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm resize-none" placeholder="Cuéntanos más sobre tu proyecto o consulta..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-xl transition-all duration-300 shadow-lg mt-4 flex justify-center items-center gap-2 group transform active:scale-95">
+                        <span>Enviar Mensaje Seguro</span>
                         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </button>
                 </form>
@@ -112,5 +201,90 @@
         </div>
     </div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('contact-interactive-form');
+    const successAlert = document.getElementById('contact-alert-success');
+    const errorAlert = document.getElementById('contact-alert-error');
+    const formTitle = document.getElementById('form-title-heading');
+    
+    // Condicional RUC
+    const clientTypeRadios = document.querySelectorAll('input[name="client_type"]');
+    const companyFields = document.getElementById('company-fields');
+    const rucInput = document.getElementById('ruc-input');
+
+    clientTypeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'empresa') {
+                companyFields.classList.remove('hidden');
+                setTimeout(() => {
+                    companyFields.classList.remove('scale-95', 'opacity-0');
+                    companyFields.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                rucInput.setAttribute('required', 'true');
+            } else {
+                companyFields.classList.add('scale-95', 'opacity-0');
+                companyFields.classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    companyFields.classList.add('hidden');
+                }, 300);
+                rucInput.removeAttribute('required');
+                rucInput.value = '';
+            }
+        });
+    });
+
+    // Envío del Formulario vía AJAX
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Ocultar alertas anteriores
+            errorAlert.classList.add('hidden');
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const submitBtnSpan = submitBtn.querySelector('span');
+            const originalBtnContent = submitBtn.innerHTML;
+
+            // Bloquear botón con Spinner premium
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Procesando envío...</span>
+            `;
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch('/contacto', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.location.href = '/gracias';
+                } else {
+                    // Mostrar error
+                    document.getElementById('error-msg').textContent = result.message;
+                    errorAlert.classList.remove('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnContent;
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('error-msg').textContent = 'Ocurrió un error inesperado al procesar la solicitud. Por favor, intente de nuevo.';
+                errorAlert.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnContent;
+            }
+        });
+    }
+});
+</script>
 
 <?php $this->component('footer'); ?>

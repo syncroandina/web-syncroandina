@@ -140,12 +140,87 @@ class PageController extends Controller {
 
     public function contact() {
         $settingModel = new \App\Models\Setting();
+        $serviceModel = new \App\Models\Service();
         $settings = $settingModel->getAll();
+        $services = $serviceModel->getActive();
 
         return $this->view('pages/contact', [
             'title' => $settings['contact_seo_title'] ?? 'Contacto - Syncro Andina',
             'description' => $settings['contact_seo_description'] ?? 'Ponte en contacto con Syncro Andina. Solicita información comercial o de soporte técnico para escalar la tecnología de tu empresa.',
             'keywords' => $settings['contact_seo_keywords'] ?? 'contacto, cotización, soporte corporativo, syncro andina',
+            'settings' => $settings,
+            'services' => $services
+        ]);
+    }
+
+    public function saveContact() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Método no permitido.']);
+            exit;
+        }
+
+        // Verificar token CSRF
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Token de seguridad inválido. Por favor, recargue la página e intente nuevamente.']);
+            exit;
+        }
+
+        $contactModel = new \App\Models\Contact();
+
+        // Sanitización y obtención de variables
+        $name = \Core\Security::sanitizeInput($_POST['name'] ?? '');
+        $email = \Core\Security::sanitizeInput($_POST['email'] ?? '');
+        $phone = \Core\Security::sanitizeInput($_POST['phone'] ?? '');
+        $subject = \Core\Security::sanitizeInput($_POST['subject'] ?? '');
+        $message = \Core\Security::sanitizeInput($_POST['message'] ?? '');
+        $clientType = \Core\Security::sanitizeInput($_POST['client_type'] ?? 'persona');
+        $ruc = ($clientType === 'empresa') ? \Core\Security::sanitizeInput($_POST['ruc'] ?? '') : null;
+        $serviceId = !empty($_POST['service_id']) ? (int)$_POST['service_id'] : null;
+
+        // Validaciones básicas
+        if (empty($name) || empty($email) || empty($phone)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'El nombre completo, correo electrónico y teléfono/WhatsApp son obligatorios.']);
+            exit;
+        }
+
+        if ($clientType === 'empresa' && empty($ruc)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'El número de RUC es obligatorio para empresas.']);
+            exit;
+        }
+
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'subject' => $subject,
+            'message' => $message,
+            'client_type' => $clientType,
+            'ruc' => $ruc,
+            'service_id' => $serviceId
+        ];
+
+        $savedId = $contactModel->save($data);
+
+        header('Content-Type: application/json');
+        if ($savedId) {
+            echo json_encode(['success' => true, 'message' => '¡Tu mensaje ha sido enviado con éxito! Un especialista se pondrá en contacto contigo muy pronto.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Hubo un error al registrar tu contacto. Por favor, inténtalo de nuevo más tarde.']);
+        }
+        exit;
+    }
+
+    public function thanks() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        
+        return $this->view('pages/thanks', [
+            'title' => '¡Muchas Gracias! - Syncro Andina',
+            'description' => 'Gracias por ponerte en contacto con Syncro Andina. Tu mensaje ha sido recibido.',
             'settings' => $settings
         ]);
     }

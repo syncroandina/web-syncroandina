@@ -14,8 +14,13 @@
                     
                     <div class="h-6 w-px bg-gray-200"></div>
 
+                    <?php
+                    $settingModel = new \App\Models\Setting();
+                    $topbarSettings = $settingModel->getAll();
+                    $primaryColorHex = ltrim($topbarSettings['color_primary'] ?? '0ea5e9', '#');
+                    ?>
                     <button @click="userMenu = !userMenu" class="flex items-center gap-3 hover:bg-gray-50 p-1.5 pr-3 rounded-full border border-transparent hover:border-gray-200 transition-all">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=0ea5e9&color=fff&bold=true" alt="Admin" class="w-8 h-8 rounded-full shadow-sm">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=<?= $primaryColorHex ?>&color=fff&bold=true" alt="Admin" class="w-8 h-8 rounded-full shadow-sm">
                         <div class="text-left hidden md:block">
                             <span class="block font-bold text-sm text-gray-700 leading-tight">Admin</span>
                             <span class="block text-[10px] text-gray-400 uppercase font-bold">Director</span>

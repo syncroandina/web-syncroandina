@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\BlogPost;
 use App\Models\Service;
 use App\Models\Setting;
+use App\Models\ClientLogo;
 
 class HomeController extends Controller {
     public function index() {
@@ -15,6 +16,7 @@ class HomeController extends Controller {
         $blogModel = new BlogPost();
         $serviceModel = new Service();
         $settingModel = new Setting();
+        $clientLogoModel = new ClientLogo();
 
         $sliders = $sliderModel->getActive();
         $latestProjects = $projectModel->getLatest(3);
@@ -22,6 +24,7 @@ class HomeController extends Controller {
         $settings = $settingModel->getAll();
         $limit = isset($settings['services_limit']) ? (int)$settings['services_limit'] : 6;
         $services = $serviceModel->getActive($limit);
+        $clientLogos = $clientLogoModel->getActive();
 
         return $this->view('pages/home', [
             'title' => 'Inicio - Syncro Andina',
@@ -29,7 +32,8 @@ class HomeController extends Controller {
             'latestProjects' => $latestProjects,
             'latestPosts' => $latestPosts,
             'services' => $services,
-            'settings' => $settings
+            'settings' => $settings,
+            'clientLogos' => $clientLogos
         ]);
     }
 }
