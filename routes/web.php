@@ -41,6 +41,12 @@ $router->post('admin/servicios/reorder', 'AdminController@reorderServices');
 $router->post('admin/servicios/gallery/delete', 'AdminController@deleteGalleryImage');
 $router->post('admin/servicios/settings', 'AdminController@saveServiceSettings');
 
+// Galería General
+$router->get('admin/galeria', 'AdminController@homeGallery');
+$router->post('admin/galeria/save', 'AdminController@saveHomeGalleryImage');
+$router->post('admin/galeria/delete', 'AdminController@deleteHomeGalleryImage');
+$router->post('admin/galeria/reorder', 'AdminController@reorderHomeGallery');
+
 // Proyectos
 $router->get('admin/proyectos', 'AdminController@projects');
 $router->post('admin/proyectos', 'AdminController@saveProject');
@@ -88,6 +94,8 @@ $router->post('admin/blog/delete', 'AdminController@deletePost');
 $router->post('admin/blog/toggle', 'AdminController@togglePostStatus');
 $router->post('admin/blog/duplicate', 'AdminController@duplicatePost');
 $router->post('admin/blog/settings', 'AdminController@saveBlogSettings');
+$router->post('admin/blog/categorias/save', 'AdminController@saveBlogCategory');
+$router->post('admin/blog/categorias/delete', 'AdminController@deleteBlogCategory');
 
 // Clientes (Logos)
 $router->get('admin/clientes', 'AdminController@clientsList');
@@ -95,4 +103,11 @@ $router->post('admin/clientes/save', 'AdminController@saveClientLogo');
 $router->post('admin/clientes/delete', 'AdminController@deleteClientLogo');
 $router->post('admin/clientes/reorder', 'AdminController@reorderClientLogos');
 $router->post('admin/clientes/settings', 'AdminController@saveClientSliderSettings');
+
+// Call Center (Flotante)
+$router->get('admin/call-center', 'AdminController@callCenterList');
+$router->post('admin/call-center/save', 'AdminController@saveCallCenterContact');
+$router->post('admin/call-center/delete', 'AdminController@deleteCallCenterContact');
+$router->post('admin/call-center/reorder', 'AdminController@reorderCallCenterContacts');
+$router->post('admin/call-center/settings', 'AdminController@saveCallCenterSettings');
 

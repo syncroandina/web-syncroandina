@@ -1,0 +1,10 @@
+<?php
+return "
+ALTER TABLE sliders ADD COLUMN image_alt VARCHAR(255) DEFAULT NULL AFTER image_path;
+ALTER TABLE services_pages ADD COLUMN image_alt VARCHAR(255) DEFAULT NULL AFTER image;
+ALTER TABLE projects ADD COLUMN image_alt VARCHAR(255) DEFAULT NULL AFTER main_image;
+ALTER TABLE blog_posts ADD COLUMN image_alt VARCHAR(255) DEFAULT NULL AFTER image;
+ALTER TABLE clients_logos ADD COLUMN image_alt VARCHAR(255) DEFAULT NULL AFTER logo_path;
+ALTER TABLE gallery ADD COLUMN image_alt VARCHAR(255) DEFAULT NULL AFTER image_path;
+ALTER TABLE service_gallery ADD COLUMN image_alt VARCHAR(255) DEFAULT NULL AFTER image_path;
+";

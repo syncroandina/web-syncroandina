@@ -4,6 +4,7 @@ $menuLinkModel = new \App\Models\MenuLink();
 
 $logoUrl = $settingModel->get('logo_url', '/assets/images/logo.webp');
 $contactPhone = $settingModel->get('contact_phone_value', '+57 300 123 4567');
+$logoAlt = $settingModel->get('logo_alt', 'Syncro Andina Logo');
 $menuLinks = $menuLinkModel->getActive();
 ?>
 <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 border-b border-gray-100">
@@ -13,7 +14,7 @@ $menuLinks = $menuLinkModel->getActive();
             <div class="absolute left-0 top-[-16px]">
                 <a href="<?= url() ?>" class="bg-white px-2.5 pb-3.5 pt-1.5 md:px-3 md:pb-4 md:pt-1.5 lg:px-4 lg:pb-5 lg:pt-2 rounded-b-[2rem] md:rounded-b-[2.5rem] lg:rounded-b-[2.75rem] shadow-[0_12px_40px_rgba(0,0,0,0.1)] border-x border-b border-gray-100 flex items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-[0_24px_48px_rgba(0,0,0,0.15)]">
                     <?php if(!empty($logoUrl)): ?>
-                        <img src="<?= asset($logoUrl) ?>" alt="Syncro Andina Logo" class="h-28 md:h-32 lg:h-38 w-auto object-contain transition-transform">
+                        <img src="<?= asset($logoUrl) ?>" alt="<?= htmlspecialchars($logoAlt) ?>" class="h-28 md:h-32 lg:h-38 w-auto object-contain transition-transform">
                     <?php else: ?>
                         <div class="w-14 h-14 bg-secondary rounded-xl flex items-center justify-center">
                             <span class="text-white text-3xl font-bold">S</span>

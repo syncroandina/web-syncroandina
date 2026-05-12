@@ -179,6 +179,11 @@
                 </div>
                 
                 <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Texto Alternativo de la Imagen (SEO ALT)</label>
+                    <input type="text" name="image_alt" id="project-image-alt" placeholder="Ej: Instalación eléctrica corporativa de alta tensión" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
+                </div>
+                
+                <div>
                     <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Descripción / Contenido del Proyecto</label>
                     <textarea name="description" id="project-description" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow resize-none" placeholder="Escribe los detalles o alcance del proyecto..."></textarea>
                 </div>
@@ -323,6 +328,7 @@ function openProjectModal() {
     document.getElementById('project-client').value = '';
     document.getElementById('project-completion-date').value = '';
     document.getElementById('project-description').value = '';
+    document.getElementById('project-image-alt').value = '';
     
     // Resetear campos de reto y solución
     document.getElementById('project-challenge-title').value = 'El Reto';
@@ -379,6 +385,7 @@ function editProject(project) {
     document.getElementById('project-client').value = project.client || '';
     document.getElementById('project-completion-date').value = project.completion_date || '';
     document.getElementById('project-description').value = project.description || '';
+    document.getElementById('project-image-alt').value = project.image_alt || '';
     
     // Cargar campos personalizados
     document.getElementById('project-challenge-title').value = project.challenge_title || 'El Reto';
@@ -406,12 +413,17 @@ function editProject(project) {
     if (project.gallery && project.gallery.length > 0) {
         project.gallery.forEach(img => {
             const div = document.createElement('div');
-            div.className = 'relative aspect-square bg-gray-100 rounded-xl overflow-hidden group border border-gray-100 shadow-sm';
+            div.className = 'relative group bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm flex flex-col';
             div.innerHTML = `
-                <img src="/${img.image_path}" class="w-full h-full object-cover">
-                <button type="button" onclick="deleteProjectGalleryImage(${img.id}, this)" class="absolute top-1.5 right-1.5 w-6 h-6 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm" title="Borrar Foto">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                </button>
+                <div class="relative h-24 overflow-hidden bg-gray-50">
+                    <img src="/${img.image_path}" class="w-full h-full object-cover">
+                    <button type="button" onclick="deleteProjectGalleryImage(${img.id}, this)" class="absolute top-1 right-1 w-6 h-6 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm" title="Borrar Foto">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
+                <div class="p-2 bg-gray-50/50 border-t border-gray-100">
+                    <input type="text" name="project_gallery_alts[${img.id}]" value="${img.image_alt || ''}" placeholder="SEO ALT" class="w-full px-1.5 py-1 text-[9px] border border-gray-200 rounded focus:outline-none focus:border-secondary" title="Texto descriptivo para SEO">
+                </div>
             `;
             galleryContainer.appendChild(div);
         });

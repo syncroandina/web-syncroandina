@@ -24,12 +24,12 @@
                     $imgSrc = '/' . ltrim($imgSrc, '/');
                 }
                 ?>
-                <img src="<?= htmlspecialchars($imgSrc) ?>" alt="Equipo" class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700">
+                <img src="<?= htmlspecialchars($imgSrc) ?>" alt="<?= htmlspecialchars($settings['about_image_alt'] ?? 'Equipo') ?>" class="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent"></div>
                 <div class="absolute bottom-8 left-8 text-white">
-                    <h3 class="text-2xl font-bold">
+                    <h2 class="text-2xl font-bold">
                         <?= htmlspecialchars($settings['about_image_title'] ?? 'Nuestro Equipo') ?>
-                    </h3>
+                    </h2>
                     <p class="text-gray-200 mt-2">
                         <?= htmlspecialchars($settings['about_image_subtitle'] ?? 'Expertos en transformación digital') ?>
                     </p>
@@ -41,9 +41,9 @@
                     <div class="w-12 h-12 bg-blue-100 text-secondary rounded-xl flex items-center justify-center mb-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-3">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-3">
                         <?= htmlspecialchars($settings['about_mission_title'] ?? 'Misión 2026') ?>
-                    </h3>
+                    </h2>
                     <p class="text-gray-600 leading-relaxed">
                         <?= htmlspecialchars($settings['about_mission_desc'] ?? 'Elevar los estándares de eficiencia operativa en Latinoamérica a través de consultoría tecnológica estratégica y plataformas a medida.') ?>
                     </p>
@@ -53,9 +53,9 @@
                     <div class="w-12 h-12 bg-blue-100 text-secondary rounded-xl flex items-center justify-center mb-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-3">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-3">
                         <?= htmlspecialchars($settings['about_impact_title'] ?? 'Impacto Global') ?>
-                    </h3>
+                    </h2>
                     <p class="text-gray-600 leading-relaxed">
                         <?= htmlspecialchars($settings['about_impact_desc'] ?? 'Más de 500 proyectos corporativos entregados con éxito, optimizando la cadena de valor de empresas líderes en el mercado andino.') ?>
                     </p>

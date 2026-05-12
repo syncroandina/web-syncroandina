@@ -37,7 +37,7 @@
     <div class="relative h-[450px] overflow-hidden bg-primary flex items-center">
         <!-- Imagen de Fondo con Parallax Efecto -->
         <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
-             alt="<?= htmlspecialchars($service['title']) ?>" 
+             alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
              class="absolute inset-0 w-full h-full object-cover opacity-30 transform scale-105 hover:scale-100 transition-transform duration-1000">
         
         <!-- Degradados e Interposición -->
@@ -81,10 +81,10 @@
                 <!-- Lista de Sub-servicios o Entregables (Items) -->
                 <?php if (!empty($service['items'])): ?>
                 <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up" style="animation-delay: 100ms;">
-                    <h3 class="text-2xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                    <h2 class="text-2xl font-extrabold text-primary mb-8 flex items-center gap-3">
                         <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
                         <?= htmlspecialchars($service['heading_details'] ?? 'Detalles del servicio') ?>
-                    </h3>
+                    </h2>
                     
                     <div class="space-y-6">
                         <?php foreach($service['items'] as $index => $item): ?>
@@ -96,9 +96,9 @@
                                 </svg>
                             </div>
                             <div class="flex-1">
-                                <h4 class="font-extrabold text-gray-900 text-lg mb-1 group-hover:text-primary transition-colors">
+                                <h3 class="font-extrabold text-gray-900 text-lg mb-1 group-hover:text-primary transition-colors">
                                     <?= htmlspecialchars($item['title']) ?>
-                                </h4>
+                                </h3>
                                 <p class="text-gray-600 text-sm leading-relaxed">
                                     <?= htmlspecialchars($item['description']) ?>
                                 </p>
@@ -112,17 +112,17 @@
                 <!-- Galería del Servicio -->
                 <?php if (!empty($service['gallery'])): ?>
                 <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up" style="animation-delay: 200ms;">
-                    <h3 class="text-2xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                    <h2 class="text-2xl font-extrabold text-primary mb-8 flex items-center gap-3">
                         <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
                         <?= htmlspecialchars($service['heading_gallery'] ?? 'Trabajos Realizados') ?>
-                    </h3>
+                    </h2>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         <?php foreach($service['gallery'] as $img): ?>
                         <div class="gallery-item-trigger group relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-secondary/20 border border-gray-100 cursor-pointer transition-all duration-500 hover:-translate-y-1.5" 
                              data-src="<?= htmlspecialchars($img['image_path']) ?>">
                             <img src="<?= htmlspecialchars($img['image_path']) ?>" 
-                                 alt="Galería <?= htmlspecialchars($service['title']) ?>" 
+                                 alt="<?= htmlspecialchars($img['image_alt'] ?: 'Galería de ' . $service['title']) ?>" 
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                             
                             <!-- Overlay de Hover -->
@@ -148,7 +148,7 @@
                         <!-- Decoración de Fondo -->
                         <div class="absolute -top-12 -right-12 w-32 h-32 bg-secondary/10 rounded-full blur-2xl"></div>
                         
-                        <h3 class="text-2xl font-black text-primary mb-4 relative z-10"><?= htmlspecialchars($service['heading_cta'] ?? '¿Interesado en este Servicio?') ?></h3>
+                        <h2 class="text-2xl font-black text-primary mb-4 relative z-10"><?= htmlspecialchars($service['heading_cta'] ?? '¿Interesado en este Servicio?') ?></h2>
                         <p class="text-gray-500 text-sm leading-relaxed mb-8 relative z-10">
                             <?= htmlspecialchars($service['cta_description'] ?? 'Nuestro equipo de especialistas está listo para diseñar una cotización personalizada adaptada a los requerimientos de tu proyecto.') ?>
                         </p>

@@ -179,6 +179,11 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto Alternativo (SEO ALT)</label>
+                    <input type="text" name="image_alt" id="client-image-alt" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: Logotipo oficial de Aceros Arequipa">
+                </div>
+
+                <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Estado del Logo</label>
                     <div class="h-[52px] flex items-center justify-between px-4 bg-gray-50 border border-gray-200 rounded-2xl">
                         <span class="text-xs font-bold text-gray-500">¿Mostrar en el carrusel principal?</span>
@@ -228,6 +233,7 @@ function resetClientForm() {
     document.getElementById('client-id').value = '';
     document.getElementById('client-name').value = '';
     document.getElementById('client-active').checked = true;
+    document.getElementById('client-image-alt').value = '';
     document.getElementById('logo-preview').src = '';
     document.getElementById('logo-preview').classList.add('hidden');
     document.getElementById('upload-placeholder').classList.remove('hidden');
@@ -239,6 +245,7 @@ function editClient(logo) {
     resetClientForm();
     document.getElementById('client-id').value = logo.id;
     document.getElementById('client-name').value = logo.name;
+    document.getElementById('client-image-alt').value = logo.image_alt || '';
     document.getElementById('client-active').checked = logo.is_active == 1;
     document.getElementById('client-logo-file').required = false; // Al editar no es obligatorio re-subir
     

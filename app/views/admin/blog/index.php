@@ -38,6 +38,10 @@
             <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
             Configurar Textos Inicio
         </button>
+        <button onclick="openCategoriesModal()" class="bg-white border border-indigo-100 text-indigo-700 hover:bg-indigo-50 px-6 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            Gestionar Categorías
+        </button>
         <button onclick="openPostModal()" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-lg shadow-primary/30">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Nuevo Artículo
@@ -49,8 +53,23 @@
     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative mb-6 shadow-sm flex items-center gap-3">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span class="block sm:inline font-medium">
-            <?= $_GET['success'] === 'settings_saved' ? '¡Configuración de textos guardada con éxito!' : '¡Operación realizada con éxito!' ?>
+            <?php
+                switch($_GET['success']) {
+                    case 'settings_saved': echo '¡Configuración de textos guardada con éxito!'; break;
+                    case 'category_saved': echo '¡Categoría guardada con éxito!'; break;
+                    case 'category_deleted': echo '¡Categoría eliminada con éxito!'; break;
+                    case 'post_saved': echo '¡Artículo guardado correctamente!'; break;
+                    default: echo '¡Operación realizada con éxito!';
+                }
+            ?>
         </span>
+    </div>
+<?php endif; ?>
+
+<?php if(isset($_GET['error']) && $_GET['error'] === 'category_duplicate'): ?>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative mb-6 shadow-sm flex items-center gap-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="block sm:inline font-medium">Error: El slug de la categoría ya está en uso. Elija otro nombre.</span>
     </div>
 <?php endif; ?>
 
@@ -86,6 +105,11 @@
                             <td class="px-8 py-5">
                                 <span class="block font-extrabold text-gray-900 group-hover:text-secondary transition-colors"><?= htmlspecialchars($post['title']) ?></span>
                                 <span class="block text-xs text-gray-500 mt-0.5">Autor: <?= htmlspecialchars($post['author_name'] ?? 'Administrador') ?></span>
+                                <?php if(!empty($post['category_name'])): ?>
+                                    <span class="inline-flex items-center px-2 py-0.5 mt-1.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 uppercase">
+                                        <?= htmlspecialchars($post['category_name']) ?>
+                                    </span>
+                                <?php endif; ?>
                             </td>
                             <td class="px-8 py-5">
                                 <span class="text-xs text-gray-600 line-clamp-2 max-w-xs leading-relaxed"><?= htmlspecialchars($post['excerpt']) ?></span>
@@ -186,12 +210,115 @@
                 </div>
             </div>
 
+            <hr class="border-gray-100">
+
+            <!-- SIDEBAR CTA -->
+            <div class="space-y-4">
+                <h5 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Banner de Contacto Lateral (Sidebar)</h5>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título del Banner</label>
+                        <input type="text" name="blog_sidebar_cta_title" value="<?= htmlspecialchars($settings['blog_sidebar_cta_title'] ?? '¿Tienes un proyecto en mente?') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Texto del Botón</label>
+                        <input type="text" name="blog_sidebar_cta_btn_text" value="<?= htmlspecialchars($settings['blog_sidebar_cta_btn_text'] ?? 'Contáctanos') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Descripción Corta</label>
+                    <textarea name="blog_sidebar_cta_description" rows="2" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Escriba una breve invitación..."><?= htmlspecialchars($settings['blog_sidebar_cta_description'] ?? 'Impulsamos tu transformación digital con tecnología premium.') ?></textarea>
+                </div>
+            </div>
+
             <!-- Footer -->
             <div class="flex justify-end gap-4 pt-4 border-t border-gray-50">
                 <button type="button" onclick="closeSettingsModal()" class="px-6 py-3 bg-white border border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 transition-all">Cancelar</button>
                 <button type="submit" class="px-10 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-all shadow-xl">Actualizar Cambios</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal para Gestionar Categorías (CRUD Completo) -->
+<div id="categories-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300 flex flex-col max-h-[90vh]" id="categories-modal-container">
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h4 class="text-xl font-extrabold text-gray-900 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Gestión de Categorías
+            </h4>
+            <button onclick="closeCategoriesModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white rounded-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Formulario Inline de Categoría -->
+        <div class="bg-indigo-50/50 p-6 border-b border-indigo-100">
+            <form id="cat-form" action="<?= url('admin/blog/categorias/save') ?>" method="POST" class="flex flex-wrap items-end gap-4">
+                <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                <input type="hidden" name="id" id="cat-id" value="">
+                
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-black text-indigo-900/50 uppercase tracking-wider mb-1.5 pl-1">Nombre de Categoría</label>
+                    <input type="text" name="name" id="cat-name" required oninput="generateCatSlug(this.value)" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 py-3 px-4 text-sm bg-white" placeholder="Ej: Innovación Tecnológica">
+                </div>
+                
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-xs font-black text-indigo-900/50 uppercase tracking-wider mb-1.5 pl-1">Slug (Opcional)</label>
+                    <input type="text" name="slug" id="cat-slug" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 py-3 px-4 text-sm bg-white" placeholder="ej-innovacion">
+                </div>
+                
+                <div>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-indigo-200">Guardar</button>
+                    <button type="button" id="btn-cancel-cat" onclick="resetCatForm()" class="hidden ml-2 bg-white text-gray-500 hover:text-gray-800 px-4 py-3 rounded-xl text-xs font-bold border border-gray-200 transition-all">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista Scrollable -->
+        <div class="overflow-y-auto flex-1 p-6">
+            <table class="w-full">
+                <thead class="border-b border-gray-100 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                    <tr>
+                        <th class="pb-3">Nombre</th>
+                        <th class="pb-3">Slug URL</th>
+                        <th class="pb-3 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <?php if(!empty($categories)): ?>
+                        <?php foreach($categories as $cat): ?>
+                            <tr class="group hover:bg-gray-50">
+                                <td class="py-3.5 font-bold text-gray-800"><?= htmlspecialchars($cat['name']) ?></td>
+                                <td class="py-3.5 text-xs font-mono text-gray-400"><?= htmlspecialchars($cat['slug']) ?></td>
+                                <td class="py-3.5 text-right">
+                                    <div class="flex justify-end gap-1.5">
+                                        <button onclick="editCategory(<?= htmlspecialchars(json_encode($cat)) ?>)" class="w-8 h-8 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition-all" title="Editar">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                        </button>
+                                        <form action="<?= url('admin/blog/categorias/delete') ?>" method="POST" class="inline" onsubmit="return confirm('¿Eliminar categoría? Los posts vinculados quedarán sin categoría.')">
+                                            <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                                            <input type="hidden" name="id" value="<?= $cat['id'] ?>">
+                                            <button type="submit" class="w-8 h-8 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-all" title="Eliminar">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="3" class="py-10 text-center text-sm text-gray-400 italic">No hay categorías creadas.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -255,6 +382,23 @@
                     </div>
 
                     <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto Alternativo Imagen (SEO ALT)</label>
+                        <input type="text" name="image_alt" id="post-image-alt" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: Portada de nube y ciberseguridad corporativa">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Categoría</label>
+                        <select name="category_id" id="post-category" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all font-bold">
+                            <option value="">Sin Categoría</option>
+                            <?php if(!empty($categories)): ?>
+                                <?php foreach($categories as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+
+                    <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Estado del Post</label>
                         <select name="status" id="post-status" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all font-bold">
                             <option value="draft">Borrador</option>
@@ -305,10 +449,12 @@ function resetPostForm() {
     document.getElementById('post-slug').value = '';
     document.getElementById('post-excerpt').value = '';
     document.getElementById('post-content').value = '';
+    document.getElementById('post-category').value = '';
     document.getElementById('post-status').value = 'draft';
     document.getElementById('image-preview').src = '';
     document.getElementById('image-preview').classList.add('hidden');
     document.getElementById('upload-placeholder').classList.remove('hidden');
+    document.getElementById('post-image-alt').value = '';
     document.getElementById('modal-title').innerText = 'Nuevo Artículo';
     if (quill) {
         quill.setContents([]);
@@ -325,7 +471,9 @@ function editPost(post) {
     if (quill) {
         quill.root.innerHTML = post.content || '';
     }
+    document.getElementById('post-category').value = post.category_id || '';
     document.getElementById('post-status').value = post.status;
+    document.getElementById('post-image-alt').value = post.image_alt || '';
     
     if(post.image) {
         const preview = document.getElementById('image-preview');
@@ -343,14 +491,27 @@ function editPost(post) {
     openPostModal();
 }
 
-function generateSlug(val) {
-    const slugInput = document.getElementById('post-slug');
-    if (document.getElementById('post-id').value === '') { // solo autogenerar en creación
+function generateCatSlug(val) {
+    const slugInput = document.getElementById('cat-slug');
+    if (document.getElementById('cat-id').value === '') { // solo autogenerar en creación
         slugInput.value = val.toLowerCase()
             .trim()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quitar acentos
             .replace(/[^a-z0-9\s-]/g, '') // Quitar caracteres extraños
             .replace(/[\s_]+/g, '-') // Reemplazar espacios y guiones bajos por un solo guión
             .replace(/^-+|-+$/g, ''); // Quitar guiones al principio y final
+    }
+}
+
+function generateSlug(val) {
+    const slugInput = document.getElementById('post-slug');
+    if (document.getElementById('post-id').value === '') { 
+        slugInput.value = val.toLowerCase()
+            .trim()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quitar acentos
+            .replace(/[^a-z0-9\s-]/g, '') 
+            .replace(/[\s_]+/g, '-') 
+            .replace(/^-+|-+$/g, ''); 
     }
 }
 
@@ -426,4 +587,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Lógica para Modal de Categorías
+const catModal = document.getElementById('categories-modal');
+const catContainer = document.getElementById('categories-modal-container');
+
+function openCategoriesModal() {
+    catModal.classList.remove('hidden');
+    catModal.classList.add('flex');
+    setTimeout(() => {
+        catContainer.classList.remove('scale-95', 'opacity-0');
+        catContainer.classList.add('scale-100', 'opacity-100');
+    }, 10);
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCategoriesModal() {
+    catContainer.classList.remove('scale-100', 'opacity-100');
+    catContainer.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        catModal.classList.add('hidden');
+        catModal.classList.remove('flex');
+        resetCatForm();
+    }, 300);
+    document.body.style.overflow = 'auto';
+}
+
+function resetCatForm() {
+    document.getElementById('cat-id').value = '';
+    document.getElementById('cat-name').value = '';
+    document.getElementById('cat-slug').value = '';
+    document.getElementById('btn-cancel-cat').classList.add('hidden');
+}
+
+function editCategory(cat) {
+    document.getElementById('cat-id').value = cat.id;
+    document.getElementById('cat-name').value = cat.name;
+    document.getElementById('cat-slug').value = cat.slug;
+    document.getElementById('btn-cancel-cat').classList.remove('hidden');
+    document.getElementById('cat-name').focus();
+}
 </script>

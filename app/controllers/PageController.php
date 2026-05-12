@@ -93,14 +93,41 @@ class PageController extends Controller {
 
     public function blog() {
         $postModel = new \App\Models\BlogPost();
+        $catModel = new \App\Models\BlogCategory();
         $settingModel = new \App\Models\Setting();
-        $posts = $postModel->getPublished();
+        
+        $categories = $catModel->getAll();
+        
+        // Capturar categoría de la URL si existe
+        $currentCatSlug = isset($_GET['categoria']) ? $_GET['categoria'] : null;
+        $categoryId = null;
+        $currentCategory = null;
+
+        if ($currentCatSlug) {
+            // Buscar el ID de la categoría por el slug
+            foreach ($categories as $cat) {
+                if ($cat['slug'] === $currentCatSlug) {
+                    $categoryId = $cat['id'];
+                    $currentCategory = $cat;
+                    break;
+                }
+            }
+        }
+
+        // Capturar búsqueda
+        $search = isset($_GET['s']) ? trim($_GET['s']) : null;
+
+        $posts = $postModel->getPublished(null, $categoryId, $search);
         $settings = $settingModel->getAll();
 
         return $this->view('pages/blog', [
             'title' => 'Blog - Syncro Andina',
             'posts' => $posts,
-            'settings' => $settings
+            'settings' => $settings,
+            'categories' => $categories,
+            'activeCategory' => $currentCatSlug,
+            'categoryData' => $currentCategory,
+            'search' => $search
         ]);
     }
 
@@ -117,15 +144,25 @@ class PageController extends Controller {
             exit;
         }
 
-        // Obtener posts recomendados (los últimos 3 excluyendo el actual)
+        // Obtener posts relacionados (misma categoría, excluyendo el actual)
         $db = (new \App\Models\BlogPost());
+        $catId = $post['category_id'] ?? null;
+        
         $recSql = "SELECT p.*, u.name as author_name 
                    FROM blog_posts p 
                    LEFT JOIN users u ON p.author_id = u.id
-                   WHERE p.status = 'published' AND p.deleted_at IS NULL AND p.id != ? 
-                   ORDER BY p.published_at DESC LIMIT 3";
+                   WHERE p.status = 'published' AND p.deleted_at IS NULL AND p.id != ?";
+        
+        $params = [$post['id']];
+        if ($catId) {
+            $recSql .= " AND p.category_id = ?";
+            $params[] = $catId;
+        }
+        
+        $recSql .= " ORDER BY p.published_at DESC LIMIT 3";
+        
         $stmt = $db->db->prepare($recSql);
-        $stmt->execute([$post['id']]);
+        $stmt->execute($params);
         $recommended = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         $settings = $settingModel->getAll();

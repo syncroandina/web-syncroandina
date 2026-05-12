@@ -5,7 +5,7 @@
     <!-- Hero Section con efecto Parallax y Gradiente Profundo -->
     <section class="relative h-[65vh] min-h-[500px] flex items-end overflow-hidden">
         <div class="absolute inset-0">
-            <img src="<?= asset($project['main_image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>" class="w-full h-full object-cover transform scale-105 animate-subtle-zoom duration-[10s]">
+            <img src="<?= asset($project['main_image']) ?>" alt="<?= htmlspecialchars($project['image_alt'] ?: $project['title']) ?>" class="w-full h-full object-cover transform scale-105 animate-subtle-zoom duration-[10s]">
             <!-- Superposición de degradado dramático para máxima legibilidad -->
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-transparent"></div>
@@ -63,7 +63,7 @@
                         <div class="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center text-red-500 mb-6">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-3"><?= htmlspecialchars($project['challenge_title'] ?? 'El Reto') ?></h3>
+                        <h2 class="text-xl font-bold text-white mb-3"><?= htmlspecialchars($project['challenge_title'] ?? 'El Reto') ?></h2>
                         <p class="text-gray-400 text-sm leading-relaxed">
                             <?= nl2br(htmlspecialchars($project['challenge_desc'])) ?>
                         </p>
@@ -75,7 +75,7 @@
                         <div class="w-12 h-12 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 mb-6">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-3"><?= htmlspecialchars($project['solution_title'] ?? 'La Solución') ?></h3>
+                        <h2 class="text-xl font-bold text-white mb-3"><?= htmlspecialchars($project['solution_title'] ?? 'La Solución') ?></h2>
                         <p class="text-gray-400 text-sm leading-relaxed">
                             <?= nl2br(htmlspecialchars($project['solution_desc'])) ?>
                         </p>
@@ -90,9 +90,9 @@
                 <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
                     <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
                     
-                    <h3 class="text-lg font-extrabold text-white mb-6 flex items-center gap-2">
+                    <h2 class="text-lg font-extrabold text-white mb-6 flex items-center gap-2">
                         Ficha Técnica
-                    </h3>
+                    </h2>
                     
                     <div class="space-y-6 border-b border-white/10 pb-6 mb-6">
                         <div>
@@ -133,7 +133,7 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <?php foreach($gallery as $img): ?>
             <div class="gallery-item-trigger group relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-secondary/20 border border-white/10 cursor-pointer transition-all duration-500 hover:-translate-y-1.5" data-src="<?= asset($img['image_path']) ?>">
-                <img src="<?= asset($img['image_path']) ?>" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+                <img src="<?= asset($img['image_path']) ?>" alt="<?= htmlspecialchars($img['image_alt'] ?: 'Galería de ' . $project['title']) ?>" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                     <span class="text-white text-xs font-bold uppercase tracking-widest flex items-center gap-2">
                         <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>

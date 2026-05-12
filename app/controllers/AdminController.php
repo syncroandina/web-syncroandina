@@ -119,7 +119,8 @@ class AdminController extends Controller {
             'heading_details' => \Core\Security::sanitizeInput($_POST['heading_details'] ?? ''),
             'heading_gallery' => \Core\Security::sanitizeInput($_POST['heading_gallery'] ?? ''),
             'heading_cta' => \Core\Security::sanitizeInput($_POST['heading_cta'] ?? ''),
-            'cta_description' => \Core\Security::sanitizeInput($_POST['cta_description'] ?? '')
+            'cta_description' => \Core\Security::sanitizeInput($_POST['cta_description'] ?? ''),
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
         ];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -174,6 +175,16 @@ class AdminController extends Controller {
                         ]);
                     }
                 }
+            }
+        }
+
+        // Actualizar ALT de imágenes existentes en Galería
+        if (isset($_POST['service_gallery_alts']) && is_array($_POST['service_gallery_alts'])) {
+            foreach ($_POST['service_gallery_alts'] as $galleryImgId => $altText) {
+                $galleryModel->save([
+                    'id' => (int)$galleryImgId,
+                    'image_alt' => \Core\Security::sanitizeInput($altText)
+                ]);
             }
         }
 
@@ -244,7 +255,8 @@ class AdminController extends Controller {
                     'heading_details' => $service['heading_details'] ?? null,
                     'heading_gallery' => $service['heading_gallery'] ?? null,
                     'heading_cta' => $service['heading_cta'] ?? null,
-                    'cta_description' => $service['cta_description'] ?? null
+                    'cta_description' => $service['cta_description'] ?? null,
+                    'image_alt' => $service['image_alt'] ?? null
                 ];
 
                 $newServiceId = $serviceModel->save($serviceData);
@@ -383,7 +395,8 @@ class AdminController extends Controller {
             'button_text' => \Core\Security::sanitizeInput($_POST['button_text'] ?? ''),
             'button_link' => \Core\Security::sanitizeInput($_POST['button_link'] ?? ''),
             'order_index' => (int)($_POST['order_index'] ?? 0),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0
+            'is_active' => isset($_POST['is_active']) ? 1 : 0,
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
         ];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -458,6 +471,7 @@ class AdminController extends Controller {
                     'button_text' => $slider['button_text'],
                     'button_link' => $slider['button_link'],
                     'image_path' => $newImagePath ?: $slider['image_path'],
+                    'image_alt' => $slider['image_alt'] ?? null,
                     'order_index' => (int)$slider['order_index'] + 1,
                     'is_active' => 0
                 ];
@@ -526,7 +540,8 @@ class AdminController extends Controller {
             'solution_title' => \Core\Security::sanitizeInput($_POST['solution_title'] ?? 'La Solución'),
             'solution_desc' => \Core\Security::sanitizeInput($_POST['solution_desc'] ?? ''),
             'impact_label' => \Core\Security::sanitizeInput($_POST['impact_label'] ?? 'Impacto Logrado'),
-            'impact_value' => \Core\Security::sanitizeInput($_POST['impact_value'] ?? '100% Optimizado')
+            'impact_value' => \Core\Security::sanitizeInput($_POST['impact_value'] ?? '100% Optimizado'),
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
         ];
 
         if (isset($_FILES['main_image']) && $_FILES['main_image']['error'] === UPLOAD_ERR_OK) {
@@ -564,6 +579,16 @@ class AdminController extends Controller {
                         ]);
                     }
                 }
+            }
+        }
+
+        // Actualizar ALT de imágenes existentes en Galería
+        if (isset($_POST['project_gallery_alts']) && is_array($_POST['project_gallery_alts'])) {
+            foreach ($_POST['project_gallery_alts'] as $gImgId => $altText) {
+                $projectGalleryModel->save([
+                    'id' => (int)$gImgId,
+                    'image_alt' => \Core\Security::sanitizeInput($altText)
+                ]);
             }
         }
 
@@ -649,6 +674,7 @@ class AdminController extends Controller {
                     'client' => $project['client'],
                     'completion_date' => $project['completion_date'],
                     'main_image' => $newImagePath ?: $project['main_image'],
+                    'image_alt' => $project['image_alt'] ?? null,
                     'is_active' => 0
                 ];
 
@@ -706,6 +732,13 @@ class AdminController extends Controller {
             } else {
                 $error = 'invalid_logo_format';
             }
+        }
+
+        // Procesar Alt del Logo
+        if (isset($_POST['logo_alt'])) {
+            $logoAlt = \Core\Security::sanitizeInput($_POST['logo_alt']);
+            $settingModel->updateSetting('logo_alt', $logoAlt);
+            $updated = true;
         }
 
         // Procesar Favicon
@@ -917,6 +950,7 @@ class AdminController extends Controller {
             'about_description',
             'about_image_title',
             'about_image_subtitle',
+            'about_image_alt',
             'about_mission_title',
             'about_mission_desc',
             'about_impact_title',
@@ -1072,13 +1106,17 @@ class AdminController extends Controller {
     public function blog() {
         $postModel = new \App\Models\BlogPost();
         $settingModel = new \App\Models\Setting();
+        $categoryModel = new \App\Models\BlogCategory();
+        
         $posts = $postModel->getAllActive();
         $settings = $settingModel->getAll();
+        $categories = $categoryModel->getAll();
 
         return $this->adminView('blog/index', [
             'title' => 'Gestión de Blog',
             'posts' => $posts,
-            'settings' => $settings
+            'settings' => $settings,
+            'categories' => $categories
         ]);
     }
 
@@ -1140,10 +1178,12 @@ class AdminController extends Controller {
         $data = [
             'title' => $title,
             'slug' => $slug,
+            'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
             'excerpt' => \Core\Security::sanitizeInput($_POST['excerpt'] ?? ''),
             'content' => \Core\Security::sanitizeHTML($_POST['content'] ?? ''),
             'status' => \Core\Security::sanitizeInput($_POST['status'] ?? 'draft'),
-            'author_id' => $author_id
+            'author_id' => $author_id,
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
         ];
 
         if ($data['status'] === 'published') {
@@ -1277,6 +1317,7 @@ class AdminController extends Controller {
                     'excerpt' => $post['excerpt'],
                     'content' => $post['content'],
                     'image' => $newImagePath ?: $post['image'],
+                    'image_alt' => $post['image_alt'] ?? null,
                     'status' => 'draft',
                     'author_id' => $author_id,
                     'published_at' => null
@@ -1301,7 +1342,10 @@ class AdminController extends Controller {
             'home_blog_title',
             'blog_page_tagline',
             'blog_page_title',
-            'blog_page_description'
+            'blog_page_description',
+            'blog_sidebar_cta_title',
+            'blog_sidebar_cta_description',
+            'blog_sidebar_cta_btn_text'
         ];
 
         foreach ($keys as $key) {
@@ -1310,6 +1354,55 @@ class AdminController extends Controller {
         }
 
         header('Location: /admin/blog?success=settings_saved');
+        exit;
+    }
+
+    public function saveBlogCategory() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+        $name = \Core\Security::sanitizeInput($_POST['name'] ?? '');
+        $slug = \Core\Security::sanitizeInput($_POST['slug'] ?? '');
+
+        if (empty($slug)) {
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+        }
+        $slug = preg_replace('/-+/', '-', $slug);
+
+        if (!empty($name)) {
+            $categoryModel = new \App\Models\BlogCategory();
+            $data = [
+                'name' => $name,
+                'slug' => $slug
+            ];
+            if ($id) $data['id'] = $id;
+            
+            try {
+                $categoryModel->save($data);
+            } catch(\Exception $e) {
+                header('Location: /admin/blog?error=category_duplicate');
+                exit;
+            }
+        }
+
+        header('Location: /admin/blog?success=category_saved');
+        exit;
+    }
+
+    public function deleteBlogCategory() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id) {
+            $categoryModel = new \App\Models\BlogCategory();
+            $categoryModel->delete($id);
+        }
+
+        header('Location: /admin/blog?success=category_deleted');
         exit;
     }
 
@@ -1491,11 +1584,13 @@ class AdminController extends Controller {
         $data = [
             'name' => $name,
             'logo_path' => $logoPath,
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? ''),
             'is_active' => $isActive
         ];
 
         if ($id) {
-            $clientLogoModel->update($id, $data);
+            $data['id'] = $id;
+            $clientLogoModel->save($data);
             $success = 'updated';
         } else {
             $stmt = $clientLogoModel->db->query("SELECT MAX(sort_order) as max_order FROM clients_logos");
@@ -1543,7 +1638,7 @@ class AdminController extends Controller {
 
         $clientLogoModel = new \App\Models\ClientLogo();
         foreach ($ids as $index => $id) {
-            $clientLogoModel->update((int)$id, ['sort_order' => $index]);
+            $clientLogoModel->save(['id' => (int)$id, 'sort_order' => $index]);
         }
 
         header('Content-Type: application/json');
@@ -1565,6 +1660,254 @@ class AdminController extends Controller {
         }
 
         header('Location: /admin/clientes?success=settings_saved');
+        exit;
+    }
+
+    // ==========================================
+    // MODULO GALERIA GENERAL
+    // ==========================================
+
+    public function homeGallery() {
+        $galleryModel = new \App\Models\HomeGallery();
+        $items = $galleryModel->getAll();
+        
+        // Cargar ajustes opcionales para el título/subtítulo de la sección en el home
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+
+        return $this->adminView('gallery/index', [
+            'title' => 'Gestión de Galería General',
+            'items' => $items,
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveHomeGalleryImage() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $galleryModel = new \App\Models\HomeGallery();
+        $settingModel = new \App\Models\Setting();
+
+        // 1. Guardar ajustes de textos de sección si vienen en el POST
+        if (isset($_POST['gallery_home_title'])) {
+            $settingModel->updateSetting('gallery_home_tagline', \Core\Security::sanitizeInput($_POST['gallery_home_tagline'] ?? ''));
+            $settingModel->updateSetting('gallery_home_title', \Core\Security::sanitizeInput($_POST['gallery_home_title']));
+            $settingModel->updateSetting('gallery_home_subtitle', \Core\Security::sanitizeInput($_POST['gallery_home_subtitle']));
+        }
+
+        // 2. Actualizar ALTs y Títulos de imágenes existentes
+        if (isset($_POST['existing_items']) && is_array($_POST['existing_items'])) {
+            foreach ($_POST['existing_items'] as $id => $data) {
+                $galleryModel->save([
+                    'id' => (int)$id,
+                    'title' => \Core\Security::sanitizeInput($data['title'] ?? ''),
+                    'image_alt' => \Core\Security::sanitizeInput($data['image_alt'] ?? '')
+                ]);
+            }
+        }
+
+        // 3. Subida múltiple de nuevas imágenes
+        if (isset($_FILES['new_images']) && !empty($_FILES['new_images']['name'][0])) {
+            $files = $_FILES['new_images'];
+            for ($i = 0; $i < count($files['name']); $i++) {
+                if ($files['error'][$i] === UPLOAD_ERR_OK) {
+                    $file = [
+                        'name' => $files['name'][$i],
+                        'type' => $files['type'][$i],
+                        'tmp_name' => $files['tmp_name'][$i],
+                        'error' => $files['error'][$i],
+                        'size' => $files['size'][$i]
+                    ];
+                    
+                    $path = \Core\FileHelper::upload($file, 'assets/images/gallery/', ['webp', 'jpg', 'jpeg', 'png', 'gif']);
+                    if ($path) {
+                        $galleryModel->save([
+                            'image_path' => $path,
+                            'title' => '',
+                            'image_alt' => '',
+                            'order_index' => 999
+                        ]);
+                    }
+                }
+            }
+        }
+
+        header('Location: /admin/galeria?success=saved');
+        exit;
+    }
+
+    public function deleteHomeGalleryImage() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $galleryModel = new \App\Models\HomeGallery();
+            $item = $galleryModel->find($id);
+            if ($item) {
+                \Core\FileHelper::delete($item['image_path']);
+                $galleryModel->delete($id);
+            }
+        }
+
+        header('Location: /admin/galeria?success=deleted');
+        exit;
+    }
+
+    public function reorderHomeGallery() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+        
+        if (!empty($ids)) {
+            $galleryModel = new \App\Models\HomeGallery();
+            foreach ($ids as $index => $id) {
+                $galleryModel->save([
+                    'id' => (int)$id,
+                    'order_index' => $index
+                ]);
+            }
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false]);
+        exit;
+    }
+
+    // ==========================================
+    // MODULO CALL CENTER (FLOTANTE)
+    // ==========================================
+
+    public function callCenterList() {
+        $callCenterModel = new \App\Models\CallCenter();
+        $settingModel = new \App\Models\Setting();
+        $contacts = $callCenterModel->getAll();
+        $settings = $settingModel->getAll();
+        
+        return $this->adminView('call_center/index', [
+            'title' => 'Gestión de Call Center Flotante',
+            'contacts' => $contacts,
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveCallCenterContact() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+        $title = \Core\Security::sanitizeInput($_POST['title'] ?? '');
+        $subtitle = \Core\Security::sanitizeInput($_POST['subtitle'] ?? '');
+        $type = \Core\Security::sanitizeInput($_POST['type'] ?? 'whatsapp');
+        $phone_number = \Core\Security::sanitizeInput($_POST['phone_number'] ?? '');
+        $isActive = isset($_POST['is_active']) ? 1 : 0;
+        
+        if (empty($title) || empty($phone_number)) {
+            header('Location: /admin/call-center?error=missing_fields');
+            exit;
+        }
+
+        $callCenterModel = new \App\Models\CallCenter();
+        $data = [
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'type' => $type,
+            'phone_number' => $phone_number,
+            'is_active' => $isActive
+        ];
+
+        if ($id) {
+            $data['id'] = $id;
+            $callCenterModel->save($data);
+            $success = 'updated';
+        } else {
+            $stmt = $callCenterModel->db->query("SELECT MAX(order_index) as max_order FROM call_center_contacts");
+            $maxOrder = $stmt->fetch()['max_order'] ?? 0;
+            $data['order_index'] = $maxOrder + 1;
+
+            $callCenterModel->save($data);
+            $success = 'saved';
+        }
+
+        header('Location: /admin/call-center?success=' . $success);
+        exit;
+    }
+
+    public function deleteCallCenterContact() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+        if ($id) {
+            $callCenterModel = new \App\Models\CallCenter();
+            $callCenterModel->delete($id);
+        }
+
+        header('Location: /admin/call-center?success=deleted');
+        exit;
+    }
+
+    public function reorderCallCenterContacts() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Método no permitido.']);
+            exit;
+        }
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $ids = $input['ids'] ?? [];
+
+        if (empty($ids)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'No se enviaron IDs válidos.']);
+            exit;
+        }
+
+        $callCenterModel = new \App\Models\CallCenter();
+        foreach ($ids as $index => $id) {
+            $callCenterModel->save(['id' => (int)$id, 'order_index' => $index]);
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Orden actualizado con éxito.']);
+        exit;
+    }
+
+    public function saveCallCenterSettings() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = [
+            'call_center_main_title', 
+            'call_center_main_subtitle', 
+            'call_center_footer_text',
+            'call_center_is_visible'
+        ];
+
+        foreach ($keys as $key) {
+            if($key === 'call_center_is_visible') {
+                 $value = isset($_POST[$key]) ? '1' : '0';
+            } else {
+                 $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            }
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/call-center?success=settings_saved');
         exit;
     }
 }

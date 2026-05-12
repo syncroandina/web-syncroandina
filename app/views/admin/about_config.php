@@ -160,6 +160,11 @@
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Subtítulo de Superposición</label>
                                     <input type="text" name="about_image_subtitle" value="<?= htmlspecialchars($settings['about_image_subtitle'] ?? 'Expertos en transformación digital') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-xs bg-gray-50 focus:bg-white">
                                 </div>
+
+                                <div class="space-y-1">
+                                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Texto Alternativo (SEO ALT)</label>
+                                    <input type="text" name="about_image_alt" value="<?= htmlspecialchars($settings['about_image_alt'] ?? 'Equipo corporativo de Syncro Andina trabajando juntos') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-xs bg-gray-50 focus:bg-white" placeholder="Ej: Ingenieros trabajando en oficina">
+                                </div>
                             </div>
                         </div>
 

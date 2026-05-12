@@ -167,6 +167,10 @@
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Slug (URL)</label>
                             <input type="text" name="slug" id="service-slug" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="ej-networking-fibra">
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto Alternativo de Imagen (SEO ALT)</label>
+                            <input type="text" name="image_alt" id="service-image-alt" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: Técnico instalando panel de distribución eléctrica">
+                        </div>
                     </div>
                     
                     <div>
@@ -404,6 +408,7 @@ function closeServiceModal() {
 function resetServiceForm() {
     document.getElementById('service-form').reset();
     document.getElementById('service-id').value = '';
+    document.getElementById('service-image-alt').value = '';
     document.getElementById('image-preview').src = '';
     document.getElementById('image-preview').classList.add('hidden');
     document.getElementById('upload-placeholder').classList.remove('hidden');
@@ -437,6 +442,7 @@ async function editService(id) {
         document.getElementById('service-id').value = service.id;
         document.getElementById('service-title').value = service.title;
         document.getElementById('service-slug').value = service.slug;
+        document.getElementById('service-image-alt').value = service.image_alt || '';
         document.getElementById('service-content').value = service.content || '';
         if (quill) {
             quill.root.innerHTML = service.content || '';
@@ -468,7 +474,7 @@ async function editService(id) {
 
         // Cargar Galería
         if(service.gallery) {
-            service.gallery.forEach(img => addGalleryItem(img.image_path, img.id));
+            service.gallery.forEach(img => addGalleryItem(img.image_path, img.id, img.image_alt));
         }
         
         document.getElementById('modal-title').innerText = 'Editar Servicio';
@@ -494,16 +500,22 @@ function addDetailItem(title = '', desc = '') {
     itemsContainer.appendChild(div);
 }
 
-function addGalleryItem(path, id) {
+function addGalleryItem(path, id, alt = '') {
     const div = document.createElement('div');
-    div.className = 'relative group aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-200';
+    div.className = 'relative group rounded-xl overflow-hidden shadow-sm border border-gray-200 flex flex-col bg-white';
     let basePath = '<?= asset('') ?>';
     let fullPath = (basePath.endsWith('/') && path.startsWith('/')) ? basePath + path.substring(1) : basePath + path;
+    
     div.innerHTML = `
-        <img src="${fullPath}" class="w-full h-full object-cover">
-        <button type="button" onclick="deleteGalleryImage(${id}, this)" class="absolute top-2 right-2 w-8 h-8 bg-red-600 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
+        <div class="relative h-32 overflow-hidden bg-gray-50">
+            <img src="${fullPath}" class="w-full h-full object-cover">
+            <button type="button" onclick="deleteGalleryImage(${id}, this)" class="absolute top-2 right-2 w-7 h-7 bg-red-600 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="p-2 border-t border-gray-100 bg-gray-50/30">
+            <input type="text" name="service_gallery_alts[${id}]" value="${alt || ''}" placeholder="Texto ALT para SEO" class="w-full px-2 py-1 text-[10px] border border-gray-200 rounded focus:ring-1 focus:ring-secondary focus:border-secondary bg-white placeholder:italic" title="Configura el texto ALT de esta imagen">
+        </div>
     `;
     galleryContainer.appendChild(div);
 }

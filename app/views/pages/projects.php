@@ -12,11 +12,11 @@
             <?php if(!empty($projects)): ?>
                 <?php foreach($projects as $index => $project): ?>
                 <a href="/proyectos/<?= htmlspecialchars($project['slug']) ?>" class="group relative rounded-3xl overflow-hidden shadow-lg cursor-pointer animate-fade-in-up block" style="animation-delay: <?= $index * 100 ?>ms;">
-                    <img src="<?= htmlspecialchars($project['main_image']) ?>" alt="<?= htmlspecialchars($project['title']) ?>" loading="lazy" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-700">
+                    <img src="<?= htmlspecialchars($project['main_image']) ?>" alt="<?= htmlspecialchars($project['image_alt'] ?: $project['title']) ?>" loading="lazy" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-700">
                     <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent opacity-80"></div>
                     <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                         <span class="inline-block px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full mb-3 shadow-md"><?= htmlspecialchars($project['client']) ?></span>
-                        <h3 class="text-2xl font-bold text-white mb-2"><?= htmlspecialchars($project['title']) ?></h3>
+                        <h2 class="text-2xl font-bold text-white mb-2"><?= htmlspecialchars($project['title']) ?></h2>
                         <p class="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2"><?= htmlspecialchars($project['description']) ?></p>
                     </div>
                 </a>

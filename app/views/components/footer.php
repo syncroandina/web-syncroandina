@@ -98,15 +98,18 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
                     </div>
                 </div>
             </div>
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                <p><?= htmlspecialchars($settings['footer_copyright'] ?? '© 2026 ' . ($settings['identity_name'] ?? 'Syncro Andina') . '. Todos los derechos reservados.') ?></p>
-                <a href="/iniciar-sesion" class="mt-4 md:mt-0 text-gray-700 hover:text-gray-400 transition-colors opacity-50 hover:opacity-100 flex items-center gap-1" title="Acceso Interno">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    <span>Admin</span>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 md:pr-32 relative">
+                <p class="mb-4 md:mb-0"><?= htmlspecialchars($settings['footer_copyright'] ?? '© 2026 ' . ($settings['identity_name'] ?? 'Syncro Andina') . '. Todos los derechos reservados.') ?></p>
+                <a href="<?= url('iniciar-sesion') ?>" onclick="window.location.href='<?= url('iniciar-sesion') ?>';" class="text-gray-300 hover:text-white bg-gray-800/50 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700/50 transition-all flex items-center gap-2 cursor-pointer" style="position: relative; z-index: 10000 !important; pointer-events: auto !important;" title="Acceso Interno">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    <span class="text-xs font-medium">Admin</span>
                 </a>
             </div>
         </div>
     </footer>
+
+    <?php $this->component('call_center'); ?>
+
     <script>
         // Forzar scroll al inicio al cargar o actualizar la página
         if ('scrollRestoration' in history) {

@@ -10,7 +10,7 @@ if (!$hasSliders) return;
             <div class="swiper-slide relative bg-primary overflow-hidden min-h-[600px] sm:min-h-[700px] flex items-center">
                 <!-- Background Image with Overlay -->
                 <div class="absolute inset-0">
-                    <img src="<?= asset($slider['image_path']) ?>" alt="<?= htmlspecialchars($slider['title']) ?>" class="w-full h-full object-cover opacity-40">
+                    <img src="<?= asset($slider['image_path']) ?>" alt="<?= htmlspecialchars($slider['image_alt'] ?: $slider['title']) ?>" class="w-full h-full object-cover opacity-40">
                     <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
                 </div>
 

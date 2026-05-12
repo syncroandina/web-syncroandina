@@ -80,6 +80,10 @@
                             </div>
                         </div>
                     </div>
+                    <div class="pt-2">
+                        <label class="block text-[11px] font-extrabold uppercase tracking-widest text-gray-500 mb-2">Texto Alternativo del Logo (SEO ALT)</label>
+                        <input type="text" name="logo_alt" value="<?= htmlspecialchars($settings['logo_alt'] ?? 'Syncro Andina SAS') ?>" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50 transition-all" placeholder="Ej: Logotipo de Syncro Andina Ingeniería">
+                    </div>
                 </div>
 
                 <hr class="border-gray-100">

@@ -5,7 +5,7 @@
             <!-- Imagen del Servicio -->
             <div class="relative h-64 overflow-hidden">
                 <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
-                     alt="<?= htmlspecialchars($service['title']) ?>" 
+                     alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>

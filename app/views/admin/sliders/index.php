@@ -150,6 +150,11 @@
                         </div>
                     </div>
 
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto Alternativo de la Imagen (SEO ALT)</label>
+                        <input type="text" name="image_alt" id="slider-image-alt" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: Equipo de ingenieros de Syncro Andina trabajando en subestación">
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto del Botón</label>
@@ -215,6 +220,7 @@ function resetSliderForm() {
     document.getElementById('slider-subtitle').value = '';
     document.getElementById('slider-btn-text').value = '';
     document.getElementById('slider-btn-link').value = '';
+    document.getElementById('slider-image-alt').value = '';
     document.getElementById('slider-active').checked = true;
     document.getElementById('image-preview').src = '';
     document.getElementById('image-preview').classList.add('hidden');
@@ -230,6 +236,7 @@ function editSlider(slider) {
     document.getElementById('slider-subtitle').value = slider.subtitle;
     document.getElementById('slider-btn-text').value = slider.button_text;
     document.getElementById('slider-btn-link').value = slider.button_link;
+    document.getElementById('slider-image-alt').value = slider.image_alt || '';
     document.getElementById('slider-active').checked = slider.is_active == 1;
     
     if(slider.image_path) {

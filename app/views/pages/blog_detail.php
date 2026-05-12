@@ -76,111 +76,204 @@ if (!function_exists('formatBlogDateDetail')) {
     transform: translateY(-4px);
     box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
   }
+
+  /* --- Estilización Premium del Motor de Tipografía (Prose) --- */
+  .prose h2 {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #111827;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+  }
+  .prose h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+  .prose h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    color: #4b5563;
+  }
+  .prose strong, .prose b {
+    color: #111827;
+    font-weight: 700;
+  }
+  .prose ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.75rem;
+    color: #4b5563;
+  }
+  .prose ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.75rem;
+    color: #4b5563;
+  }
+  .prose li {
+    margin-bottom: 0.5rem;
+    padding-left: 0.375rem;
+  }
+  .prose li::marker {
+    color: var(--color-secondary, #DB0000);
+    font-weight: bold;
+  }
+  .prose blockquote {
+    border-left: 4px solid #DB0000;
+    padding: 1rem 1.5rem;
+    background-color: #f9fafb;
+    font-style: italic;
+    color: #374151;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    font-size: 1.1rem;
+  }
+  .prose img {
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    margin: 2.5rem auto;
+  }
+  .prose a {
+    color: #DB0000;
+    text-decoration: underline;
+    font-weight: 600;
+    text-underline-offset: 4px;
+    transition: color 0.2s;
+  }
+  .prose a:hover {
+    color: #08173A;
+  }
 </style>
 
-<article class="min-h-screen bg-white pt-24 pb-32">
+<article class="bg-[#F8FAFC] pb-20">
     <!-- Hero / Cabecera del Artículo Premium con Mesh Gradient -->
-    <header class="hero-mesh-bg py-16 md:py-24 border-b border-gray-100 relative overflow-hidden">
+    <header class="bg-white hero-mesh-bg pt-32 pb-12 border-b border-gray-100 relative overflow-hidden">
         <div class="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,transparent)] opacity-30"></div>
-        <div class="container mx-auto px-4 max-w-4xl relative z-10">
-            <!-- Botón Volver estilizado con efecto hover tridimensional -->
-            <div class="animate-fade-in-up">
-                <a href="<?= url('blog') ?>" class="inline-flex items-center gap-2.5 text-xs font-bold text-gray-500 hover:text-secondary transition-all bg-white border border-gray-100 hover:border-gray-200 px-4 py-2.5 rounded-full mb-8 shadow-sm hover:shadow-md group">
-                    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    <span>Volver al Blog</span>
+        <div class="container mx-auto px-4 max-w-3xl relative z-10 text-center">
+            <!-- Botón Volver -->
+            <div class="animate-fade-in-up mb-8">
+                <a href="<?= url('blog') ?>" class="inline-flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-secondary transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>VOLVER AL BLOG</span>
                 </a>
             </div>
 
-            <!-- Etiqueta superior flotante -->
-            <div class="flex items-center gap-3 mb-6 animate-fade-in-up delay-100">
-                <span class="px-3.5 py-1.5 bg-secondary/10 text-secondary rounded-full font-bold text-[10px] tracking-widest uppercase shadow-sm">Estrategia & Tecnología</span>
-                <span class="text-gray-300 font-bold">&bull;</span>
-                <span class="text-xs text-gray-400 font-extrabold tracking-wider uppercase font-mono"><?= formatBlogDateDetail($post['published_at']) ?></span>
+            <!-- Categoría en parte superior -->
+            <div class="flex justify-center mb-5 animate-fade-in-up delay-100">
+                <span class="px-4 py-1.5 bg-secondary/10 text-secondary rounded-full font-black text-[10px] tracking-widest uppercase border border-secondary/5">
+                    <?= htmlspecialchars($post['category_name'] ?? 'Estrategia & Tecnología') ?>
+                </span>
             </div>
 
-            <!-- Título Monumental con revelado de animación suave -->
-            <h1 class="text-3xl md:text-5xl font-black text-gray-900 leading-[1.15] mb-8 animate-fade-in-up delay-200 tracking-tight">
+            <!-- Título Monumental Centrado -->
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.1] mb-8 animate-fade-in-up delay-200 tracking-tight">
                 <?= htmlspecialchars($post['title']) ?>
             </h1>
 
-            <!-- Autor con efecto de tarjeta flotante -->
-            <div class="flex items-center gap-4 bg-white/80 backdrop-blur-md border border-gray-100 rounded-2xl p-3 shadow-sm inline-flex animate-fade-in-up delay-300">
-                <div class="w-11 h-11 bg-gradient-to-tr from-secondary to-primary text-white rounded-xl flex items-center justify-center font-extrabold text-base shadow-md shadow-secondary/15">
-                    <?= strtoupper(substr($post['author_name'] ?? 'A', 0, 1)) ?>
+            <!-- Autor y Fecha simplificados y centrados -->
+            <div class="flex items-center justify-center gap-6 animate-fade-in-up delay-300 text-left border-t border-slate-100 pt-6 inline-flex">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-slate-800 to-slate-900 text-white rounded-full flex items-center justify-center font-extrabold text-sm">
+                        <?= strtoupper(substr($post['author_name'] ?? 'A', 0, 1)) ?>
+                    </div>
+                    <div>
+                        <span class="block font-bold text-gray-900 text-xs"><?= htmlspecialchars($post['author_name'] ?? 'Administrador') ?></span>
+                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-wider">Syncro Andina Team</span>
+                    </div>
                 </div>
-                <div class="pr-3">
-                    <span class="block font-extrabold text-gray-900 text-sm"><?= htmlspecialchars($post['author_name'] ?? 'Administrador') ?></span>
-                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Especialista en Soluciones Digitales</span>
+                <div class="w-px h-8 bg-gray-200"></div>
+                <div class="flex flex-col">
+                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider">Publicado el</span>
+                    <span class="text-xs font-extrabold text-gray-700"><?= formatBlogDateDetail($post['published_at']) ?></span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Contenido Principal -->
-    <div class="container mx-auto px-4 max-w-4xl mt-16">
-        <!-- Imagen Principal de Alta Calidad con Zoom Interactivo y Sombra Premium -->
+    <!-- Contenido Principal Ampliado para Mejor Lectura -->
+    <div class="container mx-auto px-4 max-w-5xl mt-16">
+        <!-- Imagen Principal de Alta Calidad -->
         <?php if(!empty($post['image'])): ?>
-            <div class="rounded-[2.5rem] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.07)] mb-16 border border-gray-100/60 relative aspect-[21/10] max-h-[480px] group animate-scale-in">
+            <div class="rounded-[2.5rem] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.07)] mb-16 border border-gray-100/60 relative aspect-[21/9] max-h-[520px] group animate-scale-in">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent z-10 pointer-events-none"></div>
-                <img src="<?= asset($post['image']) ?>" alt="<?= htmlspecialchars($post['title']) ?>" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[2s] ease-out">
+                <img src="<?= asset($post['image']) ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-[2s] ease-out">
             </div>
         <?php endif; ?>
 
-        <!-- Contenedor del Cuerpo con Tipografía Ultra Premium -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 animate-fade-in">
-            <!-- Cuerpo del Post (Ocupa 2 de 3 columnas) -->
-            <div class="lg:col-span-2 space-y-8 text-gray-700 leading-relaxed text-[16px] md:text-[17px]">
-                <!-- Extracto Destacado en Itálica con elegante bloque de cita lateral -->
-                <?php if(!empty($post['excerpt'])): ?>
-                    <p class="text-lg md:text-xl font-bold text-gray-900/80 leading-relaxed border-l-[6px] border-secondary pl-6 italic mb-10 bg-gray-50/50 py-5 pr-4 rounded-r-3xl">
-                        "<?= htmlspecialchars($post['excerpt']) ?>"
-                    </p>
-                <?php endif; ?>
+        <!-- Contenedor del Cuerpo con Rejilla Asimétrica Premium -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 animate-fade-in">
+            <!-- Cuerpo del Post (Ocupa 8 de 12 columnas) -->
+            <div class="lg:col-span-8">
+                <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-slate-200/60">
+                    <!-- Extracto Destacado -->
+                    <?php if(!empty($post['excerpt'])): ?>
+                        <div class="relative mb-12">
+                            <div class="absolute top-0 left-0 w-1.5 h-full bg-secondary rounded-full"></div>
+                            <p class="text-xl md:text-2xl font-extrabold text-gray-900/90 leading-relaxed pl-8 italic">
+                                "<?= htmlspecialchars($post['excerpt']) ?>"
+                            </p>
+                        </div>
+                    <?php endif; ?>
 
-                <!-- Contenido principal con estilos de tipografía mejorados -->
-                <div class="prose max-w-none text-gray-700 space-y-6 leading-[1.8] font-normal">
-                    <?= $post['content'] ?>
+                    <!-- Contenido principal - Ya estilizado vía clase .prose de arriba -->
+                    <div class="prose max-w-none text-gray-700 font-normal">
+                        <?= $post['content'] ?>
+                    </div>
                 </div>
             </div>
 
-            <!-- Sidebar Lateral -->
-            <aside class="space-y-10">
-                <!-- Tarjeta de Recomendaciones Interactivas -->
-                <?php if(!empty($recommended)): ?>
-                    <div class="bg-gray-50/30 rounded-[2rem] p-8 border border-gray-100/80">
-                        <h4 class="text-xs font-black uppercase tracking-widest text-gray-900 mb-6 flex items-center gap-2">
-                            <span class="w-1.5 h-3 bg-secondary rounded-full"></span>
-                            Artículos Recomendados
-                        </h4>
-                        <div class="space-y-5">
-                            <?php foreach($recommended as $rec): ?>
-                                <div class="p-4 rounded-2xl bg-white/40 hover:bg-white border border-transparent hover:border-gray-100 interactive-shadow flex flex-col gap-1.5">
-                                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider font-mono"><?= formatBlogDateDetail($rec['published_at']) ?></span>
-                                    <h5 class="font-extrabold text-xs md:text-sm text-gray-900 leading-snug group-hover:text-secondary transition-colors">
-                                        <a href="<?= url('blog/' . $rec['slug']) ?>" class="hover:text-secondary transition-colors line-clamp-2"><?= htmlspecialchars($rec['title']) ?></a>
-                                    </h5>
-                                </div>
-                            <?php endforeach; ?>
+            <!-- Sidebar Lateral (Ocupa 4 de 12 columnas) y ahora es STICKY -->
+            <aside class="lg:col-span-4 relative">
+                <div class="sticky top-32 space-y-8">
+                    <!-- CTA Corporativo (AHORA ARRIBA) -->
+                    <div class="bg-slate-900 rounded-[2.25rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 group">
+                        <div class="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
+                        <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-secondary/20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
+                        
+                        <div class="relative z-10">
+                            <span class="text-[9px] font-black uppercase tracking-widest text-secondary bg-secondary/10 px-3 py-1 rounded-full inline-block mb-4">¿Hablamos?</span>
+                            <h2 class="text-xl font-extrabold mb-3 leading-tight tracking-tight">Impulsa tu infraestructura hoy</h2>
+                            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Conéctate con nuestros ingenieros comerciales para una solución a medida.</p>
+                            
+                            <button onclick="openContactModal('Consulta originada en artículo: <?= addslashes(htmlspecialchars($post['title'])) ?>')" class="w-full py-3.5 px-4 bg-white hover:bg-secondary text-slate-900 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-white/5 hover:shadow-secondary/30 group">
+                                <span>Iniciar Conversación</span>
+                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
                         </div>
                     </div>
-                <?php endif; ?>
 
-                <!-- CTA Corporativo con Vidrio Esmerilado e Iluminación Radial -->
-                <div class="bg-slate-900 rounded-[2.25rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 group">
-                    <!-- Efecto de gradiente y blur de fondo corporativo -->
-                    <div class="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
-                    <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-secondary/20 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-1000"></div>
-                    
-                    <div class="relative z-10">
-                        <span class="text-[9px] font-black uppercase tracking-widest text-secondary bg-secondary/10 px-3 py-1 rounded-full inline-block mb-4">¿Listo para innovar?</span>
-                        <h4 class="text-xl font-extrabold mb-4 leading-tight tracking-tight">Impulsa el mañana de tu empresa hoy mismo</h4>
-                        <p class="text-xs text-slate-400 mb-6 leading-relaxed">Conéctate con nuestro equipo de consultores corporativos de Syncro Andina para diseñar una solución a tu medida.</p>
-                        
-                        <button onclick="openContactModal('Consulta originada en artículo: <?= htmlspecialchars($post['title']) ?>')" class="w-full py-3.5 px-4 bg-white hover:bg-secondary text-slate-900 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-white/5 hover:shadow-secondary/30 group">
-                            <span>Iniciar Conversación</span>
-                            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </button>
-                    </div>
+                    <!-- Tarjeta de Recomendaciones (AHORA ABAJO) -->
+                    <?php if(!empty($recommended)): ?>
+                        <div class="bg-white rounded-[2rem] p-7 border border-slate-200/60 shadow-sm">
+                            <h2 class="text-xs font-black uppercase tracking-widest text-gray-900 mb-6 flex items-center gap-2">
+                                <span class="w-1.5 h-3 bg-secondary rounded-full"></span>
+                                Artículos Relacionados
+                            </h2>
+                            <div class="space-y-4">
+                                <?php foreach($recommended as $rec): ?>
+                                    <a href="<?= url('blog/' . $rec['slug']) ?>" class="block p-4 rounded-2xl bg-slate-50 hover:bg-white border border-slate-100 hover:border-slate-200 shadow-sm hover:shadow-md interactive-shadow transition-all group">
+                                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider block mb-1"><?= formatBlogDateDetail($rec['published_at']) ?></span>
+                                        <h3 class="font-bold text-sm text-gray-900 leading-snug group-hover:text-secondary transition-colors line-clamp-2">
+                                            <?= htmlspecialchars($rec['title']) ?>
+                                        </h3>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </aside>
         </div>
