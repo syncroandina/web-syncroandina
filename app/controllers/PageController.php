@@ -91,6 +91,43 @@ class PageController extends Controller {
         ]);
     }
 
+    public function products() {
+        $productModel = new \App\Models\Product();
+        $settingModel = new \App\Models\Setting();
+        $products = $productModel->getAllActive();
+        $settings = $settingModel->getAll();
+
+        return $this->view('pages/products', [
+            'title' => ($settings['page_products_title'] ?? 'Repuestos y Componentes') . ' - Syncro Andina',
+            'products' => $products,
+            'settings' => $settings
+        ]);
+    }
+
+    public function productDetail($slug) {
+        $productModel = new \App\Models\Product();
+        $settingModel = new \App\Models\Setting();
+        
+        $product = $productModel->findBySlug($slug);
+        
+        if (!$product || !$product['is_active']) {
+            http_response_code(404);
+            echo "<h1>404 Not Found</h1><p>El repuesto solicitado no existe o no está activo.</p>";
+            exit;
+        }
+        
+        $settings = $settingModel->getAll();
+        $galleryModel = new \App\Models\ProductGallery();
+        $gallery = $galleryModel->getByProduct($product['id']);
+        
+        return $this->view('pages/product_detail', [
+            'title' => $product['title'] . ' - Syncro Andina',
+            'product' => $product,
+            'settings' => $settings,
+            'gallery' => $gallery
+        ]);
+    }
+
     public function blog() {
         $postModel = new \App\Models\BlogPost();
         $catModel = new \App\Models\BlogCategory();

@@ -21,3 +21,18 @@ h3 { font-family: var(--font-h3); }
 h4 { font-family: var(--font-h4); }
 h5 { font-family: var(--font-h5); }
 h6 { font-family: var(--font-h6); }
+
+/* Contenedor Personalizado */
+.container {
+    max-width: 85% !important;
+}
+@media (max-width: 1024px) {
+    .container {
+        max-width: 90% !important;
+    }
+}
+@media (max-width: 768px) {
+    .container {
+        max-width: 95% !important;
+    }
+}

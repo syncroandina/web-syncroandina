@@ -7,6 +7,8 @@ $router->get('servicios', 'PageController@services');
 $router->get('servicios/{slug}', 'PageController@serviceDetail');
 $router->get('proyectos', 'PageController@projects');
 $router->get('proyectos/{slug}', 'PageController@projectDetail');
+$router->get('repuestos', 'PageController@products');
+$router->get('repuestos/{slug}', 'PageController@productDetail');
 $router->get('blog', 'PageController@blog');
 $router->get('blog/{slug}', 'PageController@blogDetail');
 $router->get('contacto', 'PageController@contact');
@@ -55,12 +57,23 @@ $router->post('admin/proyectos/duplicate', 'AdminController@duplicateProject');
 $router->post('admin/proyectos/settings', 'AdminController@saveProjectSettings');
 $router->post('admin/proyectos/gallery/delete', 'AdminController@deleteProjectGalleryImage');
 
+// Repuestos (Productos)
+$router->get('admin/repuestos', 'AdminController@adminProducts');
+$router->post('admin/repuestos', 'AdminController@saveProduct');
+$router->post('admin/repuestos/delete', 'AdminController@deleteProduct');
+$router->post('admin/repuestos/duplicate', 'AdminController@duplicateProduct');
+$router->post('admin/repuestos/toggle', 'AdminController@toggleProductStatus');
+$router->post('admin/repuestos/reorder', 'AdminController@reorderProducts');
+$router->post('admin/repuestos/settings', 'AdminController@saveProductSettings');
+$router->post('admin/repuestos/gallery/delete', 'AdminController@deleteProductGalleryImage');
+
 // Identidad Corporativa
 $router->get('admin/identidad', 'AdminController@identityConfig');
 $router->post('admin/identidad/images', 'AdminController@saveIdentityImages');
 $router->post('admin/identidad/images/delete', 'AdminController@deleteIdentityImage');
 $router->post('admin/identidad/colors', 'AdminController@saveColors');
 $router->post('admin/identidad/typography', 'AdminController@saveTypography');
+$router->post('admin/identidad/layout', 'AdminController@saveLayout');
 
 // Header
 $router->get('admin/cabecera', 'AdminController@headerConfig');

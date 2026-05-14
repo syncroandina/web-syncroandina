@@ -80,6 +80,21 @@
             --secondary: <?= $settings['color_secondary'] ?? '#3b82f6' ?>;
             --accent: <?= $settings['color_accent'] ?? '#0ea5e9' ?>;
         }
+
+        /* Contenedor Personalizado */
+        .container {
+            max-width: <?= htmlspecialchars($settings['container_desktop'] ?? '100%') ?> !important;
+        }
+        @media (max-width: 1024px) {
+            .container {
+                max-width: <?= htmlspecialchars($settings['container_tablet'] ?? '100%') ?> !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                max-width: <?= htmlspecialchars($settings['container_mobile'] ?? '100%') ?> !important;
+            }
+        }
     </style>
 </head>
 <body class="antialiased text-gray-800 bg-gray-50">

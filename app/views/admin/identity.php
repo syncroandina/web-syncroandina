@@ -211,6 +211,46 @@
             </form>
         </div>
     </div>
+    </div>
+
+    <!-- Bloque 4: Ancho del Contenedor (Layout) -->
+    <div class="px-2 pb-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                Ancho del Contenedor (Layout)
+            </h3>
+            <p class="text-sm text-gray-500 mb-8">Define el ancho máximo en porcentaje para mostrar el contenido de todas las secciones en diferentes dispositivos.</p>
+
+            <form action="<?= url('admin/identidad/layout') ?>" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-8 mb-10">
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Escritorio (Desktop)</label>
+                        <input type="text" name="container_desktop" value="<?= htmlspecialchars($settings['container_desktop'] ?? '100%') ?>" placeholder="Ej: 90%" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-semibold text-gray-700 bg-gray-50/50">
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Tablets</label>
+                        <input type="text" name="container_tablet" value="<?= htmlspecialchars($settings['container_tablet'] ?? '100%') ?>" placeholder="Ej: 95%" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-semibold text-gray-700 bg-gray-50/50">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Celulares (Mobile)</label>
+                        <input type="text" name="container_mobile" value="<?= htmlspecialchars($settings['container_mobile'] ?? '100%') ?>" placeholder="Ej: 100%" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-semibold text-gray-700 bg-gray-50/50">
+                    </div>
+                </div>
+
+                <div class="flex justify-start">
+                    <button type="submit" class="bg-secondary text-white px-10 py-4 rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-50 flex items-center gap-2 transform active:scale-[0.98]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                        Guardar Configuración de Layout
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <!-- Formulario Oculto para Eliminación -->
