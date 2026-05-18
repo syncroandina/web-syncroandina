@@ -162,15 +162,67 @@
                         <input type="text" id="ruc-input" name="ruc" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="Ej. 00000000000">
                     </div>
 
-                    <!-- Selección de Servicio de Interés -->
+                    <!-- Selección Inteligente de Interés (Servicio, Proyecto o Repuesto) -->
                     <div class="space-y-2">
-                        <label class="text-sm font-semibold text-gray-700">¿En qué servicio estás interesado?</label>
+                        <label class="text-sm font-semibold text-gray-700">¿En qué estás interesado? <span class="text-red-500">*</span></label>
                         <div class="relative">
-                            <select name="service_id" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
-                                <option value="">Pregunta libre / Consulta general</option>
+                            <select name="interest_type" id="interest-type-select" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700 font-medium">
+                                <option value="general">Consulta General / Otros</option>
+                                <option value="servicio">Servicios Técnicos</option>
+                                <option value="proyecto">Proyectos y Casos de Éxito</option>
+                                <option value="producto">Repuestos y Componentes</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selector Condicional: Servicios -->
+                    <div class="space-y-2 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="interest-service-wrapper">
+                        <label class="text-sm font-semibold text-gray-700">Selecciona el Servicio de Interés <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="service_id" id="service-id-select" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
+                                <option value="">-- Seleccionar Servicio --</option>
                                 <?php if(!empty($services)): ?>
                                     <?php foreach($services as $serv): ?>
-                                        <option value="<?= $serv['id'] ?>"><?= htmlspecialchars($serv['title']) ?></option>
+                                        <option value="<?= $serv['id'] ?>" data-slug="<?= htmlspecialchars($serv['slug'] ?? '') ?>"><?= htmlspecialchars($serv['title']) ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selector Condicional: Proyectos -->
+                    <div class="space-y-2 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="interest-project-wrapper">
+                        <label class="text-sm font-semibold text-gray-700">Selecciona el Proyecto / Caso de Éxito <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="project_id" id="project-id-select" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
+                                <option value="">-- Seleccionar Proyecto --</option>
+                                <?php if(!empty($projects)): ?>
+                                    <?php foreach($projects as $proj): ?>
+                                        <option value="<?= $proj['id'] ?>" data-slug="<?= htmlspecialchars($proj['slug'] ?? '') ?>"><?= htmlspecialchars($proj['title']) ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selector Condicional: Repuestos (Productos) -->
+                    <div class="space-y-2 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="interest-product-wrapper">
+                        <label class="text-sm font-semibold text-gray-700">Selecciona el Repuesto o Componente <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select name="product_id" id="product-id-select" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
+                                <option value="">-- Seleccionar Repuesto --</option>
+                                <?php if(!empty($products)): ?>
+                                    <?php foreach($products as $prod): ?>
+                                        <option value="<?= $prod['id'] ?>" data-slug="<?= htmlspecialchars($prod['slug'] ?? '') ?>"><?= htmlspecialchars($prod['title']) ?></option>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </select>
@@ -234,6 +286,96 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Lógica para Selección de Interés Inteligente
+    const interestTypeSelect = document.getElementById('interest-type-select');
+    const serviceWrapper = document.getElementById('interest-service-wrapper');
+    const projectWrapper = document.getElementById('interest-project-wrapper');
+    const productWrapper = document.getElementById('interest-product-wrapper');
+
+    const serviceSelect = document.getElementById('service-id-select');
+    const projectSelect = document.getElementById('project-id-select');
+    const productSelect = document.getElementById('product-id-select');
+
+    function toggleInterestFields(type) {
+        // Ocultar todos
+        [serviceWrapper, projectWrapper, productWrapper].forEach(wrapper => {
+            wrapper.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                wrapper.classList.add('hidden');
+            }, 150);
+        });
+        
+        // Quitar required temporalmente
+        serviceSelect.removeAttribute('required');
+        projectSelect.removeAttribute('required');
+        productSelect.removeAttribute('required');
+
+        setTimeout(() => {
+            if (type === 'servicio') {
+                serviceWrapper.classList.remove('hidden');
+                serviceSelect.setAttribute('required', 'true');
+                setTimeout(() => { serviceWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+            } else if (type === 'proyecto') {
+                projectWrapper.classList.remove('hidden');
+                projectSelect.setAttribute('required', 'true');
+                setTimeout(() => { projectWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+            } else if (type === 'producto') {
+                productWrapper.classList.remove('hidden');
+                productSelect.setAttribute('required', 'true');
+                setTimeout(() => { productWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+            }
+        }, 160);
+    }
+
+    if (interestTypeSelect) {
+        interestTypeSelect.addEventListener('change', (e) => {
+            toggleInterestFields(e.target.value);
+        });
+    }
+
+    // Auto-precarga desde Parámetros URL (Querystring Inteligente)
+    const urlParams = new URLSearchParams(window.location.search);
+    const typeParam = urlParams.get('type'); // servicio, proyecto, producto
+    const slugParam = urlParams.get('slug'); // slug del elemento
+    const idParam = urlParams.get('id');     // id del elemento
+    const subjectParam = urlParams.get('subject'); // Asunto personalizado
+
+    if (subjectParam) {
+        const subjectInput = form.querySelector('input[name="subject"]');
+        if (subjectInput) subjectInput.value = subjectParam;
+    }
+
+    if (typeParam) {
+        let mappedType = typeParam;
+        if (typeParam === 'repuesto' || typeParam === 'producto') mappedType = 'producto';
+        
+        if (interestTypeSelect) {
+            interestTypeSelect.value = mappedType;
+            toggleInterestFields(mappedType);
+
+            // Intentar pre-seleccionar la opción correspondiente
+            setTimeout(() => {
+                let targetSelect = null;
+                if (mappedType === 'servicio') targetSelect = serviceSelect;
+                else if (mappedType === 'proyecto') targetSelect = projectSelect;
+                else if (mappedType === 'producto') targetSelect = productSelect;
+
+                if (targetSelect) {
+                    if (idParam) {
+                        targetSelect.value = idParam;
+                    } else if (slugParam) {
+                        for (let option of targetSelect.options) {
+                            if (option.getAttribute('data-slug') === slugParam) {
+                                option.selected = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }, 200);
+        }
+    }
 
     // Envío del Formulario vía AJAX
     if (form) {

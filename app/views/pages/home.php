@@ -5,17 +5,75 @@
     <?php $this->component('hero', ['sliders' => $sliders ?? []]); ?>
     
     <!-- Sección de Servicios (Ahora arriba) -->
-    <section class="py-24 container mx-auto px-4">
-        <div class="text-center mb-16">
+    <section class="py-24 bg-gray-50 border-b border-gray-100 overflow-hidden relative">
+        <div class="container mx-auto px-4 mb-16 text-center">
             <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['services_label'] ?? 'Lo que hacemos') ?></p>
             <h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['services_title'] ?? 'Nuestros Servicios Especializados') ?></h1>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
             <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8 animate-fade-in"><?= htmlspecialchars($settings['services_description'] ?? 'Ofrecemos soluciones integrales diseñadas para impulsar el crecimiento y la seguridad de tu infraestructura corporativa.') ?></p>
         </div>
         
-        <?php $this->component('cards', ['services' => $services ?? []]); ?>
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Controles Personalizados -->
+            <button class="services-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button class="services-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
 
-        <div class="text-center mt-16 animate-fade-in">
+            <!-- Estilo simple para ocultar scrollbar -->
+            <style>
+                .services-track::-webkit-scrollbar { display: none; }
+            </style>
+
+            <?php 
+            $servicesCount = count($services ?? []);
+            $justifyServicesXl = $servicesCount <= 3 ? 'xl:justify-center' : '';
+            $justifyServicesLg = $servicesCount <= 2 ? 'lg:justify-center' : '';
+            $justifyServicesSm = $servicesCount <= 1 ? 'sm:justify-center' : '';
+            ?>
+            <div class="services-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyServicesSm ?> <?= $justifyServicesLg ?> <?= $justifyServicesXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <?php if(!empty($services)): ?>
+                    <?php foreach($services as $index => $service): ?>
+                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                        <div class="group bg-white rounded-[2rem] border border-gray-200 hover:border-primary/40 transition-all duration-300 h-full flex flex-col overflow-hidden relative hover:-translate-y-1">
+                            <!-- Imagen del Servicio -->
+                            <div class="relative h-64 overflow-hidden border-b border-gray-200">
+                                <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
+                                     alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                            </div>
+
+                            <div class="p-8 flex flex-col flex-grow bg-white">
+                                <h3 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-1">
+                                    <?= htmlspecialchars($service['title']) ?>
+                                </h3>
+                                
+                                <p class="text-gray-600 mb-8 leading-relaxed line-clamp-3">
+                                    <?= htmlspecialchars(strip_tags($service['content'])) ?>
+                                </p>
+                                
+                                <div class="mt-auto">
+                                    <a href="/servicios/<?= $service['slug'] ?>" class="inline-flex items-center text-sm font-bold text-secondary hover:gap-3 transition-all duration-300">
+                                        Ver Detalles
+                                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="w-full text-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                        <p class="text-gray-400 font-medium">No hay servicios configurados aún.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="text-center mt-16 animate-fade-in relative z-10">
             <a href="/servicios" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
                 Ver Todos los Servicios
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,40 +132,130 @@
         </div>
     </section>
 
-    <!-- Sección de Proyectos (Ahora abajo) -->
-    <section class="py-24 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['projects_home_title'] ?? 'Nuestros Proyectos Recientes') ?></h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg"><?= htmlspecialchars($settings['projects_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></p>
-            </div>
+    <!-- Sección de Repuestos Destacados -->
+    <?php if(!empty($featuredProducts)): ?>
+    <section class="py-24 bg-gray-50 border-b border-gray-100 overflow-hidden relative">
+        <div class="container mx-auto px-4 mb-16 text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Repuestos Recientes') ?></h2>
+            <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8 animate-fade-in"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Componentes y repuestos que demuestran nuestra calidad.') ?></p>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php if(!empty($latestProjects)): ?>
-                    <?php foreach($latestProjects as $index => $project): ?>
-                    <a href="/proyectos/<?= htmlspecialchars($project['slug']) ?>" class="group relative rounded-3xl overflow-hidden shadow-lg cursor-pointer animate-fade-in-up block" style="animation-delay: <?= $index * 100 ?>ms;">
-                        <img src="<?= htmlspecialchars($project['main_image']) ?>" alt="<?= htmlspecialchars($project['image_alt'] ?: $project['title']) ?>" loading="lazy" class="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent opacity-80"></div>
-                        <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            <span class="inline-block px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full mb-3 shadow-md"><?= htmlspecialchars($project['client']) ?></span>
-                            <h3 class="text-2xl font-bold text-white mb-2"><?= htmlspecialchars($project['title']) ?></h3>
-                            <p class="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2"><?= htmlspecialchars($project['description']) ?></p>
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Controles Personalizados -->
+            <button class="products-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button class="products-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+
+            <!-- Carrusel (Scroll Snap) con alineación inteligente y espacio para sombras -->
+            <?php 
+            $prodCount = count($featuredProducts);
+            $justifyXl = $prodCount <= 4 ? 'xl:justify-center' : '';
+            $justifyLg = $prodCount <= 3 ? 'lg:justify-center' : '';
+            $justifySm = $prodCount <= 2 ? 'sm:justify-center' : '';
+            ?>
+            <!-- Estilo simple para ocultar scrollbar -->
+            <style>
+                .products-track::-webkit-scrollbar { display: none; }
+            </style>
+
+            <div class="products-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifySm ?> <?= $justifyLg ?> <?= $justifyXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <?php foreach($featuredProducts as $index => $product): ?>
+                <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)]">
+                    <a href="/repuestos/<?= htmlspecialchars($product['slug']) ?>" class="group block bg-white rounded-3xl overflow-hidden border border-gray-200 hover:border-primary/40 transition-all duration-300 h-full flex flex-col relative hover:-translate-y-1">
+                        <div class="relative bg-gray-100 overflow-hidden border-b border-gray-200 aspect-w-4 aspect-h-3">
+                            <img src="<?= asset($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" loading="lazy" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700">
+                            <!-- Efecto gradiente premium -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col bg-white">
+                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors line-clamp-1"><?= htmlspecialchars($product['title']) ?></h3>
+                            <p class="text-gray-500 text-sm line-clamp-2 mb-4 flex-1 leading-relaxed"><?= htmlspecialchars($product['description']) ?></p>
+                            <div class="flex items-center justify-between text-sm font-bold text-primary group-hover:text-secondary transition-colors mt-auto pt-4 border-t border-gray-100/50">
+                                <span>Ver características</span>
+                                <div class="w-8 h-8 rounded-full bg-gray-50 group-hover:bg-primary/5 flex items-center justify-center transition-colors">
+                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </div>
+                            </div>
                         </div>
                     </a>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <div class="text-center mt-12 mb-10 animate-fade-in relative z-10">
+            <a href="/repuestos" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+                Ver Catálogo Completo
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </a>
+        </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- Sección de Proyectos (Ahora abajo) -->
+    <section class="py-24 bg-white overflow-hidden relative">
+        <div class="container mx-auto px-4 mb-16 text-center">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['projects_home_title'] ?? 'Nuestros Proyectos Recientes') ?></h2>
+            <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full"></div>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8"><?= htmlspecialchars($settings['projects_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></p>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Controles Personalizados -->
+            <button class="projects-carousel-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button class="projects-carousel-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+
+            <!-- Estilo simple para ocultar scrollbar -->
+            <style>
+                .projects-carousel-track::-webkit-scrollbar { display: none; }
+            </style>
+
+            <?php 
+            $projCount = count($latestProjects ?? []);
+            $justifyProjXl = $projCount <= 3 ? 'xl:justify-center' : '';
+            $justifyProjLg = $projCount <= 2 ? 'lg:justify-center' : '';
+            $justifyProjSm = $projCount <= 1 ? 'sm:justify-center' : '';
+            ?>
+            <div class="projects-carousel-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyProjSm ?> <?= $justifyProjLg ?> <?= $justifyProjXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <?php if(!empty($latestProjects)): ?>
+                    <?php foreach($latestProjects as $index => $project): ?>
+                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                        <a href="/proyectos/<?= htmlspecialchars($project['slug']) ?>" class="group relative rounded-[2rem] overflow-hidden cursor-pointer block hover:-translate-y-1 transition-all duration-300 h-80 bg-gray-150 border border-gray-200">
+                            <img src="<?= htmlspecialchars($project['main_image']) ?>" alt="<?= htmlspecialchars($project['image_alt'] ?: $project['title']) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent opacity-80"></div>
+                            <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                <span class="inline-block px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full mb-3"><?= htmlspecialchars($project['client']) ?></span>
+                                <h3 class="text-2xl font-bold text-white mb-2"><?= htmlspecialchars($project['title']) ?></h3>
+                                <p class="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2 text-sm"><?= htmlspecialchars($project['description']) ?></p>
+                            </div>
+                        </a>
+                    </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <div class="col-span-full text-center text-gray-500">Aún no hay proyectos publicados.</div>
+                    <div class="w-full text-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                        <p class="text-gray-400 font-medium">Aún no hay proyectos publicados.</p>
+                    </div>
                 <?php endif; ?>
             </div>
-            
-            <div class="text-center mt-16 animate-fade-in">
-                <a href="<?= url('proyectos') ?>" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
-                    Ver Todos los Proyectos
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </a>
-            </div>
+        </div>
+        
+        <div class="text-center mt-16 animate-fade-in relative z-10">
+            <a href="<?= url('proyectos') ?>" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+                Ver Todos los Proyectos
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </a>
         </div>
     </section>
 
@@ -177,25 +325,45 @@
 
     <!-- Sección de Galería de Fotos Moderna -->
     <?php if(!empty($galleryItems)): ?>
-    <section class="py-24 bg-white overflow-hidden">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <p class="text-sm font-black tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_tagline'] ?? 'Visualiza Nuestro Trabajo') ?></p>
-                <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_title'] ?? 'Galería de Excelencia') ?></h2>
-                <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_subtitle'] ?? 'Descubre en imágenes nuestro compromiso con la precisión, tecnología e innovación.') ?></p>
-            </div>
+    <section class="py-24 bg-white overflow-hidden relative">
+        <div class="container mx-auto px-4 mb-16 text-center">
+            <p class="text-sm font-black tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_tagline'] ?? 'Visualiza Nuestro Trabajo') ?></p>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_title'] ?? 'Galería de Excelencia') ?></h2>
+            <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_subtitle'] ?? 'Descubre en imágenes nuestro compromiso con la precisión, tecnología e innovación.') ?></p>
+        </div>
 
-            <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Controles Personalizados -->
+            <button class="gallery-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button class="gallery-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+
+            <!-- Estilo simple para ocultar scrollbar -->
+            <style>
+                .gallery-track::-webkit-scrollbar { display: none; }
+            </style>
+
+            <?php 
+            $galCount = count($galleryItems ?? []);
+            $justifyGalXl = $galCount <= 3 ? 'xl:justify-center' : '';
+            $justifyGalLg = $galCount <= 2 ? 'lg:justify-center' : '';
+            $justifyGalSm = $galCount <= 1 ? 'sm:justify-center' : '';
+            ?>
+            <div class="gallery-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyGalSm ?> <?= $justifyGalLg ?> <?= $justifyGalXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <?php foreach($galleryItems as $index => $item): ?>
-                    <div class="break-inside-avoid group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer home-gallery-trigger" data-src="<?= asset($item['image_path']) ?>" data-title="<?= htmlspecialchars($item['title'] ?? '') ?>" data-index="<?= $index ?>">
-                        <img src="<?= asset($item['image_path']) ?>" alt="<?= htmlspecialchars($item['image_alt'] ?: ($item['title'] ?: 'Syncro Andina Galería')) ?>" loading="lazy" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 rounded-3xl">
+                <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                    <div class="group relative rounded-[2rem] overflow-hidden border border-gray-200 hover:border-primary/40 transition-all duration-300 cursor-pointer home-gallery-trigger hover:-translate-y-1 h-80 bg-gray-100" data-src="<?= asset($item['image_path']) ?>" data-title="<?= htmlspecialchars($item['title'] ?? '') ?>" data-index="<?= $index ?>">
+                        <img src="<?= asset($item['image_path']) ?>" alt="<?= htmlspecialchars($item['image_alt'] ?: ($item['title'] ?: 'Syncro Andina Galería')) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         
                         <!-- Overlay Premium -->
                         <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
                             <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                                 <div class="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center shadow-lg mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                 </div>
                                 <?php if(!empty($item['title'])): ?>
                                     <h3 class="text-xl font-extrabold text-white leading-tight"><?= htmlspecialchars($item['title']) ?></h3>
@@ -203,6 +371,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -297,58 +466,80 @@
     <?php endif; ?>
 
     <!-- Sección de Blog -->
-    <section class="py-24 bg-gray-50 border-t border-gray-100">
-        <div class="container mx-auto px-4">
-        <div class="text-center mb-16">
+    <section class="py-24 bg-gray-50 border-t border-gray-100 overflow-hidden relative">
+        <div class="container mx-auto px-4 mb-16 text-center">
             <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['home_blog_tagline'] ?? 'Actualidad y Conocimiento') ?></p>
             <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['home_blog_title'] ?? 'Nuestro Blog Corporativo') ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <?php if(!empty($latestPosts)): ?>
-                <?php foreach($latestPosts as $index => $post): ?>
-                <article class="group bg-white rounded-[2.5rem] p-4 shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col h-full animate-fade-in-up" style="animation-delay: <?= $index * 150 ?>ms;">
-                    <div class="relative overflow-hidden rounded-[2rem] aspect-[16/10] mb-6">
-                        <img src="<?= asset($post['image'] ?: 'assets/images/blog-placeholder.jpg') ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute top-4 left-4">
-                            <span class="bg-white/90 backdrop-blur-md text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
-                                <?= date('d M, Y', strtotime($post['published_at'] ?? $post['created_at'])) ?>
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="px-4 pb-4 flex flex-col flex-grow">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-2">
-                            <a href="<?= url('blog/' . $post['slug']) ?>"><?= htmlspecialchars($post['title']) ?></a>
-                        </h3>
-                        <p class="text-gray-600 mb-8 line-clamp-3 text-sm leading-relaxed">
-                            <?= htmlspecialchars($post['excerpt']) ?>
-                        </p>
-                        
-                        <div class="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-bold text-xs">
-                                    <?= substr($post['author_name'] ?? 'S', 0, 1) ?>
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Controles Personalizados -->
+            <button class="blog-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <button class="blog-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 w-12 h-12 rounded-full bg-white text-primary shadow-xl border border-gray-100 flex items-center justify-center z-20 hover:bg-primary hover:text-white transition-all active:scale-90 focus:outline-none focus:ring-4 focus:ring-primary/20">
+                <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+
+            <!-- Estilo simple para ocultar scrollbar -->
+            <style>
+                .blog-track::-webkit-scrollbar { display: none; }
+            </style>
+
+            <?php 
+            $blogCount = count($latestPosts ?? []);
+            $justifyBlogXl = $blogCount <= 3 ? 'xl:justify-center' : '';
+            $justifyBlogLg = $blogCount <= 2 ? 'lg:justify-center' : '';
+            $justifyBlogSm = $blogCount <= 1 ? 'sm:justify-center' : '';
+            ?>
+            <div class="blog-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyBlogSm ?> <?= $justifyBlogLg ?> <?= $justifyBlogXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <?php if(!empty($latestPosts)): ?>
+                    <?php foreach($latestPosts as $index => $post): ?>
+                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+                        <article class="group bg-white rounded-[2.5rem] p-4 border border-gray-200 hover:border-primary/40 transition-all duration-300 flex flex-col h-full hover:-translate-y-1">
+                            <div class="relative overflow-hidden rounded-[2rem] aspect-[16/10] mb-6">
+                                <img src="<?= asset($post['image'] ?: 'assets/images/blog-placeholder.jpg') ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <div class="absolute top-4 left-4">
+                                    <span class="bg-white/90 backdrop-blur-md text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
+                                        <?= date('d M, Y', strtotime($post['published_at'] ?? $post['created_at'])) ?>
+                                    </span>
                                 </div>
-                                <span class="text-xs font-bold text-gray-400"><?= htmlspecialchars($post['author_name'] ?? 'Syncro Team') ?></span>
                             </div>
-                            <a href="<?= url('blog/' . $post['slug']) ?>" class="text-secondary font-black text-xs uppercase tracking-widest hover:underline">Leer más</a>
+                            
+                            <div class="px-4 pb-4 flex flex-col flex-grow">
+                                <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-2">
+                                    <a href="<?= url('blog/' . $post['slug']) ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                </h3>
+                                <p class="text-gray-600 mb-8 line-clamp-3 text-sm leading-relaxed">
+                                    <?= htmlspecialchars($post['excerpt']) ?>
+                                </p>
+                                
+                                <div class="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-bold text-xs">
+                                            <?= substr($post['author_name'] ?? 'S', 0, 1) ?>
+                                        </div>
+                                        <span class="text-xs font-bold text-gray-400"><?= htmlspecialchars($post['author_name'] ?? 'Syncro Team') ?></span>
+                                    </div>
+                                    <a href="<?= url('blog/' . $post['slug']) ?>" class="text-secondary font-black text-xs uppercase tracking-widest hover:underline">Leer más</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="w-full py-20 text-center bg-white rounded-[3rem] border border-dashed border-gray-200">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                         </div>
+                        <p class="text-gray-400 font-medium">Estamos preparando contenido increíble para ti.</p>
                     </div>
-                </article>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-span-full py-20 text-center bg-white rounded-[3rem] border border-dashed border-gray-200">
-                    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
-                    </div>
-                    <p class="text-gray-400 font-medium">Estamos preparando contenido increíble para ti.</p>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <div class="text-center mt-16 animate-fade-in">
+        <div class="text-center mt-16 animate-fade-in relative z-10">
             <a href="<?= url('blog') ?>" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
                 Ver Todos los Artículos
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -356,8 +547,94 @@
                 </svg>
             </a>
         </div>
-        </div>
     </section>
+
+    <?php
+    $productsSpeed = (int)($settings['carousel_products_speed'] ?? 3000);
+    $servicesSpeed = (int)($settings['carousel_services_speed'] ?? 3000);
+    $projectsSpeed = (int)($settings['carousel_projects_speed'] ?? 3000);
+    $gallerySpeed = (int)($settings['carousel_gallery_speed'] ?? 3000);
+    $blogSpeed = (int)($settings['carousel_blog_speed'] ?? 3000);
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const setups = [
+            { track: '.products-track', prev: '.products-prev', next: '.products-next', speed: <?= $productsSpeed ?> },
+            { track: '.services-track', prev: '.services-prev', next: '.services-next', speed: <?= $servicesSpeed ?> },
+            { track: '.projects-carousel-track', prev: '.projects-carousel-prev', next: '.projects-carousel-next', speed: <?= $projectsSpeed ?> },
+            { track: '.gallery-track', prev: '.gallery-prev', next: '.gallery-next', speed: <?= $gallerySpeed ?> },
+            { track: '.blog-track', prev: '.blog-prev', next: '.blog-next', speed: <?= $blogSpeed ?> }
+        ];
+
+        setups.forEach(setup => {
+            const track = document.querySelector(setup.track);
+            const prevBtn = document.querySelector(setup.prev);
+            const nextBtn = document.querySelector(setup.next);
+
+            if(track && prevBtn && nextBtn) {
+                const scrollAmount = () => {
+                    const item = track.querySelector('.snap-start');
+                    return item ? item.offsetWidth + 24 : 300;
+                };
+
+                const doScroll = (direction) => {
+                    const amount = scrollAmount();
+                    const maxScrollLeft = track.scrollWidth - track.clientWidth;
+
+                    if (direction === 'next') {
+                        if (track.scrollLeft >= maxScrollLeft - 10) {
+                            track.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            track.scrollBy({ left: amount, behavior: 'smooth' });
+                        }
+                    } else {
+                        if (track.scrollLeft <= 10) {
+                            track.scrollTo({ left: maxScrollLeft, behavior: 'smooth' });
+                        } else {
+                            track.scrollBy({ left: -amount, behavior: 'smooth' });
+                        }
+                    }
+                };
+
+                // Auto-avance automático infinito con velocidad administrable
+                let intervalId = setInterval(() => {
+                    doScroll('next');
+                }, setup.speed);
+
+                const resetInterval = () => {
+                    clearInterval(intervalId);
+                    intervalId = setInterval(() => {
+                        doScroll('next');
+                    }, setup.speed);
+                };
+
+                // Eventos de Click (Desktop)
+                prevBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    doScroll('prev');
+                    resetInterval();
+                });
+                nextBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    doScroll('next');
+                    resetInterval();
+                });
+
+                // Eventos de Touch (Móviles - Respuesta Instantánea)
+                prevBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    doScroll('prev');
+                    resetInterval();
+                }, { passive: false });
+                nextBtn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    doScroll('next');
+                    resetInterval();
+                }, { passive: false });
+            }
+        });
+    });
+    </script>
 </main>
 
 <?php $this->component('footer'); ?>

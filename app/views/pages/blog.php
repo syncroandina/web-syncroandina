@@ -37,25 +37,7 @@ function formatBlogDate($dateString) {
             <!-- COLUMNA IZQUIERDA: ARTÍCULOS (Crece dinámicamente) -->
             <div class="flex-1">
                 
-                <!-- Indicador de filtros activos si existen -->
-                <?php if($search || $activeCategory): ?>
-                    <div class="flex flex-wrap items-center gap-3 mb-8 animate-fade-in-up">
-                        <span class="text-sm font-bold text-gray-400">Filtrado por:</span>
-                        <?php if($activeCategory): ?>
-                            <span class="bg-indigo-50 text-indigo-700 text-xs font-bold px-4 py-2 rounded-full border border-indigo-100 flex items-center gap-2">
-                                Categoria: <?= htmlspecialchars($categoryData['name'] ?? '') ?>
-                                <a href="<?= url('blog') . ($search ? '?s='.urlencode($search) : '') ?>" class="hover:text-indigo-900"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></a>
-                            </span>
-                        <?php endif; ?>
-                        <?php if($search): ?>
-                            <span class="bg-secondary/10 text-secondary text-xs font-bold px-4 py-2 rounded-full border border-secondary/20 flex items-center gap-2">
-                                Término: "<?= htmlspecialchars($search) ?>"
-                                <a href="<?= url('blog') . ($activeCategory ? '?categoria='.urlencode($activeCategory) : '') ?>" class="hover:text-primary"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></a>
-                            </span>
-                        <?php endif; ?>
-                        <a href="<?= url('blog') ?>" class="text-xs font-bold text-gray-500 underline underline-offset-4 hover:text-primary transition-colors ml-2">Limpiar todos</a>
-                    </div>
-                <?php endif; ?>
+
 
                 <?php if(!empty($posts)): ?>
                     <?php 
@@ -114,22 +96,7 @@ function formatBlogDate($dateString) {
             <aside class="hidden lg:block w-80 flex-shrink-0 relative">
                 <div class="sticky top-32 space-y-8">
                     
-                    <!-- Módulo Buscador -->
-                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-                        <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            Buscar Artículo
-                        </h2>
-                        <form action="<?= url('blog') ?>" method="GET" class="relative">
-                            <?php if($activeCategory): ?>
-                                <input type="hidden" name="categoria" value="<?= htmlspecialchars($activeCategory) ?>">
-                            <?php endif; ?>
-                            <input type="text" name="s" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Ingresa una palabra..." class="w-full px-5 py-3.5 pr-12 bg-gray-50 rounded-xl border border-gray-100 focus:bg-white focus:border-secondary focus:ring-2 focus:ring-secondary/10 text-sm font-medium transition-all">
-                            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-secondary transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </button>
-                        </form>
-                    </div>
+
 
                     <!-- Módulo Categorías -->
                     <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
@@ -138,36 +105,62 @@ function formatBlogDate($dateString) {
                             Categorías
                         </h2>
                         <div class="flex flex-col gap-2">
-                            <a href="<?= url('blog') . ($search ? '?s='.urlencode($search) : '') ?>" 
+                            <a href="<?= url('blog') ?>" 
+                               onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;"
                                class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= !$activeCategory ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' ?>">
-                                <span>Todas las noticias</span>
-                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= !$activeCategory ? 'opacity-100' : '' ?> transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                <span class="pointer-events-none">Todas las noticias</span>
+                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= !$activeCategory ? 'opacity-100' : '' ?> transition-all pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </a>
                             <?php if(!empty($categories)): ?>
                                 <?php foreach($categories as $cat): ?>
                                     <?php 
                                         $catUrl = url('blog') . '?categoria=' . htmlspecialchars($cat['slug']);
-                                        if($search) {
-                                            $catUrl .= '&s=' . urlencode($search);
-                                        }
                                         $isAct = ($activeCategory === $cat['slug']);
                                     ?>
                                     <a href="<?= $catUrl ?>" 
                                        class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= $isAct ? 'bg-secondary text-white shadow-md shadow-secondary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-secondary border border-transparent' ?>">
-                                        <span><?= htmlspecialchars($cat['name']) ?></span>
-                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= $isAct ? 'opacity-100' : '' ?> transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                        <span class="pointer-events-none"><?= htmlspecialchars($cat['name']) ?></span>
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= $isAct ? 'opacity-100' : '' ?> transition-all pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                     </a>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </div>
                     </div>
+                    
+                    <!-- Filtros Activos Widget -->
+                    <?php if($activeCategory): ?>
+                        <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 animate-fade-in-up">
+                            <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                                Filtro Activo
+                            </h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between bg-indigo-50/50 border border-indigo-100/85 px-4 py-3.5 rounded-xl">
+                                    <span class="text-xs font-extrabold text-indigo-700 uppercase tracking-wider leading-relaxed">
+                                        Categoría: <?= htmlspecialchars($categoryData['name'] ?? '') ?>
+                                    </span>
+                                    <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="text-indigo-400 hover:text-indigo-700 transition-colors p-1.5 bg-white hover:bg-indigo-100 rounded-lg shadow-sm border border-indigo-100 flex items-center justify-center" title="Eliminar filtro">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </a>
+                                </div>
+                                <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="block text-center py-3.5 border border-dashed border-red-200 text-red-500 hover:bg-red-50 hover:border-red-400 rounded-xl font-bold text-xs transition-all uppercase tracking-wider">
+                                    <span class="pointer-events-none">Limpiar filtro</span>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- CTA Banner Lateral -->
                     <div class="bg-gradient-to-br from-primary to-indigo-900 p-8 rounded-[2rem] text-white text-center relative overflow-hidden shadow-xl">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
                         <h2 class="text-lg font-black mb-3 relative z-10"><?= htmlspecialchars($settings['blog_sidebar_cta_title'] ?? '¿Tienes un proyecto en mente?') ?></h2>
                         <p class="text-xs text-indigo-100 mb-6 leading-relaxed relative z-10"><?= htmlspecialchars($settings['blog_sidebar_cta_description'] ?? 'Impulsamos tu transformación digital con tecnología premium.') ?></p>
-                        <a href="<?= url('contacto') ?>" class="relative z-10 inline-block bg-white text-primary px-6 py-3 rounded-xl font-extrabold text-sm hover:bg-secondary hover:text-white transition-all shadow-md"><?= htmlspecialchars($settings['blog_sidebar_cta_btn_text'] ?? 'Contáctanos') ?></a>
+                        <a href="<?= url('contacto') ?>" 
+                           id="blog-sidebar-cta-btn"
+                           data-subject="Consulta desde el Blog: <?= htmlspecialchars($settings['blog_sidebar_cta_title'] ?? '¿Tienes un proyecto en mente?', ENT_QUOTES, 'UTF-8') ?>"
+                           class="relative z-10 inline-block bg-white text-primary px-6 py-3 rounded-xl font-extrabold text-sm hover:bg-secondary hover:text-white transition-all shadow-md">
+                            <span class="pointer-events-none"><?= htmlspecialchars($settings['blog_sidebar_cta_btn_text'] ?? 'Contáctanos') ?></span>
+                        </a>
                     </div>
                 </div>
             </aside>
@@ -198,25 +191,13 @@ function formatBlogDate($dateString) {
     <!-- Drawer Content (Scrollable) -->
     <div class="p-6 flex-1 overflow-y-auto space-y-8">
         
-        <!-- Mobile Search -->
-        <div>
-            <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">¿Qué buscas?</h3>
-            <form action="<?= url('blog') ?>" method="GET" class="relative">
-                <?php if($activeCategory): ?>
-                    <input type="hidden" name="categoria" value="<?= htmlspecialchars($activeCategory) ?>">
-                <?php endif; ?>
-                <input type="text" name="s" value="<?= htmlspecialchars($search ?? '') ?>" placeholder="Escribe aquí..." class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:bg-white focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all text-sm font-bold">
-                <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-md">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </button>
-            </form>
-        </div>
+
 
         <!-- Mobile Categories -->
         <div>
             <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Categorías</h3>
             <div class="grid grid-cols-1 gap-2">
-                <a href="<?= url('blog') . ($search ? '?s='.urlencode($search) : '') ?>" 
+                <a href="<?= url('blog') ?>" 
                    class="px-5 py-3.5 rounded-xl text-sm font-extrabold border transition-all flex items-center justify-between <?= !$activeCategory ? 'bg-primary text-white border-primary shadow-lg' : 'bg-white text-gray-600 border-gray-100 active:bg-gray-50' ?>">
                     <span>Todas</span>
                     <?php if(!$activeCategory): ?> <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> <?php endif; ?>
@@ -225,7 +206,6 @@ function formatBlogDate($dateString) {
                     <?php foreach($categories as $cat): ?>
                         <?php 
                             $mCatUrl = url('blog') . '?categoria=' . htmlspecialchars($cat['slug']);
-                            if($search) $mCatUrl .= '&s=' . urlencode($search);
                             $mIsAct = ($activeCategory === $cat['slug']);
                         ?>
                         <a href="<?= $mCatUrl ?>" 
@@ -241,7 +221,7 @@ function formatBlogDate($dateString) {
 
     <!-- Footer Drawer -->
     <div class="p-6 border-t border-gray-100 bg-gray-50 mt-auto">
-        <a href="<?= url('blog') ?>" class="w-full block text-center py-3.5 border border-gray-200 text-gray-500 rounded-xl font-bold text-sm active:bg-white">Reiniciar Filtros</a>
+        <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="w-full block text-center py-3.5 border border-gray-200 text-gray-500 rounded-xl font-bold text-sm active:bg-white">Reiniciar Filtros</a>
     </div>
 </div>
 
@@ -266,6 +246,79 @@ function toggleFilterDrawer(open) {
         document.body.style.overflow = '';
     }
 }
+
+// Panel de Diagnóstico Opcional via ?debug=1
+if (window.location.search.includes('debug=1')) {
+    (function() {
+        const diag = document.createElement('div');
+        diag.id = 'js-diagnostics';
+        diag.style.position = 'fixed';
+        diag.style.bottom = '20px';
+        diag.style.left = '20px';
+        diag.style.backgroundColor = 'rgba(15, 23, 42, 0.95)';
+        diag.style.color = '#f8fafc';
+        diag.style.padding = '16px';
+        diag.style.borderRadius = '16px';
+        diag.style.fontSize = '12px';
+        diag.style.fontFamily = 'monospace';
+        diag.style.zIndex = '999999';
+        diag.style.maxWidth = '380px';
+        diag.style.boxShadow = '0 20px 25px -5px rgba(0,0,0,0.5)';
+        diag.style.border = '1px solid rgba(255,255,255,0.1)';
+        diag.style.backdropFilter = 'blur(8px)';
+        diag.innerHTML = '<div style="font-weight:bold;color:#3b82f6;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><span>🛠️ DIAGNÓSTICO EN TIEMPO REAL</span><span style="font-size:10px;background:#1e293b;padding:2px 6px;border-radius:4px;">DEBUG</span></div><div id="diag-log" style="max-height:200px;overflow-y:auto;line-height:1.4;">Panel de depuración cargado. Haga clic en los botones para ver el comportamiento.</div>';
+        document.body.appendChild(diag);
+
+        window.logDiag = function(msg, isError = false) {
+            const log = document.getElementById('diag-log');
+            if (log) {
+                const time = new Date().toLocaleTimeString();
+                log.innerHTML = `<div style="margin-bottom:4px;"><span style="color:#94a3b8;font-size:10px;">[${time}]</span> <span style="color:${isError ? '#ef4444' : '#10b981'}">${isError ? '❌' : 'ℹ️'} ${msg}</span></div>` + log.innerHTML;
+            }
+        };
+
+        window.onerror = function(message, source, lineno, colno, error) {
+            window.logDiag(`${message} (${source.split('/').pop()}:${lineno})`, true);
+            return false;
+        };
+
+        window.logDiag('Sistema de diagnóstico inicializado.');
+    })();
+}
+
+// Inicialización robusta del botón de llamada a la acción (CTA) del blog con try-catch fallback
+function initBlogSidebarCta() {
+    const ctaBtn = document.getElementById('blog-sidebar-cta-btn');
+    if (ctaBtn) {
+        ctaBtn.addEventListener('click', (e) => {
+            const subject = ctaBtn.getAttribute('data-subject') || '';
+            if (typeof window.logDiag === 'function') window.logDiag('Botón Contáctanos clickeado. Asunto: ' + subject);
+            
+            if (typeof openContactModal === 'function') {
+                e.preventDefault();
+                try {
+                    if (typeof window.logDiag === 'function') window.logDiag('Intentando abrir contact_modal...');
+                    openContactModal(subject);
+                    if (typeof window.logDiag === 'function') window.logDiag('Modal abierto con éxito.');
+                } catch (err) {
+                    console.error('Error al abrir modal, redirigiendo a la página de contacto:', err);
+                    if (typeof window.logDiag === 'function') window.logDiag('Error modal: ' + err.message + '. Redirigiendo...', true);
+                    window.location.href = ctaBtn.href;
+                }
+            } else {
+                if (typeof window.logDiag === 'function') window.logDiag('openContactModal no está definida. Redirigiendo...', true);
+                // Si no existe la función, dejamos que ocurra la redirección nativa
+            }
+        });
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBlogSidebarCta);
+} else {
+    initBlogSidebarCta();
+}
 </script>
 
+<?php $this->component('contact_modal'); ?>
 <?php $this->component('footer'); ?>

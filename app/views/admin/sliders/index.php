@@ -157,12 +157,23 @@
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto del Botón</label>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto del Botón 1</label>
                             <input type="text" name="button_text" id="slider-btn-text" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all" placeholder="Ej: Ver Servicios">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Link del Botón</label>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Link del Botón 1</label>
                             <input type="text" name="button_link" id="slider-btn-link" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all" placeholder="Ej: /servicios">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto del Botón 2</label>
+                            <input type="text" name="button2_text" id="slider-btn2-text" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all" placeholder="Ej: Contáctanos">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Link del Botón 2</label>
+                            <input type="text" name="button2_link" id="slider-btn2-link" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all" placeholder="Ej: /contacto">
                         </div>
                     </div>
 
@@ -220,6 +231,8 @@ function resetSliderForm() {
     document.getElementById('slider-subtitle').value = '';
     document.getElementById('slider-btn-text').value = '';
     document.getElementById('slider-btn-link').value = '';
+    document.getElementById('slider-btn2-text').value = '';
+    document.getElementById('slider-btn2-link').value = '';
     document.getElementById('slider-image-alt').value = '';
     document.getElementById('slider-active').checked = true;
     document.getElementById('image-preview').src = '';
@@ -236,6 +249,8 @@ function editSlider(slider) {
     document.getElementById('slider-subtitle').value = slider.subtitle;
     document.getElementById('slider-btn-text').value = slider.button_text;
     document.getElementById('slider-btn-link').value = slider.button_link;
+    document.getElementById('slider-btn2-text').value = slider.button2_text || '';
+    document.getElementById('slider-btn2-link').value = slider.button2_link || '';
     document.getElementById('slider-image-alt').value = slider.image_alt || '';
     document.getElementById('slider-active').checked = slider.is_active == 1;
     

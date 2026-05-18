@@ -121,14 +121,31 @@
                                     <p class="text-xs text-gray-400 mt-1 pl-1" x-text="lead.ruc ? 'RUC: ' + lead.ruc : 'N/A'"></p>
                                 </td>
 
-                                <!-- Servicio/Asunto -->
+                                <!-- Asunto / Servicio / Proyecto / Repuesto -->
                                 <td class="px-6 py-4">
                                     <div class="max-w-xs overflow-hidden text-ellipsis">
                                         <p class="text-sm font-bold text-gray-800 line-clamp-1" x-text="lead.subject || 'Sin Asunto'"></p>
-                                        <span class="inline-block mt-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-lg"
-                                            :class="lead.service_title ? 'bg-secondary/10 text-secondary' : 'bg-gray-100 text-gray-500'"
-                                            x-text="lead.service_title || 'Pregunta libre'">
-                                        </span>
+                                        
+                                        <template x-if="lead.service_title">
+                                            <span class="inline-block mt-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-red-50 text-secondary border border-red-100/50"
+                                                x-text="'Servicio: ' + lead.service_title">
+                                            </span>
+                                        </template>
+                                        <template x-if="lead.project_title">
+                                            <span class="inline-block mt-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-100/50"
+                                                x-text="'Proyecto: ' + lead.project_title">
+                                            </span>
+                                        </template>
+                                        <template x-if="lead.product_title">
+                                            <span class="inline-block mt-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-green-50 text-green-600 border border-green-100/50"
+                                                x-text="'Repuesto: ' + lead.product_title">
+                                            </span>
+                                        </template>
+                                        <template x-if="!lead.service_title && !lead.project_title && !lead.product_title">
+                                            <span class="inline-block mt-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-lg bg-gray-100 text-gray-500 border border-gray-200/50">
+                                                Consulta General
+                                            </span>
+                                        </template>
                                     </div>
                                 </td>
 
@@ -265,10 +282,27 @@
                     </div>
 
                     <div class="space-y-1">
-                        <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Servicio de Interés</span>
-                        <span class="inline-block mt-0.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-secondary/10 text-secondary"
-                            x-text="selectedLead?.service_title || 'Pregunta libre / Consulta general'">
-                        </span>
+                        <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Interés Contextual</span>
+                        <template x-if="selectedLead?.service_title">
+                            <span class="inline-block mt-0.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-red-50 text-secondary border border-red-100/50"
+                                x-text="'Servicio: ' + selectedLead.service_title">
+                            </span>
+                        </template>
+                        <template x-if="selectedLead?.project_title">
+                            <span class="inline-block mt-0.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-blue-50 text-blue-600 border border-blue-100/50"
+                                x-text="'Proyecto: ' + selectedLead.project_title">
+                            </span>
+                        </template>
+                        <template x-if="selectedLead?.product_title">
+                            <span class="inline-block mt-0.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-green-50 text-green-600 border border-green-100/50"
+                                x-text="'Repuesto: ' + selectedLead.product_title">
+                            </span>
+                        </template>
+                        <template x-if="!selectedLead?.service_title && !selectedLead?.project_title && !selectedLead?.product_title">
+                            <span class="inline-block mt-0.5 text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-xl bg-gray-100 text-gray-500 border border-gray-200/50">
+                                Consulta General / Otros
+                            </span>
+                        </template>
                     </div>
 
                     <div class="space-y-1">

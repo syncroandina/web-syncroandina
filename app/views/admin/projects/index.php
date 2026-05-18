@@ -48,7 +48,7 @@
                 <tr class="bg-white text-gray-400 text-[11px] font-bold uppercase tracking-widest border-b border-gray-100">
                     <th class="px-8 py-5">Proyecto</th>
                     <th class="px-8 py-5">Cliente</th>
-                    <th class="px-8 py-5">Estado</th>
+                    <th class="px-8 py-5 text-center">Estado</th>
                     <th class="px-8 py-5">Fecha</th>
                     <th class="px-8 py-5 text-right">Acciones</th>
                 </tr>
@@ -75,12 +75,12 @@
                             </div>
                         </td>
                         <td class="px-8 py-5 font-medium text-gray-600"><?= htmlspecialchars($project['client'] ?? 'N/A') ?></td>
-                        <td class="px-8 py-5">
-                            <?php if($project['is_active']): ?>
-                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-bold border border-green-200">Publicado</span>
-                            <?php else: ?>
-                                <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold border border-yellow-200">Borrador</span>
-                            <?php endif; ?>
+                        <td class="px-8 py-5 text-center">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" <?= $project['is_active'] ? 'checked' : '' ?> 
+                                       onchange="toggleProjectStatus(<?= $project['id'] ?>, this.checked)">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-secondary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
+                            </label>
                         </td>
                         <td class="px-8 py-5 font-medium text-gray-500">
                             <?= $project['completion_date'] ? date('d M, Y', strtotime($project['completion_date'])) : 'Pendiente' ?>
@@ -281,6 +281,11 @@
                     <label class="block text-xs font-bold text-gray-500 mb-2">Subtítulo de la Sección</label>
                     <textarea name="projects_home_subtitle" rows="2" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow resize-none"><?= htmlspecialchars($settings['projects_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></textarea>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2">Velocidad del Carrusel (Milisegundos)</label>
+                    <input type="number" name="carousel_projects_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_projects_speed'] ?? '3000') ?>" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
+                    <p class="text-[10px] text-gray-400 mt-1 pl-1 font-bold uppercase tracking-wider">Intervalo de auto-avance automático. Ej: 3000 para 3 segundos.</p>
+                </div>
             </div>
 
             <div class="space-y-4 pt-4 border-t border-gray-100">
@@ -305,6 +310,8 @@
 </div>
 
 <script>
+const BASE_PATH = '<?= asset("") ?>'.replace(/\/$/, '');
+
 function switchProjectTab(tab) {
     // Esconder todos los contenidos
     document.querySelectorAll('.project-tab-content').forEach(el => el.classList.add('hidden'));
@@ -398,7 +405,9 @@ function editProject(project) {
     document.getElementById('project-is-active').checked = parseInt(project.is_active) === 1;
     
     if (project.main_image) {
-        document.getElementById('project-image-preview').src = '/' + project.main_image;
+        let path = project.main_image;
+        let fullPath = path.startsWith('/') ? BASE_PATH + path : BASE_PATH + '/' + path;
+        document.getElementById('project-image-preview').src = fullPath;
         document.getElementById('project-image-preview').classList.remove('hidden');
         document.getElementById('project-image-placeholder').classList.add('hidden');
     } else {
@@ -414,9 +423,10 @@ function editProject(project) {
         project.gallery.forEach(img => {
             const div = document.createElement('div');
             div.className = 'relative group bg-white rounded-xl overflow-hidden border border-gray-200 shadow-sm flex flex-col';
+            let fullGalleryPath = img.image_path.startsWith('/') ? BASE_PATH + img.image_path : BASE_PATH + '/' + img.image_path;
             div.innerHTML = `
                 <div class="relative h-24 overflow-hidden bg-gray-50">
-                    <img src="/${img.image_path}" class="w-full h-full object-cover">
+                    <img src="${fullGalleryPath}" class="w-full h-full object-cover">
                     <button type="button" onclick="deleteProjectGalleryImage(${img.id}, this)" class="absolute top-1 right-1 w-6 h-6 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm" title="Borrar Foto">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
@@ -530,5 +540,18 @@ function filterProjects() {
             row.style.display = 'none';
         }
     });
+}
+
+function toggleProjectStatus(id, status) {
+    fetch('<?= url("admin/proyectos/toggle") ?>', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id, status: status ? 1 : 0 })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(!data.success) alert('Error al cambiar el estado del proyecto.');
+    })
+    .catch(error => console.error('Error:', error));
 }
 </script>

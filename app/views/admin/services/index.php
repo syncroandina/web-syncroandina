@@ -326,6 +326,12 @@
                     <input type="number" name="services_limit" min="1" max="50" value="<?= htmlspecialchars($settings['services_limit'] ?? '6') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: 6">
                     <p class="text-[10px] text-gray-400 mt-1.5 pl-1 font-bold uppercase tracking-wider">Indica cuántos servicios activos se mostrarán como máximo en la portada principal.</p>
                 </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Velocidad del Carrusel (Milisegundos)</label>
+                    <input type="number" name="carousel_services_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_services_speed'] ?? '3000') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: 3000">
+                    <p class="text-[10px] text-gray-400 mt-1.5 pl-1 font-bold uppercase tracking-wider">Intervalo de auto-avance automático. Ej: 3000 para 3 segundos.</p>
+                </div>
             </div>
 
             <hr class="border-gray-100">

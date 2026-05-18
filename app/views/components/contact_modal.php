@@ -117,21 +117,81 @@
                     <input type="text" id="contact-modal-ruc-input" name="ruc" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="Ej. 00000000000">
                 </div>
 
-                <!-- Selección de Servicio de Interés -->
+                <!-- Selección Inteligente de Interés (Servicio, Proyecto o Repuesto) -->
                 <?php
                 if (!isset($services)) {
                     $serviceModel = new \App\Models\Service();
                     $services = $serviceModel->getActive();
                 }
+                if (!isset($projects)) {
+                    $projectModel = new \App\Models\Project();
+                    $projects = $projectModel->getAllActive();
+                }
+                if (!isset($products)) {
+                    $productModel = new \App\Models\Product();
+                    $products = $productModel->getAllActive();
+                }
                 ?>
                 <div class="space-y-1.5">
-                    <label class="text-sm font-semibold text-gray-700">¿En qué servicio estás interesado?</label>
+                    <label class="text-sm font-semibold text-gray-700">¿En qué estás interesado? <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <select name="interest_type" id="contact-modal-interest-type" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700 font-medium">
+                            <option value="general">Consulta General / Otros</option>
+                            <option value="servicio">Servicios Técnicos</option>
+                            <option value="proyecto">Proyectos y Casos de Éxito</option>
+                            <option value="producto">Repuestos y Componentes</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selector Condicional: Servicios -->
+                <div class="space-y-1.5 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="contact-modal-service-wrapper">
+                    <label class="text-sm font-semibold text-gray-700">Selecciona el Servicio <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <select name="service_id" id="contact-modal-service-id" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
-                            <option value="">Pregunta libre / Consulta general</option>
+                            <option value="">-- Seleccionar Servicio --</option>
                             <?php if(!empty($services)): ?>
                                 <?php foreach($services as $serv): ?>
-                                    <option value="<?= $serv['id'] ?>"><?= htmlspecialchars($serv['title']) ?></option>
+                                    <option value="<?= $serv['id'] ?>" data-slug="<?= htmlspecialchars($serv['slug'] ?? '') ?>"><?= htmlspecialchars($serv['title']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selector Condicional: Proyectos -->
+                <div class="space-y-1.5 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="contact-modal-project-wrapper">
+                    <label class="text-sm font-semibold text-gray-700">Selecciona el Proyecto <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <select name="project_id" id="contact-modal-project-id" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
+                            <option value="">-- Seleccionar Proyecto --</option>
+                            <?php if(!empty($projects)): ?>
+                                <?php foreach($projects as $proj): ?>
+                                    <option value="<?= $proj['id'] ?>" data-slug="<?= htmlspecialchars($proj['slug'] ?? '') ?>"><?= htmlspecialchars($proj['title']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selector Condicional: Repuestos (Productos) -->
+                <div class="space-y-1.5 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="contact-modal-product-wrapper">
+                    <label class="text-sm font-semibold text-gray-700">Selecciona el Repuesto <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <select name="product_id" id="contact-modal-product-id" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
+                            <option value="">-- Seleccionar Repuesto --</option>
+                            <?php if(!empty($products)): ?>
+                                <?php foreach($products as $prod): ?>
+                                    <option value="<?= $prod['id'] ?>" data-slug="<?= htmlspecialchars($prod['slug'] ?? '') ?>"><?= htmlspecialchars($prod['title']) ?></option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </select>
@@ -163,9 +223,52 @@
 </div>
 
 <script>
-function openContactModal(subject = '', serviceTitle = '') {
+function toggleModalInterestFields(type) {
+    const serviceWrapper = document.getElementById('contact-modal-service-wrapper');
+    const projectWrapper = document.getElementById('contact-modal-project-wrapper');
+    const productWrapper = document.getElementById('contact-modal-product-wrapper');
+
+    const serviceSelect = document.getElementById('contact-modal-service-id');
+    const projectSelect = document.getElementById('contact-modal-project-id');
+    const productSelect = document.getElementById('contact-modal-product-id');
+
+    // Ocultar todos
+    [serviceWrapper, projectWrapper, productWrapper].forEach(wrapper => {
+        wrapper.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            wrapper.classList.add('hidden');
+        }, 150);
+    });
+    
+    // Quitar required temporalmente
+    serviceSelect.removeAttribute('required');
+    projectSelect.removeAttribute('required');
+    productSelect.removeAttribute('required');
+
+    setTimeout(() => {
+        if (type === 'servicio') {
+            serviceWrapper.classList.remove('hidden');
+            serviceSelect.setAttribute('required', 'true');
+            setTimeout(() => { serviceWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+        } else if (type === 'proyecto') {
+            projectWrapper.classList.remove('hidden');
+            projectSelect.setAttribute('required', 'true');
+            setTimeout(() => { projectWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+        } else if (type === 'producto') {
+            productWrapper.classList.remove('hidden');
+            productSelect.setAttribute('required', 'true');
+            setTimeout(() => { productWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+        }
+    }, 160);
+}
+
+function openContactModal(subject = '', itemIdOrTitle = '') {
+    if (typeof window.logDiag === 'function') window.logDiag('Ejecutando openContactModal. Asunto: ' + subject);
     const modal = document.getElementById('contact-form-modal');
-    if (!modal) return;
+    if (!modal) {
+        if (typeof window.logDiag === 'function') window.logDiag('ERROR: No se encontró el modal contact-form-modal', true);
+        return;
+    }
 
     // Resetear vistas antes de abrir
     document.getElementById('contact-modal-header').classList.remove('hidden');
@@ -193,18 +296,51 @@ function openContactModal(subject = '', serviceTitle = '') {
         }
     }
 
-    if (serviceTitle) {
-        const selectElement = document.getElementById('contact-modal-service-id');
-        if (selectElement) {
-            // Intentar seleccionar la opción por texto o título
-            for (let option of selectElement.options) {
-                if (option.text.toLowerCase().trim() === serviceTitle.toLowerCase().trim()) {
-                    selectElement.value = option.value;
-                    break;
+    // Auto-detección inteligente de Contexto según el subject
+    let detectedType = 'general';
+    let itemTitle = '';
+
+    const subjectLower = subject.toLowerCase();
+    if (subjectLower.includes('servicio') || subjectLower.includes('service')) {
+        detectedType = 'servicio';
+    } else if (subjectLower.includes('caso de éxito') || subjectLower.includes('proyecto') || subjectLower.includes('project')) {
+        detectedType = 'proyecto';
+    } else if (subjectLower.includes('repuesto') || subjectLower.includes('producto') || subjectLower.includes('product')) {
+        detectedType = 'producto';
+    }
+
+    // Extraer el nombre del item del subject si tiene dos puntos ':'
+    if (subject.includes(':')) {
+        itemTitle = subject.split(':')[1].trim();
+    } else if (itemIdOrTitle) {
+        itemTitle = itemIdOrTitle;
+    }
+
+    const interestSelect = document.getElementById('contact-modal-interest-type');
+    if (interestSelect) {
+        interestSelect.value = detectedType;
+        
+        // Disparar cambio visual
+        toggleModalInterestFields(detectedType);
+
+        // Auto-seleccionar por título en el selector correspondiente
+        setTimeout(() => {
+            let selectToSearch = null;
+            if (detectedType === 'servicio') selectToSearch = document.getElementById('contact-modal-service-id');
+            else if (detectedType === 'proyecto') selectToSearch = document.getElementById('contact-modal-project-id');
+            else if (detectedType === 'producto') selectToSearch = document.getElementById('contact-modal-product-id');
+
+            if (selectToSearch && itemTitle) {
+                for (let option of selectToSearch.options) {
+                    if (option.text.toLowerCase().trim() === itemTitle.toLowerCase().trim()) {
+                        option.selected = true;
+                        break;
+                    }
                 }
             }
-        }
+        }, 200);
     }
+
     document.body.style.overflow = 'hidden';
 }
 
@@ -234,6 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const companyFields = document.getElementById('contact-modal-company-fields');
     const rucInput = document.getElementById('contact-modal-ruc-input');
     const clientTypeRadios = document.querySelectorAll('#contact-modal-form input[name="client_type"]');
+    const modalInterestSelect = document.getElementById('contact-modal-interest-type');
 
     // Condicional RUC en modal
     clientTypeRadios.forEach(radio => {
@@ -256,6 +393,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    if (modalInterestSelect) {
+        modalInterestSelect.addEventListener('change', (e) => {
+            toggleModalInterestFields(e.target.value);
+        });
+    }
 
     if (form) {
         form.addEventListener('submit', async (e) => {

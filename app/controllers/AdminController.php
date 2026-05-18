@@ -21,14 +21,76 @@ class AdminController extends Controller {
     }
 
     public function dashboard() {
-        return $this->adminView('dashboard', ['title' => 'Panel de Control']);
+        $analytics = new \App\Models\Analytics();
+        
+        $filter = $_GET['filter'] ?? '30_days';
+        $startDate = $_GET['start_date'] ?? '';
+        $endDate = $_GET['end_date'] ?? '';
+        
+        $today = date('Y-m-d');
+        
+        switch ($filter) {
+            case 'today':
+                $startDate = $today;
+                $endDate = $today;
+                break;
+            case '7_days':
+                $startDate = date('Y-m-d', strtotime('-6 days'));
+                $endDate = $today;
+                break;
+            case '15_days':
+                $startDate = date('Y-m-d', strtotime('-14 days'));
+                $endDate = $today;
+                break;
+            case '30_days':
+                $startDate = date('Y-m-d', strtotime('-29 days'));
+                $endDate = $today;
+                break;
+            case 'current_month':
+                $startDate = date('Y-m-01');
+                $endDate = date('Y-m-d');
+                break;
+            case '6_months':
+                $startDate = date('Y-m-01', strtotime('-5 months'));
+                $endDate = $today;
+                break;
+            case 'current_year':
+                $startDate = date('Y-01-01');
+                $endDate = $today;
+                break;
+            case 'custom':
+                if (empty($startDate)) $startDate = date('Y-m-d', strtotime('-29 days'));
+                if (empty($endDate)) $endDate = $today;
+                break;
+            default:
+                $filter = '30_days';
+                $startDate = date('Y-m-d', strtotime('-29 days'));
+                $endDate = $today;
+                break;
+        }
+
+        $metrics = $analytics->getMetricsSummary($startDate, $endDate);
+        $dailyMetrics = $analytics->getDailyMetrics($startDate, $endDate);
+        $topServices = $analytics->getTopServices($startDate, $endDate, 5);
+        $topArticles = $analytics->getTopArticles($startDate, $endDate, 5);
+
+        return $this->adminView('dashboard', [
+            'title' => 'Panel de Control',
+            'filter' => $filter,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'metrics' => $metrics,
+            'dailyMetrics' => $dailyMetrics,
+            'topServices' => $topServices,
+            'topArticles' => $topArticles
+        ]);
     }
 
     public function projects() {
         $projectModel = new \App\Models\Project();
         $settingModel = new \App\Models\Setting();
         $galleryModel = new \App\Models\ProjectGallery();
-        $projects = $projectModel->getAllActive();
+        $projects = $projectModel->getAllAdmin();
         $settings = $settingModel->getAll();
 
         foreach ($projects as &$project) {
@@ -48,7 +110,7 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['projects_home_title', 'projects_home_subtitle', 'projects_page_title', 'projects_page_subtitle'];
+        $keys = ['projects_home_title', 'projects_home_subtitle', 'projects_page_title', 'projects_page_subtitle', 'carousel_projects_speed'];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
@@ -78,7 +140,7 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['services_label', 'services_title', 'services_description', 'services_limit', 'page_services_title', 'page_services_description'];
+        $keys = ['services_label', 'services_title', 'services_description', 'services_limit', 'page_services_title', 'page_services_description', 'carousel_services_speed'];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
@@ -394,6 +456,8 @@ class AdminController extends Controller {
             'subtitle' => \Core\Security::sanitizeInput($_POST['subtitle'] ?? ''),
             'button_text' => \Core\Security::sanitizeInput($_POST['button_text'] ?? ''),
             'button_link' => \Core\Security::sanitizeInput($_POST['button_link'] ?? ''),
+            'button2_text' => \Core\Security::sanitizeInput($_POST['button2_text'] ?? ''),
+            'button2_link' => \Core\Security::sanitizeInput($_POST['button2_link'] ?? ''),
             'order_index' => (int)($_POST['order_index'] ?? 0),
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
             'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
@@ -470,6 +534,8 @@ class AdminController extends Controller {
                     'subtitle' => $slider['subtitle'],
                     'button_text' => $slider['button_text'],
                     'button_link' => $slider['button_link'],
+                    'button2_text' => $slider['button2_text'] ?? null,
+                    'button2_link' => $slider['button2_link'] ?? null,
                     'image_path' => $newImagePath ?: $slider['image_path'],
                     'image_alt' => $slider['image_alt'] ?? null,
                     'order_index' => (int)$slider['order_index'] + 1,
@@ -683,6 +749,24 @@ class AdminController extends Controller {
         }
 
         header('Location: /admin/proyectos?success=project_duplicated');
+        exit;
+    }
+
+    public function toggleProjectStatus() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $id = $data['id'] ?? null;
+            $status = $data['status'] ?? 0;
+
+            if ($id) {
+                $projectModel = new \App\Models\Project();
+                $projectModel->save(['id' => $id, 'is_active' => $status]);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
         exit;
     }
 
@@ -1385,7 +1469,8 @@ class AdminController extends Controller {
             'blog_page_description',
             'blog_sidebar_cta_title',
             'blog_sidebar_cta_description',
-            'blog_sidebar_cta_btn_text'
+            'blog_sidebar_cta_btn_text',
+            'carousel_blog_speed'
         ];
 
         foreach ($keys as $key) {
@@ -1449,9 +1534,14 @@ class AdminController extends Controller {
     public function leadsList() {
         $contactModel = new \App\Models\Contact();
         $stmt = $contactModel->db->query("
-            SELECT c.*, s.title as service_title 
+            SELECT c.*, 
+                   s.title as service_title,
+                   p.title as project_title,
+                   pr.title as product_title
             FROM contacts c 
             LEFT JOIN services_pages s ON c.service_id = s.id 
+            LEFT JOIN projects p ON c.project_id = p.id
+            LEFT JOIN products pr ON c.product_id = pr.id
             ORDER BY c.created_at DESC
         ");
         $leads = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -1508,9 +1598,14 @@ class AdminController extends Controller {
     public function exportLeads() {
         $contactModel = new \App\Models\Contact();
         $stmt = $contactModel->db->query("
-            SELECT c.*, s.title as service_title 
+            SELECT c.*, 
+                   s.title as service_title,
+                   p.title as project_title,
+                   pr.title as product_title
             FROM contacts c 
             LEFT JOIN services_pages s ON c.service_id = s.id 
+            LEFT JOIN projects p ON c.project_id = p.id
+            LEFT JOIN products pr ON c.product_id = pr.id
             ORDER BY c.created_at DESC
         ");
         $leads = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -1533,7 +1628,7 @@ class AdminController extends Controller {
             'Telefono',
             'Tipo de Persona',
             'RUC',
-            'Servicio de Interes',
+            'Interés / Consulta',
             'Asunto',
             'Mensaje',
             'Estado',
@@ -1551,6 +1646,16 @@ class AdminController extends Controller {
             // Clean up messages to avoid line breaks within the cell
             $message = str_replace(["\r", "\n"], " ", $lead['message'] ?? '');
             
+            // Formatear interés de forma inteligente
+            $interestLabel = 'Consulta General / Otros';
+            if (!empty($lead['service_title'])) {
+                $interestLabel = 'Servicio: ' . $lead['service_title'];
+            } elseif (!empty($lead['project_title'])) {
+                $interestLabel = 'Proyecto: ' . $lead['project_title'];
+            } elseif (!empty($lead['product_title'])) {
+                $interestLabel = 'Repuesto: ' . $lead['product_title'];
+            }
+
             fputcsv($output, [
                 $lead['id'],
                 $lead['name'],
@@ -1558,7 +1663,7 @@ class AdminController extends Controller {
                 $phone,
                 $clientType,
                 $ruc,
-                $lead['service_title'] ?? 'Consulta General',
+                $interestLabel,
                 $lead['subject'] ?? 'Sin Asunto',
                 $message,
                 $status,
@@ -1735,6 +1840,7 @@ class AdminController extends Controller {
             $settingModel->updateSetting('gallery_home_tagline', \Core\Security::sanitizeInput($_POST['gallery_home_tagline'] ?? ''));
             $settingModel->updateSetting('gallery_home_title', \Core\Security::sanitizeInput($_POST['gallery_home_title']));
             $settingModel->updateSetting('gallery_home_subtitle', \Core\Security::sanitizeInput($_POST['gallery_home_subtitle']));
+            $settingModel->updateSetting('carousel_gallery_speed', \Core\Security::sanitizeInput($_POST['carousel_gallery_speed'] ?? '3000'));
         }
 
         // 2. Actualizar ALTs y Títulos de imágenes existentes
@@ -1977,7 +2083,7 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['products_label', 'products_title', 'products_description', 'page_products_title', 'page_products_description'];
+        $keys = ['products_label', 'products_title', 'products_description', 'page_products_title', 'page_products_description', 'carousel_products_speed'];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
@@ -2212,6 +2318,48 @@ class AdminController extends Controller {
         }
 
         echo json_encode(['success' => true]);
+        exit;
+    }
+
+    public function notificationsConfig() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        return $this->adminView('notifications/index', [
+            'title' => 'Configuración de Notificaciones',
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveNotificationsConfig() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        
+        $keys = [
+            'notification_emails',
+            'notification_enable_admin',
+            'notification_enable_client',
+            'notification_sender_name',
+            'notification_use_smtp',
+            'notification_smtp_host',
+            'notification_smtp_port',
+            'notification_smtp_encryption',
+            'notification_smtp_user',
+            'notification_smtp_pass'
+        ];
+
+        foreach ($keys as $key) {
+            if ($key === 'notification_enable_admin' || $key === 'notification_enable_client' || $key === 'notification_use_smtp') {
+                $value = isset($_POST[$key]) ? '1' : '0';
+            } else {
+                $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            }
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/notificaciones?success=settings_saved');
         exit;
     }
 }

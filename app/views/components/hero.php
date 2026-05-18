@@ -36,8 +36,8 @@ if (!$hasSliders) return;
                                 <svg class="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </a>
                         <?php endif; ?>
-                        <a href="/contact" class="px-8 py-4 bg-transparent border border-white/30 text-white rounded-xl font-bold hover:bg-white hover:text-primary transition-all backdrop-blur-sm flex items-center justify-center">
-                            Contáctanos
+                        <a href="<?= htmlspecialchars(!empty($slider['button2_link']) ? $slider['button2_link'] : '/contacto') ?>" class="px-8 py-4 bg-transparent border border-white/30 text-white rounded-xl font-bold hover:bg-white hover:text-primary transition-all backdrop-blur-sm flex items-center justify-center">
+                            <?= htmlspecialchars(!empty($slider['button2_text']) ? $slider['button2_text'] : 'Contáctanos') ?>
                         </a>
                     </div>
                 </div>

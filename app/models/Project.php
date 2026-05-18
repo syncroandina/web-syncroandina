@@ -10,6 +10,11 @@ class Project extends Model {
         $stmt = $this->db->query("SELECT * FROM projects WHERE is_active = 1 AND deleted_at IS NULL ORDER BY created_at DESC");
         return $stmt->fetchAll();
     }
+
+    public function getAllAdmin() {
+        $stmt = $this->db->query("SELECT * FROM projects WHERE deleted_at IS NULL ORDER BY created_at DESC");
+        return $stmt->fetchAll();
+    }
     
     public function getLatest($limit = 3) {
         $stmt = $this->db->prepare("SELECT * FROM projects WHERE is_active = 1 AND deleted_at IS NULL ORDER BY created_at DESC LIMIT ?");

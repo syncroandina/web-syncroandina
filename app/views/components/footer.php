@@ -81,7 +81,7 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-white tracking-wide"><?= htmlspecialchars($settings['contact_email_label'] ?? 'Correo Corporativo:') ?></p>
-                                <a href="mailto:<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?>" class="text-xs text-gray-400 hover:text-secondary transition-colors mt-0.5 block break-all"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?></a>
+                                <a href="mailto:<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?>" onclick="trackInteraction('email', this.href)" class="text-xs text-gray-400 hover:text-secondary transition-colors mt-0.5 block break-all"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?></a>
                             </div>
                         </div>
 
@@ -92,7 +92,7 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-white tracking-wide"><?= htmlspecialchars($settings['contact_phone_label'] ?? 'Línea de Atención:') ?></p>
-                                <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', $settings['contact_phone_value'] ?? '+573001234567')) ?>" class="text-xs text-gray-400 hover:text-secondary transition-colors mt-0.5 block"><?= htmlspecialchars($settings['contact_phone_value'] ?? '+57 300 123 4567') ?></a>
+                                <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', $settings['contact_phone_value'] ?? '+573001234567')) ?>" onclick="trackInteraction('phone', this.href)" class="text-xs text-gray-400 hover:text-secondary transition-colors mt-0.5 block"><?= htmlspecialchars($settings['contact_phone_value'] ?? '+57 300 123 4567') ?></a>
                             </div>
                         </div>
                     </div>
@@ -116,6 +116,14 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
             history.scrollRestoration = 'manual';
         }
         window.scrollTo(0, 0);
+
+        function trackInteraction(type, url) {
+            fetch('/api/track/interaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: type, url: url })
+            }).catch(e => console.error('Tracking error:', e));
+        }
     </script>
 </body>
 </html>

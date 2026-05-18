@@ -184,6 +184,11 @@
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título de Sección</label>
                         <input type="text" name="home_blog_title" value="<?= htmlspecialchars($settings['home_blog_title'] ?? 'Nuestro Blog Corporativo') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
                     </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Velocidad del Carrusel (Milisegundos)</label>
+                        <input type="number" name="carousel_blog_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_blog_speed'] ?? '3000') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: 3000">
+                        <p class="text-[10px] text-gray-400 mt-1.5 pl-1 font-bold uppercase tracking-wider">Intervalo de auto-avance automático. Ej: 3000 para 3 segundos.</p>
+                    </div>
                 </div>
             </div>
 

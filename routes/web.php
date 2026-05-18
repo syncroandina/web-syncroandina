@@ -18,6 +18,9 @@ $router->get('iniciar-sesion', 'AuthController@login');
 $router->post('iniciar-sesion', 'AuthController@authenticate');
 $router->get('cerrar-sesion', 'AuthController@logout');
 
+// Tracking API
+$router->post('api/track/interaction', 'TrackingController@logInteraction');
+
 // Admin
 $router->get('admin', 'AdminController@dashboard');
 $router->get('admin/escritorio', 'AdminController@dashboard');
@@ -54,6 +57,7 @@ $router->get('admin/proyectos', 'AdminController@projects');
 $router->post('admin/proyectos', 'AdminController@saveProject');
 $router->post('admin/proyectos/delete', 'AdminController@deleteProject');
 $router->post('admin/proyectos/duplicate', 'AdminController@duplicateProject');
+$router->post('admin/proyectos/toggle', 'AdminController@toggleProjectStatus');
 $router->post('admin/proyectos/settings', 'AdminController@saveProjectSettings');
 $router->post('admin/proyectos/gallery/delete', 'AdminController@deleteProjectGalleryImage');
 
@@ -89,6 +93,10 @@ $router->post('admin/nosotros/save', 'AdminController@saveAboutConfig');
 // Contacto
 $router->get('admin/contacto', 'AdminController@contactConfig');
 $router->post('admin/contacto/save', 'AdminController@saveContactConfig');
+
+// Configuración de Notificaciones
+$router->get('admin/notificaciones', 'AdminController@notificationsConfig');
+$router->post('admin/notificaciones/save', 'AdminController@saveNotificationsConfig');
 
 // Gestión de Leads / Contactos
 $router->get('admin/contactos', 'AdminController@leadsList');

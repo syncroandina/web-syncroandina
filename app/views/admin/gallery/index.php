@@ -34,18 +34,26 @@
             </div>
         </div>
         
-        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-                <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Etiqueta Superior (Tagline)</label>
-                <input type="text" name="gallery_home_tagline" value="<?= htmlspecialchars($settings['gallery_home_tagline'] ?? 'Visualiza Nuestro Trabajo') ?>" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-medium transition-shadow">
+        <div class="p-6 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Etiqueta Superior (Tagline)</label>
+                    <input type="text" name="gallery_home_tagline" value="<?= htmlspecialchars($settings['gallery_home_tagline'] ?? 'Visualiza Nuestro Trabajo') ?>" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium transition-all duration-200 bg-gray-50 focus:bg-white focus:shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título de la Sección</label>
+                    <input type="text" name="gallery_home_title" value="<?= htmlspecialchars($settings['gallery_home_title'] ?? 'Galería de Excelencia') ?>" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium transition-all duration-200 bg-gray-50 focus:bg-white focus:shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Velocidad del Carrusel (Milisegundos)</label>
+                    <input type="number" name="carousel_gallery_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_gallery_speed'] ?? '3000') ?>" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium transition-all duration-200 bg-gray-50 focus:bg-white focus:shadow-sm">
+                </div>
             </div>
+            
             <div>
-                <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Título de la Sección</label>
-                <input type="text" name="gallery_home_title" value="<?= htmlspecialchars($settings['gallery_home_title'] ?? 'Galería de Excelencia') ?>" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-medium transition-shadow">
-            </div>
-            <div>
-                <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Subtítulo / Descripción</label>
-                <textarea name="gallery_home_subtitle" rows="1" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-medium transition-shadow resize-none"><?= htmlspecialchars($settings['gallery_home_subtitle'] ?? 'Descubre en imágenes nuestro compromiso con la precisión, tecnología e innovación.') ?></textarea>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Subtítulo / Descripción de la Sección</label>
+                <textarea name="gallery_home_subtitle" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium transition-all duration-200 bg-gray-50 focus:bg-white resize-none leading-relaxed focus:shadow-sm"><?= htmlspecialchars($settings['gallery_home_subtitle'] ?? 'Descubre en imágenes nuestro compromiso con la precisión, tecnología e innovación.') ?></textarea>
+                <p class="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-wider pl-1">Esta descripción se mostrará debajo del título de la galería en la página de inicio.</p>
             </div>
         </div>
     </div>

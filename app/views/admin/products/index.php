@@ -255,6 +255,11 @@
                     <label class="block text-xs font-bold text-gray-500 mb-2">Subtítulo de la Sección</label>
                     <textarea name="products_home_subtitle" rows="2" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow resize-none"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></textarea>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-2">Velocidad del Carrusel (Milisegundos)</label>
+                    <input type="number" name="carousel_products_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_products_speed'] ?? '3000') ?>" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
+                    <p class="text-[10px] text-gray-400 mt-1 pl-1 font-bold uppercase tracking-wider">Intervalo de auto-avance automático. Ej: 3000 para 3 segundos.</p>
+                </div>
             </div>
 
             <div class="space-y-4 pt-4 border-t border-gray-100">
