@@ -107,7 +107,7 @@ function formatBlogDate($dateString) {
                         <div class="flex flex-col gap-2">
                             <a href="<?= url('blog') ?>" 
                                onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;"
-                               class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= !$activeCategory ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' ?>">
+                               class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= !$activeCategory ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' ?> cursor-pointer">
                                 <span class="pointer-events-none">Todas las noticias</span>
                                 <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= !$activeCategory ? 'opacity-100' : '' ?> transition-all pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </a>
@@ -118,7 +118,8 @@ function formatBlogDate($dateString) {
                                         $isAct = ($activeCategory === $cat['slug']);
                                     ?>
                                     <a href="<?= $catUrl ?>" 
-                                       class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= $isAct ? 'bg-secondary text-white shadow-md shadow-secondary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-secondary border border-transparent' ?>">
+                                       onclick="window.location.href='<?= $catUrl ?>&r=' + Math.random(); return false;"
+                                       class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= $isAct ? 'bg-secondary text-white shadow-md shadow-secondary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-secondary border border-transparent' ?> cursor-pointer">
                                         <span class="pointer-events-none"><?= htmlspecialchars($cat['name']) ?></span>
                                         <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= $isAct ? 'opacity-100' : '' ?> transition-all pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                     </a>
@@ -136,14 +137,14 @@ function formatBlogDate($dateString) {
                             </h2>
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between bg-indigo-50/50 border border-indigo-100/85 px-4 py-3.5 rounded-xl">
-                                    <span class="text-xs font-extrabold text-indigo-700 uppercase tracking-wider leading-relaxed">
+                                    <span class="text-xs font-extrabold text-indigo-700 uppercase tracking-wider leading-relaxed pointer-events-none">
                                         Categoría: <?= htmlspecialchars($categoryData['name'] ?? '') ?>
                                     </span>
-                                    <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="text-indigo-400 hover:text-indigo-700 transition-colors p-1.5 bg-white hover:bg-indigo-100 rounded-lg shadow-sm border border-indigo-100 flex items-center justify-center" title="Eliminar filtro">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="text-indigo-400 hover:text-indigo-700 transition-colors p-1.5 bg-white hover:bg-indigo-100 rounded-lg shadow-sm border border-indigo-100 flex items-center justify-center cursor-pointer" title="Eliminar filtro">
+                                        <svg class="w-3.5 h-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                                     </a>
                                 </div>
-                                <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="block text-center py-3.5 border border-dashed border-red-200 text-red-500 hover:bg-red-50 hover:border-red-400 rounded-xl font-bold text-xs transition-all uppercase tracking-wider">
+                                <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="block text-center py-3.5 border border-dashed border-red-200 text-red-500 hover:bg-red-50 hover:border-red-400 rounded-xl font-bold text-xs transition-all uppercase tracking-wider cursor-pointer">
                                     <span class="pointer-events-none">Limpiar filtro</span>
                                 </a>
                             </div>
@@ -158,7 +159,8 @@ function formatBlogDate($dateString) {
                         <a href="<?= url('contacto') ?>" 
                            id="blog-sidebar-cta-btn"
                            data-subject="Consulta desde el Blog: <?= htmlspecialchars($settings['blog_sidebar_cta_title'] ?? '¿Tienes un proyecto en mente?', ENT_QUOTES, 'UTF-8') ?>"
-                           class="relative z-10 inline-block bg-white text-primary px-6 py-3 rounded-xl font-extrabold text-sm hover:bg-secondary hover:text-white transition-all shadow-md">
+                           onclick="try { if (typeof openContactModal === 'function') { openContactModal(this.getAttribute('data-subject')); return false; } } catch(e) { console.error(e); } window.location.href=this.href; return false;"
+                           class="relative z-10 inline-block bg-white text-primary px-6 py-3 rounded-xl font-extrabold text-sm hover:bg-secondary hover:text-white transition-all shadow-md cursor-pointer">
                             <span class="pointer-events-none"><?= htmlspecialchars($settings['blog_sidebar_cta_btn_text'] ?? 'Contáctanos') ?></span>
                         </a>
                     </div>
@@ -169,11 +171,11 @@ function formatBlogDate($dateString) {
 </main>
 
 <!-- BOTÓN FLOTANTE MÓVIL (FAB) -->
-<button onclick="toggleFilterDrawer(true)" class="lg:hidden fixed bottom-28 right-6 z-40 w-16 h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center group hover:scale-110 active:scale-95 transition-transform duration-300">
+<button onclick="toggleFilterDrawer(true)" class="lg:hidden fixed bottom-28 right-6 z-40 w-16 h-16 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center group hover:scale-110 active:scale-95 transition-transform duration-300 cursor-pointer">
     <?php if($search || $activeCategory): ?>
-        <span class="absolute -top-1 right-0 w-4 h-4 bg-secondary rounded-full border-2 border-white shadow-sm animate-pulse"></span>
+        <span class="absolute -top-1 right-0 w-4 h-4 bg-secondary rounded-full border-2 border-white shadow-sm animate-pulse pointer-events-none"></span>
     <?php endif; ?>
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+    <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
 </button>
 
 <!-- CAJÓN (DRAWER) DE FILTROS MÓVIL -->
@@ -183,8 +185,8 @@ function formatBlogDate($dateString) {
     <!-- Drawer Header -->
     <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50">
         <h2 class="text-lg font-black text-gray-900">Buscador & Filtros</h2>
-        <button onclick="toggleFilterDrawer(false)" class="text-gray-400 hover:text-gray-600 p-2 bg-white rounded-lg border border-gray-100">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <button onclick="toggleFilterDrawer(false)" class="text-gray-400 hover:text-gray-600 p-2 bg-white rounded-lg border border-gray-100 cursor-pointer">
+            <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
     </div>
 
@@ -198,9 +200,10 @@ function formatBlogDate($dateString) {
             <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Categorías</h3>
             <div class="grid grid-cols-1 gap-2">
                 <a href="<?= url('blog') ?>" 
-                   class="px-5 py-3.5 rounded-xl text-sm font-extrabold border transition-all flex items-center justify-between <?= !$activeCategory ? 'bg-primary text-white border-primary shadow-lg' : 'bg-white text-gray-600 border-gray-100 active:bg-gray-50' ?>">
-                    <span>Todas</span>
-                    <?php if(!$activeCategory): ?> <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> <?php endif; ?>
+                   onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;"
+                   class="px-5 py-3.5 rounded-xl text-sm font-extrabold border transition-all flex items-center justify-between <?= !$activeCategory ? 'bg-primary text-white border-primary shadow-lg' : 'bg-white text-gray-600 border-gray-100 active:bg-gray-50' ?> cursor-pointer">
+                    <span class="pointer-events-none">Todas</span>
+                    <?php if(!$activeCategory): ?> <svg class="w-4 h-4 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> <?php endif; ?>
                 </a>
                 <?php if(!empty($categories)): ?>
                     <?php foreach($categories as $cat): ?>
@@ -209,9 +212,10 @@ function formatBlogDate($dateString) {
                             $mIsAct = ($activeCategory === $cat['slug']);
                         ?>
                         <a href="<?= $mCatUrl ?>" 
-                           class="px-5 py-3.5 rounded-xl text-sm font-extrabold border transition-all flex items-center justify-between <?= $mIsAct ? 'bg-secondary text-white border-secondary shadow-lg' : 'bg-white text-gray-600 border-gray-100 active:bg-gray-50' ?>">
-                            <span><?= htmlspecialchars($cat['name']) ?></span>
-                            <?php if($mIsAct): ?> <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> <?php endif; ?>
+                           onclick="window.location.href='<?= $mCatUrl ?>&r=' + Math.random(); return false;"
+                           class="px-5 py-3.5 rounded-xl text-sm font-extrabold border transition-all flex items-center justify-between <?= $mIsAct ? 'bg-secondary text-white border-secondary shadow-lg' : 'bg-white text-gray-600 border-gray-100 active:bg-gray-50' ?> cursor-pointer">
+                            <span class="pointer-events-none"><?= htmlspecialchars($cat['name']) ?></span>
+                            <?php if($mIsAct): ?> <svg class="w-4 h-4 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> <?php endif; ?>
                         </a>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -221,7 +225,7 @@ function formatBlogDate($dateString) {
 
     <!-- Footer Drawer -->
     <div class="p-6 border-t border-gray-100 bg-gray-50 mt-auto">
-        <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="w-full block text-center py-3.5 border border-gray-200 text-gray-500 rounded-xl font-bold text-sm active:bg-white">Reiniciar Filtros</a>
+        <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="w-full block text-center py-3.5 border border-gray-200 text-gray-500 rounded-xl font-bold text-sm active:bg-white cursor-pointer">Reiniciar Filtros</a>
     </div>
 </div>
 

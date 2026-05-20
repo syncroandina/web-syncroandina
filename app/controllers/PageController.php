@@ -141,6 +141,10 @@ class PageController extends Controller {
     }
 
     public function blog() {
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
         (new Analytics())->logPageView('blog_index', null, $_SERVER['REQUEST_URI'] ?? '/blog', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
 
         $postModel = new \App\Models\BlogPost();
