@@ -47,9 +47,9 @@
                             </div>
 
                             <div class="p-8 flex flex-col flex-grow bg-white">
-                                <h3 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-1">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-1">
                                     <?= htmlspecialchars($service['title']) ?>
-                                </h3>
+                                </h2>
                                 
                                 <p class="text-gray-600 mb-8 leading-relaxed line-clamp-3">
                                     <?= htmlspecialchars(strip_tags($service['content'])) ?>

@@ -2362,4 +2362,90 @@ class AdminController extends Controller {
         header('Location: /admin/notificaciones?success=settings_saved');
         exit;
     }
+
+    public function scripts() {
+        $scriptModel = new \App\Models\Script();
+        $scripts = $scriptModel->all('id ASC');
+        return $this->adminView('scripts/index', [
+            'title' => 'Gestión de Scripts de Seguimiento',
+            'scripts' => $scripts
+        ]);
+    }
+
+    public function saveScript() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        $scriptModel = new \App\Models\Script();
+
+        // NOTA: Para el código HTML/JS de los scripts de seguimiento, no usamos sanitización destructiva (como sanitizeHTML o sanitizeInput)
+        // porque los administradores necesitan ingresar scripts en bruto como <script>, <noscript>, etc.
+        // Pero validamos estrictamente las opciones de ubicación y restricción.
+        $name = \Core\Security::sanitizeInput($_POST['name'] ?? '');
+        $code = $_POST['code'] ?? '';
+        $placement = $_POST['placement'] ?? 'head';
+        $pageRestriction = $_POST['page_restriction'] ?? 'all';
+        $isActive = isset($_POST['is_active']) ? 1 : 0;
+
+        if (!in_array($placement, ['head', 'body_start', 'body_end'])) {
+            $placement = 'head';
+        }
+
+        if (!in_array($pageRestriction, ['all', 'thanks_only'])) {
+            $pageRestriction = 'all';
+        }
+
+        $data = [
+            'name' => $name,
+            'code' => $code,
+            'placement' => $placement,
+            'page_restriction' => $pageRestriction,
+            'is_active' => $isActive
+        ];
+
+        if ($id) {
+            $data['id'] = $id;
+        }
+
+        $scriptModel->save($data);
+
+        header('Location: /admin/scripts?success=script_saved');
+        exit;
+    }
+
+    public function deleteScript() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = $_POST['id'] ?? null;
+        if ($id) {
+            $scriptModel = new \App\Models\Script();
+            $scriptModel->delete($id);
+        }
+
+        header('Location: /admin/scripts?success=script_deleted');
+        exit;
+    }
+
+    public function toggleScriptStatus() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $id = $data['id'] ?? null;
+            $status = $data['status'] ?? 0;
+
+            if ($id) {
+                $scriptModel = new \App\Models\Script();
+                $scriptModel->save(['id' => $id, 'is_active' => $status]);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
+        exit;
+    }
 }
+

@@ -132,3 +132,10 @@ $router->post('admin/call-center/delete', 'AdminController@deleteCallCenterConta
 $router->post('admin/call-center/reorder', 'AdminController@reorderCallCenterContacts');
 $router->post('admin/call-center/settings', 'AdminController@saveCallCenterSettings');
 
+// Scripts de Seguimiento (CRUD Admin)
+$router->get('admin/scripts', 'AdminController@scripts');
+$router->post('admin/scripts/save', 'AdminController@saveScript');
+$router->post('admin/scripts/delete', 'AdminController@deleteScript');
+$router->post('admin/scripts/toggle', 'AdminController@toggleScriptStatus');
+
+

@@ -13,7 +13,7 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div class="col-span-1 md:col-span-2">
-                    <h2 class="text-2xl font-bold text-white mb-4"><?= htmlspecialchars($settings['footer_brand_name'] ?? $settings['identity_name'] ?? 'Syncro Andina') ?></h2>
+                    <p class="text-2xl font-bold text-white mb-4"><?= htmlspecialchars($settings['footer_brand_name'] ?? $settings['identity_name'] ?? 'Syncro Andina') ?></p>
                     <p class="max-w-md text-gray-400"><?= htmlspecialchars($settings['footer_description'] ?? 'Transformando negocios con soluciones tecnológicas innovadoras. Llevamos tu corporación al siguiente nivel de eficiencia y seguridad.') ?></p>
                     
                     <?php if(!empty($linkedin) || !empty($facebook) || !empty($instagram) || !empty($twitter) || !empty($youtube)): ?>
@@ -47,7 +47,7 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
                     <?php endif; ?>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-white mb-4"><?= htmlspecialchars($settings['footer_menu_heading'] ?? 'Enlaces Rápidos') ?></h3>
+                    <p class="text-lg font-semibold text-white mb-4"><?= htmlspecialchars($settings['footer_menu_heading'] ?? 'Enlaces Rápidos') ?></p>
                     <ul class="space-y-2">
                         <?php 
                         for($i = 1; $i <= 5; $i++):
@@ -61,7 +61,7 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-white mb-6">Contacto</h3>
+                    <p class="text-lg font-semibold text-white mb-6">Contacto</p>
                     <div class="space-y-4">
                         <!-- Sede / Dirección -->
                         <div class="flex items-start gap-3 group">
@@ -125,5 +125,17 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
             }).catch(e => console.error('Tracking error:', e));
         }
     </script>
+    <!-- Scripts de Seguimiento (Body End) -->
+    <?php
+    $scriptModel = new \App\Models\Script();
+    $isThanksPage = (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/gracias');
+    $activeScripts = $scriptModel->getActiveForPage($isThanksPage);
+    foreach ($activeScripts as $s):
+        if ($s['placement'] === 'body_end'):
+            echo "\n" . $s['code'] . "\n";
+        endif;
+    endforeach;
+    ?>
 </body>
 </html>
+

@@ -96,5 +96,25 @@
             }
         }
     </style>
+    <!-- Scripts de Seguimiento (Head) -->
+    <?php
+    $scriptModel = new \App\Models\Script();
+    $isThanksPage = (parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === '/gracias');
+    $activeScripts = $scriptModel->getActiveForPage($isThanksPage);
+    foreach ($activeScripts as $s):
+        if ($s['placement'] === 'head'):
+            echo "\n" . $s['code'] . "\n";
+        endif;
+    endforeach;
+    ?>
 </head>
 <body class="antialiased text-gray-800 bg-gray-50">
+    <!-- Scripts de Seguimiento (Body Start) -->
+    <?php
+    foreach ($activeScripts as $s):
+        if ($s['placement'] === 'body_start'):
+            echo "\n" . $s['code'] . "\n";
+        endif;
+    endforeach;
+    ?>
+

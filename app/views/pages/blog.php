@@ -108,8 +108,8 @@ function formatBlogDate($dateString) {
                             <a href="<?= url('blog') ?>" 
                                onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;"
                                class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= !$activeCategory ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' ?> cursor-pointer">
-                                <span class="pointer-events-none">Todas las noticias</span>
-                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= !$activeCategory ? 'opacity-100' : '' ?> transition-all pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                <span class="pointer-events-none" style="pointer-events: none;">Todas las noticias</span>
+                                <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= !$activeCategory ? 'opacity-100' : '' ?> transition-all pointer-events-none" style="pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </a>
                             <?php if(!empty($categories)): ?>
                                 <?php foreach($categories as $cat): ?>
@@ -120,8 +120,8 @@ function formatBlogDate($dateString) {
                                     <a href="<?= $catUrl ?>" 
                                        onclick="window.location.href='<?= $catUrl ?>&r=' + Math.random(); return false;"
                                        class="group flex items-center justify-between px-4 py-3.5 rounded-xl text-sm font-bold transition-all <?= $isAct ? 'bg-secondary text-white shadow-md shadow-secondary/20' : 'text-gray-600 hover:bg-gray-50 hover:text-secondary border border-transparent' ?> cursor-pointer">
-                                        <span class="pointer-events-none"><?= htmlspecialchars($cat['name']) ?></span>
-                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= $isAct ? 'opacity-100' : '' ?> transition-all pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                        <span class="pointer-events-none" style="pointer-events: none;"><?= htmlspecialchars($cat['name']) ?></span>
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 <?= $isAct ? 'opacity-100' : '' ?> transition-all pointer-events-none" style="pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                     </a>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -141,11 +141,11 @@ function formatBlogDate($dateString) {
                                         Categoría: <?= htmlspecialchars($categoryData['name'] ?? '') ?>
                                     </span>
                                     <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="text-indigo-400 hover:text-indigo-700 transition-colors p-1.5 bg-white hover:bg-indigo-100 rounded-lg shadow-sm border border-indigo-100 flex items-center justify-center cursor-pointer" title="Eliminar filtro">
-                                        <svg class="w-3.5 h-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        <svg class="w-3.5 h-3.5 pointer-events-none" style="pointer-events: none;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                                     </a>
                                 </div>
                                 <a href="<?= url('blog') ?>" onclick="window.location.href='<?= url('blog') ?>?r=' + Math.random(); return false;" class="block text-center py-3.5 border border-dashed border-red-200 text-red-500 hover:bg-red-50 hover:border-red-400 rounded-xl font-bold text-xs transition-all uppercase tracking-wider cursor-pointer">
-                                    <span class="pointer-events-none">Limpiar filtro</span>
+                                    <span class="pointer-events-none" style="pointer-events: none;">Limpiar filtro</span>
                                 </a>
                             </div>
                         </div>
@@ -184,7 +184,7 @@ function formatBlogDate($dateString) {
     
     <!-- Drawer Header -->
     <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-        <h2 class="text-lg font-black text-gray-900">Buscador & Filtros</h2>
+        <h2 class="text-lg font-black text-gray-900">Buscador &amp; Filtros</h2>
         <button onclick="toggleFilterDrawer(false)" class="text-gray-400 hover:text-gray-600 p-2 bg-white rounded-lg border border-gray-100 cursor-pointer">
             <svg class="w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>

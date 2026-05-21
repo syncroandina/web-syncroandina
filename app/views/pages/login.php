@@ -29,9 +29,9 @@
                 </a>
             </div>
         <?php endif; ?>
-        <h2 class="text-center text-3xl font-extrabold text-gray-900">
+        <h1 class="text-center text-3xl font-extrabold text-gray-900">
             Portal de Acceso
-        </h2>
+        </h1>
         <p class="mt-3 text-center text-sm text-gray-600">
             Ingresa a tu entorno corporativo o panel de administración
         </p>

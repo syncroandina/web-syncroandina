@@ -49,7 +49,7 @@
 
                 <?php if(!empty($product['technical_details'])): ?>
                 <div class="mb-10 bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                    <h3 class="text-sm font-extrabold text-gray-900 uppercase tracking-widest mb-4">Especificaciones Técnicas</h3>
+                    <h2 class="text-sm font-extrabold text-gray-900 uppercase tracking-widest mb-4">Especificaciones Técnicas</h2>
                     <ul class="space-y-3">
                         <?php 
                         $techDetails = explode("\n", trim($product['technical_details']));

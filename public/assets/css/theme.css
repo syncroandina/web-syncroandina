@@ -36,3 +36,9 @@ h6 { font-family: var(--font-h6); }
         max-width: 95% !important;
     }
 }
+
+/* Corregir eventos del cursor en elementos hijos */
+.pointer-events-none {
+    pointer-events: none !important;
+}
+

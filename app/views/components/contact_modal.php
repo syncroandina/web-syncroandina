@@ -46,7 +46,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
-                <h4 class="text-2xl font-extrabold text-gray-900 mb-2">¡Mensaje Enviado!</h4>
+                <h3 class="text-2xl font-extrabold text-gray-900 mb-2">¡Mensaje Enviado!</h3>
                 <p class="text-gray-500 text-sm max-w-xs leading-relaxed" id="contact-modal-success-msg">Tu solicitud ha sido recibida con éxito. Uno de nuestros ingenieros comerciales se pondrá en contacto contigo en unos minutos.</p>
             </div>
 
