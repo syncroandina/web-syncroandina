@@ -42,3 +42,17 @@ h6 { font-family: var(--font-h6); }
     pointer-events: none !important;
 }
 
+/* Optimizaciones GPU para imágenes y bordes redondeados en transiciones */
+.gpu-clip-fix {
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    isolation: isolate;
+}
+.gpu-image-fix {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+}
+
+

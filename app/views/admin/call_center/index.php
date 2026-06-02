@@ -21,35 +21,52 @@
         </div>
     </div>
     
-    <form action="<?= url('admin/call-center/settings') ?>" method="POST" class="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+    <form action="<?= url('admin/call-center/settings') ?>" method="POST" class="space-y-6">
         <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
         
-        <div class="md:col-span-3">
-            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Título Principal (Cabecera)</label>
-            <input type="text" name="call_center_main_title" value="<?= htmlspecialchars($settings['call_center_main_title'] ?? 'Central de Atención') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
-        </div>
-
-        <div class="md:col-span-3">
-            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Subtítulo (Cabecera)</label>
-            <input type="text" name="call_center_main_subtitle" value="<?= htmlspecialchars($settings['call_center_main_subtitle'] ?? 'ESTAMOS LISTOS PARA AYUDARTE') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
-        </div>
-        
-        <div class="md:col-span-3">
-            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Pie de Página (Copyright/Info)</label>
-            <input type="text" name="call_center_footer_text" value="<?= htmlspecialchars($settings['call_center_footer_text'] ?? '© Syncro Andina - Soluciones Industriales') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
-        </div>
-
-        <div class="md:col-span-3 flex items-center gap-4 h-[52px]">
-            <div class="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 flex items-center justify-between h-full">
-                <span class="text-xs font-bold text-gray-600">Visibilidad Web</span>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" name="call_center_is_visible" value="1" class="sr-only peer" <?= ($settings['call_center_is_visible'] ?? '1') == '1' ? 'checked' : '' ?>>
-                    <div class="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Título Principal (Cabecera)</label>
+                <input type="text" name="call_center_main_title" value="<?= htmlspecialchars($settings['call_center_main_title'] ?? 'Central de Atención') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
             </div>
-            <button type="submit" class="bg-gray-900 hover:bg-black text-white px-6 h-full rounded-2xl text-sm font-bold transition-all shadow-md shadow-gray-900/10">
-                Actualizar
-            </button>
+
+            <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Subtítulo (Cabecera)</label>
+                <input type="text" name="call_center_main_subtitle" value="<?= htmlspecialchars($settings['call_center_main_subtitle'] ?? 'ESTAMOS LISTOS PARA AYUDARTE') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
+            </div>
+            
+            <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Pie de Página (Copyright/Info)</label>
+                <input type="text" name="call_center_footer_text" value="<?= htmlspecialchars($settings['call_center_footer_text'] ?? '© Syncro Andina - Soluciones Industriales') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
+            </div>
+
+            <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Estado del Widget</label>
+                <div class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 flex items-center justify-between h-[52px]">
+                    <span class="text-xs font-bold text-gray-600">Visibilidad Web</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="call_center_is_visible" value="1" class="sr-only peer" <?= ($settings['call_center_is_visible'] ?? '1') == '1' ? 'checked' : '' ?>>
+                        <div class="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-gray-100 grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+            <div class="md:col-span-9">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Mensaje Preestablecido de WhatsApp</label>
+                <textarea name="call_center_whatsapp_message" rows="3" placeholder="Ej: Hola, estoy interesado en más información..." class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50"><?= htmlspecialchars($settings['call_center_whatsapp_message'] ?? 'Hola, me gustaría recibir más información.') ?></textarea>
+                <p class="text-gray-450 text-xs mt-2 flex items-center gap-1.5 leading-relaxed">
+                    <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span><strong>Nota:</strong> Al final de este mensaje se adjuntará automáticamente la URL de la página actual desde la cual navega el usuario (ej: <em>Referencia: https://syncroandina.com/productos/nombre-de-producto</em>).</span>
+                </p>
+            </div>
+            <div class="md:col-span-3 pt-6 md:pt-[28px] flex justify-end">
+                <button type="submit" class="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl text-sm font-bold transition-all shadow-md shadow-gray-900/10 flex items-center justify-center gap-2 hover:shadow-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Actualizar Ajustes
+                </button>
+            </div>
         </div>
     </form>
 </div>

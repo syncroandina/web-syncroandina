@@ -8,9 +8,9 @@
     <section class="py-24 bg-gray-50 border-b border-gray-100 overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center">
             <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['services_label'] ?? 'Lo que hacemos') ?></p>
-            <h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['services_title'] ?? 'Nuestros Servicios Especializados') ?></h1>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['services_title'] ?? 'Nuestros Servicios Especializados') ?></h1>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8 animate-fade-in"><?= htmlspecialchars($settings['services_description'] ?? 'Ofrecemos soluciones integrales diseñadas para impulsar el crecimiento y la seguridad de tu infraestructura corporativa.') ?></p>
+            <p class="text-gray-600 max-w-5xl mx-auto text-base md:text-lg mt-6 md:mt-8 leading-relaxed animate-fade-in"><?= htmlspecialchars($settings['services_description'] ?? 'Ofrecemos soluciones integrales diseñadas para impulsar el crecimiento y la seguridad de tu infraestructura corporativa.') ?></p>
         </div>
         
         <div class="container mx-auto px-4 relative z-10">
@@ -36,17 +36,17 @@
             <div class="services-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyServicesSm ?> <?= $justifyServicesLg ?> <?= $justifyServicesXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <?php if(!empty($services)): ?>
                     <?php foreach($services as $index => $service): ?>
-                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
-                        <div class="group bg-white rounded-[2rem] border border-gray-200 hover:border-primary/40 transition-all duration-300 h-full flex flex-col overflow-hidden relative hover:-translate-y-1">
+                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] group">
+                        <div class="bg-white rounded-[2rem] border border-gray-200 group-hover:border-primary/40 transition-all duration-300 h-full flex flex-col relative group-hover:-translate-y-1 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
                             <!-- Imagen del Servicio -->
-                            <div class="relative h-64 overflow-hidden border-b border-gray-200">
+                            <div class="relative h-64 overflow-hidden rounded-t-[2rem] border-b border-gray-200 gpu-clip-fix">
                                 <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
                                      alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
-                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 gpu-image-fix">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                             </div>
 
-                            <div class="p-8 flex flex-col flex-grow bg-white">
+                            <div class="p-8 flex flex-col flex-grow bg-white rounded-b-[2rem]">
                                 <h2 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-1">
                                     <?= htmlspecialchars($service['title']) ?>
                                 </h2>
@@ -96,11 +96,11 @@
                 <?= htmlspecialchars($settings['home_cta_tagline'] ?? '¿Listo para transformar tu empresa?') ?>
             </div>
             
-            <h2 class="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight leading-tight max-w-4xl mx-auto">
+            <h2 class="text-2xl md:text-4xl font-black text-white mb-8 tracking-tight leading-tight max-w-3xl mx-auto">
                 <?= isset($settings['home_cta_headline']) ? $settings['home_cta_headline'] : 'Impulsa tu negocio con <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">tecnología de vanguardia</span>' ?>
             </h2>
 
-            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+            <p class="text-gray-400 text-sm sm:text-base md:text-xl max-w-3xl mx-auto mb-12 leading-relaxed">
                 <?= htmlspecialchars($settings['home_cta_description'] ?? 'Nuestro equipo de expertos está listo para ayudarte a encontrar las mejores soluciones tecnológicas para tus necesidades empresariales.') ?>
             </p>
 
@@ -136,9 +136,9 @@
     <?php if(!empty($featuredProducts)): ?>
     <section class="py-24 bg-gray-50 border-b border-gray-100 overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center relative z-10">
-            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Repuestos Recientes') ?></h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Repuestos Recientes') ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8 animate-fade-in"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Componentes y repuestos que demuestran nuestra calidad.') ?></p>
+            <p class="text-gray-600 max-w-5xl mx-auto text-base md:text-lg mt-6 md:mt-8 leading-relaxed animate-fade-in"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Componentes y repuestos que demuestran nuestra calidad.') ?></p>
         </div>
 
         <div class="container mx-auto px-4 relative z-10">
@@ -164,14 +164,14 @@
 
             <div class="products-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifySm ?> <?= $justifyLg ?> <?= $justifyXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <?php foreach($featuredProducts as $index => $product): ?>
-                <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)]">
-                    <a href="/repuestos/<?= htmlspecialchars($product['slug']) ?>" class="group block bg-white rounded-3xl overflow-hidden border border-gray-200 hover:border-primary/40 transition-all duration-300 h-full flex flex-col relative hover:-translate-y-1">
-                        <div class="relative bg-gray-100 overflow-hidden border-b border-gray-200 aspect-w-4 aspect-h-3">
-                            <img src="<?= asset($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" loading="lazy" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700">
+                <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] group">
+                    <a href="/repuestos/<?= htmlspecialchars($product['slug']) ?>" class="block bg-white rounded-3xl border border-gray-200 group-hover:border-primary/40 transition-all duration-300 h-full flex flex-col relative group-hover:-translate-y-1 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
+                        <div class="relative bg-gray-100 overflow-hidden rounded-t-3xl border-b border-gray-200 aspect-w-4 aspect-h-3 gpu-clip-fix">
+                            <img src="<?= asset($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" loading="lazy" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700 gpu-image-fix">
                             <!-- Efecto gradiente premium -->
                             <div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
-                        <div class="p-6 flex-1 flex flex-col bg-white">
+                        <div class="p-6 flex-1 flex flex-col bg-white rounded-b-3xl">
                             <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors line-clamp-1"><?= htmlspecialchars($product['title']) ?></h3>
                             <p class="text-gray-500 text-sm line-clamp-2 mb-4 flex-1 leading-relaxed"><?= htmlspecialchars($product['description']) ?></p>
                             <div class="flex items-center justify-between text-sm font-bold text-primary group-hover:text-secondary transition-colors mt-auto pt-4 border-t border-gray-100/50">
@@ -201,9 +201,9 @@
     <!-- Sección de Proyectos (Ahora abajo) -->
     <section class="py-24 bg-white overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center">
-            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['projects_home_title'] ?? 'Nuestros Proyectos Recientes') ?></h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto"><?= htmlspecialchars($settings['projects_home_title'] ?? 'Nuestros Proyectos Recientes') ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full"></div>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8"><?= htmlspecialchars($settings['projects_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></p>
+            <p class="text-gray-600 max-w-5xl mx-auto text-base md:text-lg mt-6 md:mt-8 leading-relaxed"><?= htmlspecialchars($settings['projects_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></p>
         </div>
 
         <div class="container mx-auto px-4 relative z-10">
@@ -229,14 +229,16 @@
             <div class="projects-carousel-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyProjSm ?> <?= $justifyProjLg ?> <?= $justifyProjXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <?php if(!empty($latestProjects)): ?>
                     <?php foreach($latestProjects as $index => $project): ?>
-                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
-                        <a href="/proyectos/<?= htmlspecialchars($project['slug']) ?>" class="group relative rounded-[2rem] overflow-hidden cursor-pointer block hover:-translate-y-1 transition-all duration-300 h-80 bg-gray-150 border border-gray-200">
-                            <img src="<?= htmlspecialchars($project['main_image']) ?>" alt="<?= htmlspecialchars($project['image_alt'] ?: $project['title']) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent opacity-80"></div>
-                            <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                <span class="inline-block px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full mb-3"><?= htmlspecialchars($project['client']) ?></span>
-                                <h3 class="text-2xl font-bold text-white mb-2"><?= htmlspecialchars($project['title']) ?></h3>
-                                <p class="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2 text-sm"><?= htmlspecialchars($project['description']) ?></p>
+                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] group">
+                        <a href="/proyectos/<?= htmlspecialchars($project['slug']) ?>" class="relative rounded-[2rem] cursor-pointer block group-hover:-translate-y-1 transition-all duration-300 h-80 bg-gray-150 border border-gray-200 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
+                            <div class="absolute inset-0 overflow-hidden rounded-[2rem] gpu-clip-fix">
+                                <img src="<?= htmlspecialchars($project['main_image']) ?>" alt="<?= htmlspecialchars($project['image_alt'] ?: $project['title']) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 gpu-image-fix">
+                                <div class="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent opacity-80"></div>
+                                <div class="absolute bottom-0 left-0 p-8 w-full translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                                    <span class="inline-block px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full mb-3"><?= htmlspecialchars($project['client']) ?></span>
+                                    <h3 class="text-xl font-bold text-white mb-2"><?= htmlspecialchars($project['title']) ?></h3>
+                                    <p class="text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2 text-sm"><?= htmlspecialchars($project['description']) ?></p>
+                                </div>
                             </div>
                         </a>
                     </div>
@@ -262,8 +264,8 @@
     <!-- Sección de Logos de Clientes (Carrusel Infinito Premium) -->
     <section class="py-24 bg-gray-50 border-t border-b border-gray-100 overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center">
-            <p class="text-xs font-bold tracking-[0.2em] text-secondary uppercase mb-3 animate-fade-in">RESPALDO CORPORATIVO</p>
-            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in">Confían en Syncro Andina</h2>
+            <p class="text-xs font-bold tracking-[0.2em] text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['clients_slider_tagline'] ?? 'RESPALDO CORPORATIVO') ?></p>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['clients_slider_title'] ?? 'Confían en Syncro Andina') ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
         </div>
 
@@ -328,9 +330,9 @@
     <section class="py-24 bg-white overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center">
             <p class="text-sm font-black tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_tagline'] ?? 'Visualiza Nuestro Trabajo') ?></p>
-            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_title'] ?? 'Galería de Excelencia') ?></h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['gallery_home_title'] ?? 'Galería de Excelencia') ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
-            <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-8 animate-fade-in"><?= htmlspecialchars($settings['gallery_home_subtitle'] ?? 'Descubre en imágenes nuestro compromiso con la precisión, tecnología e innovación.') ?></p>
+            <p class="text-gray-600 max-w-5xl mx-auto text-base md:text-lg mt-6 md:mt-8 leading-relaxed animate-fade-in"><?= htmlspecialchars($settings['gallery_home_subtitle'] ?? 'Descubre en imágenes nuestro compromiso con la precisión, tecnología e innovación.') ?></p>
         </div>
 
         <div class="container mx-auto px-4 relative z-10">
@@ -355,19 +357,21 @@
             ?>
             <div class="gallery-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyGalSm ?> <?= $justifyGalLg ?> <?= $justifyGalXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <?php foreach($galleryItems as $index => $item): ?>
-                <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
-                    <div class="group relative rounded-[2rem] overflow-hidden border border-gray-200 hover:border-primary/40 transition-all duration-300 cursor-pointer home-gallery-trigger hover:-translate-y-1 h-80 bg-gray-100" data-src="<?= asset($item['image_path']) ?>" data-title="<?= htmlspecialchars($item['title'] ?? '') ?>" data-index="<?= $index ?>">
-                        <img src="<?= asset($item['image_path']) ?>" alt="<?= htmlspecialchars($item['image_alt'] ?: ($item['title'] ?: 'Syncro Andina Galería')) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        
-                        <!-- Overlay Premium -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                            <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                                <div class="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center shadow-lg mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
-                                    <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] group">
+                    <div class="relative rounded-[2rem] border border-gray-200 group-hover:border-primary/40 transition-all duration-300 cursor-pointer home-gallery-trigger group-hover:-translate-y-1 h-80 bg-gray-100 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" data-src="<?= asset($item['image_path']) ?>" data-title="<?= htmlspecialchars($item['title'] ?? '') ?>" data-index="<?= $index ?>" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
+                        <div class="absolute inset-0 overflow-hidden rounded-[2rem] gpu-clip-fix">
+                            <img src="<?= asset($item['image_path']) ?>" alt="<?= htmlspecialchars($item['image_alt'] ?: ($item['title'] ?: 'Syncro Andina Galería')) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 gpu-image-fix">
+                            
+                            <!-- Overlay Premium -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
+                                <div class="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                                    <div class="w-12 h-12 rounded-full bg-secondary text-white flex items-center justify-center shadow-lg mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100">
+                                        <svg class="w-6 h-6 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                    </div>
+                                    <?php if(!empty($item['title'])): ?>
+                                        <h3 class="text-xl font-extrabold text-white leading-tight"><?= htmlspecialchars($item['title']) ?></h3>
+                                    <?php endif; ?>
                                 </div>
-                                <?php if(!empty($item['title'])): ?>
-                                    <h3 class="text-xl font-extrabold text-white leading-tight"><?= htmlspecialchars($item['title']) ?></h3>
-                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -469,8 +473,11 @@
     <section class="py-24 bg-gray-50 border-t border-gray-100 overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center">
             <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['home_blog_tagline'] ?? 'Actualidad y Conocimiento') ?></p>
-            <h2 class="text-4xl md:text-5xl font-extrabold text-primary mb-6 animate-fade-in"><?= htmlspecialchars($settings['home_blog_title'] ?? 'Nuestro Blog Corporativo') ?></h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['home_blog_title'] ?? 'Nuestro Blog Corporativo') ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
+            <?php if(!empty($settings['home_blog_description'])): ?>
+                <p class="text-sm md:text-base text-gray-500 max-w-2xl mx-auto mt-6 leading-relaxed animate-fade-in"><?= htmlspecialchars($settings['home_blog_description']) ?></p>
+            <?php endif; ?>
         </div>
 
         <div class="container mx-auto px-4 relative z-10">
@@ -496,10 +503,10 @@
             <div class="blog-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifyBlogSm ?> <?= $justifyBlogLg ?> <?= $justifyBlogXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <?php if(!empty($latestPosts)): ?>
                     <?php foreach($latestPosts as $index => $post): ?>
-                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
-                        <article class="group bg-white rounded-[2.5rem] p-4 border border-gray-200 hover:border-primary/40 transition-all duration-300 flex flex-col h-full hover:-translate-y-1">
-                            <div class="relative overflow-hidden rounded-[2rem] aspect-[16/10] mb-6">
-                                <img src="<?= asset($post['image'] ?: 'assets/images/blog-placeholder.jpg') ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] group">
+                        <article class="bg-white rounded-[2.5rem] p-4 border border-gray-200 group-hover:border-primary/40 transition-all duration-300 flex flex-col h-full group-hover:-translate-y-1 relative after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
+                            <div class="relative overflow-hidden rounded-[2rem] aspect-[16/10] mb-6 gpu-clip-fix" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
+                                <img src="<?= asset($post['image'] ?: 'assets/images/blog-placeholder.jpg') ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 gpu-image-fix">
                                 <div class="absolute top-4 left-4">
                                     <span class="bg-white/90 backdrop-blur-md text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
                                         <?= date('d M, Y', strtotime($post['published_at'] ?? $post['created_at'])) ?>
@@ -509,10 +516,10 @@
                             
                             <div class="px-4 pb-4 flex flex-col flex-grow">
                                 <h3 class="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-2">
-                                    <a href="<?= url('blog/' . $post['slug']) ?>"><?= htmlspecialchars($post['title']) ?></a>
+                                    <a href="<?= url('blog/' . $post['slug']) ?>"><?= htmlspecialchars(html_entity_decode(htmlspecialchars_decode($post['title'] ?? ''), ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?></a>
                                 </h3>
                                 <p class="text-gray-600 mb-8 line-clamp-3 text-sm leading-relaxed">
-                                    <?= htmlspecialchars($post['excerpt']) ?>
+                                    <?= htmlspecialchars(html_entity_decode(htmlspecialchars_decode($post['excerpt'] ?? ''), ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?>
                                 </p>
                                 
                                 <div class="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">

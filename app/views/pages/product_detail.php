@@ -39,7 +39,7 @@
             <!-- Columna Derecha: Información (6 columnas en Desktop) -->
             <div class="lg:col-span-6 lg:sticky lg:top-32 animate-fade-in-up" style="animation-delay: 200ms;">
                 
-                <h1 class="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-[1.1]">
+                <h1 class="text-3xl md:text-5xl font-black text-gray-900 mb-6 leading-[1.1]">
                     <?= htmlspecialchars($product['title']) ?>
                 </h1>
                 

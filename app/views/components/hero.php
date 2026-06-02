@@ -4,10 +4,10 @@ if (!$hasSliders) return;
 ?>
 
 <!-- Swiper Container -->
-<div class="swiper heroSwiper relative group">
+<div class="swiper heroSwiper relative group h-[580px] sm:h-[680px] lg:h-[750px]">
     <div class="swiper-wrapper">
         <?php foreach($sliders as $slider): ?>
-            <div class="swiper-slide relative bg-primary overflow-hidden min-h-[600px] sm:min-h-[700px] flex items-center">
+            <div class="swiper-slide relative bg-primary overflow-hidden h-full flex items-center">
                 <!-- Background Image with Overlay -->
                 <div class="absolute inset-0">
                     <img src="<?= asset($slider['image_path']) ?>" alt="<?= htmlspecialchars($slider['image_alt'] ?: $slider['title']) ?>" class="w-full h-full object-cover opacity-40">
@@ -15,17 +15,17 @@ if (!$hasSliders) return;
                 </div>
 
                 <!-- Content -->
-                <div class="relative container mx-auto px-4 py-32 flex flex-col items-center sm:items-start text-center sm:text-left z-10">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-[10px] font-bold tracking-widest mb-8 backdrop-blur-sm transform transition-all duration-700 translate-y-8 opacity-0 swiper-lazy-content">
+                <div class="relative container mx-auto px-4 py-20 sm:py-32 flex flex-col items-center sm:items-start text-center sm:text-left z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-[10px] font-bold tracking-widest mb-4 sm:mb-8 backdrop-blur-sm transform transition-all duration-700 translate-y-8 opacity-0 swiper-lazy-content">
                         <span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
                         <?= htmlspecialchars($slider['top_label'] ?? 'SYNCRO ANDINA INGENIERÍA') ?>
                     </div>
                     
-                    <p class="text-5xl sm:text-7xl font-extrabold text-white tracking-tight mb-6 leading-tight max-w-4xl transform transition-all duration-700 delay-100 translate-y-8 opacity-0 swiper-lazy-content">
+                    <p class="text-3xl sm:text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-4 sm:mb-6 leading-tight max-w-4xl transform transition-all duration-700 delay-100 translate-y-8 opacity-0 swiper-lazy-content">
                         <?= $slider['title'] ?>
                     </p>
                     
-                    <p class="text-xl text-gray-300 max-w-2xl mb-12 leading-relaxed transform transition-all duration-700 delay-200 translate-y-8 opacity-0 swiper-lazy-content">
+                    <p class="text-sm sm:text-base md:text-xl text-gray-300 max-w-2xl mb-8 sm:mb-12 leading-relaxed transform transition-all duration-700 delay-200 translate-y-8 opacity-0 swiper-lazy-content">
                         <?= htmlspecialchars($slider['subtitle']) ?>
                     </p>
                     

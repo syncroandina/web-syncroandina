@@ -54,7 +54,7 @@
                 <span class="text-white select-none"><?= htmlspecialchars($service['title']) ?></span>
             </nav>
             
-            <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight max-w-4xl leading-tight">
+            <h1 class="text-3xl md:text-5xl font-black mb-6 tracking-tight max-w-4xl leading-tight">
                 <?= htmlspecialchars($service['title']) ?>
             </h1>
             <div class="w-20 h-1.5 bg-secondary rounded-full"></div>
@@ -69,7 +69,7 @@
             <div class="lg:col-span-2 space-y-12">
                 <!-- Tarjeta Principal con Descripción -->
                 <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
-                    <h2 class="text-3xl font-extrabold text-primary mb-6 flex items-center gap-3">
+                    <h2 class="text-2xl font-extrabold text-primary mb-6 flex items-center gap-3">
                         <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
                         <?= htmlspecialchars($service['heading_description'] ?? 'Descripción') ?>
                     </h2>

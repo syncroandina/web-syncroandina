@@ -62,4 +62,16 @@ class BlogPost extends Model {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getBySlug($slug) {
+        $sql = "SELECT p.*, u.name as author_name, c.name as category_name, c.slug as category_slug 
+                FROM {$this->table} p
+                LEFT JOIN users u ON p.author_id = u.id
+                LEFT JOIN blog_categories c ON p.category_id = c.id
+                WHERE p.slug = :slug AND p.status = 'published' AND p.deleted_at IS NULL LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':slug', $slug);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
 }

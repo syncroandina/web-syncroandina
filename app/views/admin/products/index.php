@@ -233,51 +233,79 @@
 
 <!-- Modal de Configuración de Textos -->
 <div id="settings-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
-    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 max-w-2xl w-full mx-4 overflow-hidden transform scale-95 transition-all duration-300" id="settings-modal-container">
-        <div class="px-8 py-6 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="text-xl font-bold text-gray-800">Configurar Textos de Repuestos</h3>
-            <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 max-w-3xl w-full mx-4 overflow-hidden transform scale-95 transition-all duration-300 flex flex-col max-h-[90vh]" id="settings-modal-container">
+        <div class="px-8 py-6 bg-gray-50 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                Configurar Textos y Ajustes de Repuestos
+            </h3>
+            <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white rounded-xl">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
         
-        <form action="<?= url('admin/repuestos/settings') ?>" method="POST" class="p-8 space-y-6">
+        <form action="<?= url('admin/repuestos/settings') ?>" method="POST" class="p-8 space-y-6 overflow-y-auto flex-1">
             <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
             
             <div class="space-y-4">
-                <h4 class="text-sm font-extrabold uppercase tracking-widest text-secondary border-b border-gray-100 pb-2 mb-4">Sección en Inicio (Home)</h4>
+                <h4 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Sección en Portada (Inicio)</h4>
                 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-2">Título de la Sección</label>
-                    <input type="text" name="products_home_title" value="<?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Repuestos Recientes') ?>" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título de la Sección</label>
+                    <input type="text" name="products_home_title" value="<?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Repuestos Recientes') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-2">Subtítulo de la Sección</label>
-                    <textarea name="products_home_subtitle" rows="2" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow resize-none"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></textarea>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Subtítulo de la Sección</label>
+                    <textarea name="products_home_subtitle" rows="2" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Casos de éxito que demuestran nuestra capacidad de ejecución e innovación.') ?></textarea>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-2">Velocidad del Carrusel (Milisegundos)</label>
-                    <input type="number" name="carousel_products_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_products_speed'] ?? '3000') ?>" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
-                    <p class="text-[10px] text-gray-400 mt-1 pl-1 font-bold uppercase tracking-wider">Intervalo de auto-avance automático. Ej: 3000 para 3 segundos.</p>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Velocidad del Carrusel (Milisegundos)</label>
+                    <input type="number" name="carousel_products_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_products_speed'] ?? '3000') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
+                    <p class="text-[10px] text-gray-400 mt-1.5 pl-1 font-bold uppercase tracking-wider">Intervalo de auto-avance automático. Ej: 3000 para 3 segundos.</p>
                 </div>
             </div>
 
-            <div class="space-y-4 pt-4 border-t border-gray-100">
-                <h4 class="text-sm font-extrabold uppercase tracking-widest text-secondary border-b border-gray-100 pb-2 mb-4">Página de Repuestos General (/repuestos)</h4>
+            <hr class="border-gray-100">
+
+            <div class="space-y-4">
+                <h4 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Página Principal de Repuestos General (/repuestos)</h4>
                 
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-2">Título de la Página</label>
-                    <input type="text" name="products_page_title" value="<?= htmlspecialchars($settings['products_page_title'] ?? 'Casos de Éxito') ?>" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título de la Página</label>
+                    <input type="text" name="products_page_title" value="<?= htmlspecialchars($settings['products_page_title'] ?? 'Repuestos de Alta Calidad') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-2">Subtítulo de la Página</label>
-                    <textarea name="products_page_subtitle" rows="2" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow resize-none"><?= htmlspecialchars($settings['products_page_subtitle'] ?? 'Repuestos emblemáticos que demuestran nuestro compromiso absoluto con la calidad corporativa y la entrega de valor real.') ?></textarea>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Subtítulo de la Página</label>
+                    <textarea name="products_page_subtitle" rows="2" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none"><?= htmlspecialchars($settings['products_page_subtitle'] ?? 'Repuestos emblemáticos que demuestran nuestro compromiso absoluto con la calidad corporativa y la entrega de valor real.') ?></textarea>
+                </div>
+            </div>
+
+            <hr class="border-gray-100">
+
+            <!-- OPTIMIZACIÓN SEO -->
+            <div class="space-y-4">
+                <h5 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Optimización SEO (Página /repuestos)</h5>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Title (Título SEO)</label>
+                        <input type="text" name="products_seo_title" value="<?= htmlspecialchars($settings['products_seo_title'] ?? 'Nuestros Repuestos - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Keywords (Palabras clave)</label>
+                        <input type="text" name="products_seo_keywords" value="<?= htmlspecialchars($settings['products_seo_keywords'] ?? 'repuestos, piezas, andina, componentes') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. repuestos, calidad, componentes)...">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Description (Descripción SEO)</label>
+                    <textarea name="products_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['products_seo_description'] ?? 'Catálogo de repuestos originales de alta durabilidad y performance garantizada ofrecidos por Syncro Andina.') ?></textarea>
                 </div>
             </div>
             
-            <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
-                <button type="button" onclick="closeSettingsModal()" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors">Cancelar</button>
-                <button type="submit" class="px-6 py-3 bg-primary hover:bg-secondary text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/30 transition-colors">Guardar Cambios</button>
+            <div class="flex justify-end gap-3 pt-6 border-t border-gray-50">
+                <button type="button" onclick="closeSettingsModal()" class="px-6 py-3 bg-white border border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 transition-colors">Cancelar</button>
+                <button type="submit" class="px-10 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-colors shadow-xl">Guardar Cambios</button>
             </div>
         </form>
     </div>

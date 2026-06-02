@@ -21,36 +21,51 @@
         </div>
     </div>
     
-    <form action="<?= url('admin/clientes/settings') ?>" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+    <form action="<?= url('admin/clientes/settings') ?>" method="POST" class="space-y-6">
         <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
         
-        <div>
-            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Velocidad de Movimiento</label>
-            <?php $speedValue = $settings['clients_slider_speed'] ?? '40s'; ?>
-            <select name="clients_slider_speed" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium">
-                <option value="15s" <?= $speedValue === '15s' ? 'selected' : '' ?>>Muy Rápido (15 segundos)</option>
-                <option value="25s" <?= $speedValue === '25s' ? 'selected' : '' ?>>Rápido (25 segundos)</option>
-                <option value="40s" <?= $speedValue === '40s' ? 'selected' : '' ?>>Normal (40 segundos)</option>
-                <option value="65s" <?= $speedValue === '65s' ? 'selected' : '' ?>>Lento (65 segundos)</option>
-                <option value="90s" <?= $speedValue === '90s' ? 'selected' : '' ?>>Muy Lento (90 segundos)</option>
-            </select>
+        <!-- Textos de la Sección -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-gray-100 pb-6">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Tagline de la Sección</label>
+                <input type="text" name="clients_slider_tagline" value="<?= htmlspecialchars($settings['clients_slider_tagline'] ?? 'RESPALDO CORPORATIVO') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium" placeholder="Ej: RESPALDO CORPORATIVO">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Título de la Sección</label>
+                <input type="text" name="clients_slider_title" value="<?= htmlspecialchars($settings['clients_slider_title'] ?? 'Confían en Syncro Andina') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium" placeholder="Ej: Confían en Syncro Andina">
+            </div>
         </div>
-        
-        <div>
-            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Separación entre Logos</label>
-            <?php $gapValue = $settings['clients_slider_gap'] ?? 'gap-6'; ?>
-            <select name="clients_slider_gap" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium">
-                <option value="gap-4" <?= $gapValue === 'gap-4' ? 'selected' : '' ?>>Muy Compacto (16px)</option>
-                <option value="gap-6" <?= $gapValue === 'gap-6' ? 'selected' : '' ?>>Normal (24px)</option>
-                <option value="gap-8" <?= $gapValue === 'gap-8' ? 'selected' : '' ?>>Espaciado (32px)</option>
-                <option value="gap-12" <?= $gapValue === 'gap-12' ? 'selected' : '' ?>>Muy Espaciado (48px)</option>
-            </select>
-        </div>
-        
-        <div>
-            <button type="submit" class="w-full bg-primary hover:bg-secondary text-white py-3.5 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]">
-                Guardar Ajustes de Carrusel
-            </button>
+
+        <!-- Ajustes Técnicos del Carrusel -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Velocidad de Movimiento</label>
+                <?php $speedValue = $settings['clients_slider_speed'] ?? '40s'; ?>
+                <select name="clients_slider_speed" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium">
+                    <option value="15s" <?= $speedValue === '15s' ? 'selected' : '' ?>>Muy Rápido (15 segundos)</option>
+                    <option value="25s" <?= $speedValue === '25s' ? 'selected' : '' ?>>Rápido (25 segundos)</option>
+                    <option value="40s" <?= $speedValue === '40s' ? 'selected' : '' ?>>Normal (40 segundos)</option>
+                    <option value="65s" <?= $speedValue === '65s' ? 'selected' : '' ?>>Lento (65 segundos)</option>
+                    <option value="90s" <?= $speedValue === '90s' ? 'selected' : '' ?>>Muy Lento (90 segundos)</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Separación entre Logos</label>
+                <?php $gapValue = $settings['clients_slider_gap'] ?? 'gap-6'; ?>
+                <select name="clients_slider_gap" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium">
+                    <option value="gap-4" <?= $gapValue === 'gap-4' ? 'selected' : '' ?>>Muy Compacto (16px)</option>
+                    <option value="gap-6" <?= $gapValue === 'gap-6' ? 'selected' : '' ?>>Normal (24px)</option>
+                    <option value="gap-8" <?= $gapValue === 'gap-8' ? 'selected' : '' ?>>Espaciado (32px)</option>
+                    <option value="gap-12" <?= $gapValue === 'gap-12' ? 'selected' : '' ?>>Muy Espaciado (48px)</option>
+                </select>
+            </div>
+            
+            <div>
+                <button type="submit" class="w-full bg-primary hover:bg-secondary text-white py-3.5 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]">
+                    Guardar Ajustes
+                </button>
+            </div>
         </div>
     </form>
 </div>

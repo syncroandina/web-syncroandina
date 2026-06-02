@@ -8,7 +8,7 @@
 <main class="min-h-screen bg-gray-50 pt-20 pb-32">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center mb-20 animate-fade-in-up">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-6">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-primary mb-6">
                 <?= htmlspecialchars($settings['about_title'] ?? 'Nuestra Visión hacia el Futuro') ?>
             </h1>
             <p class="text-xl text-gray-600 leading-relaxed">

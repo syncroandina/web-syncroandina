@@ -315,10 +315,22 @@ $footerText = $ccSettings['call_center_footer_text'] ?? '© Syncro Andina - Solu
 
         <!-- Lista de Contactos -->
         <div class="cc-popup-body">
-            <?php foreach($ccContacts as $contact): 
-                $link = ($contact['type'] === 'whatsapp') 
-                    ? 'https://api.whatsapp.com/send?phone=' . preg_replace('/[^0-9]/', '', $contact['phone_number']) 
-                    : 'tel:' . preg_replace('/[^0-9+]/', '', $contact['phone_number']);
+            <?php 
+            // Detectar la URL actual de forma robusta
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443) ? "https://" : "http://";
+            if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+                $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'] . "://";
+            }
+            $currentUrl = $protocol . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '/');
+
+            foreach($ccContacts as $contact): 
+                if ($contact['type'] === 'whatsapp') {
+                    $whatsappMsgBase = $ccSettings['call_center_whatsapp_message'] ?? 'Hola, me gustaría recibir más información.';
+                    $fullMessage = $whatsappMsgBase . "\n\nReferencia: " . $currentUrl;
+                    $link = 'https://api.whatsapp.com/send?phone=' . preg_replace('/[^0-9]/', '', $contact['phone_number']) . '&text=' . urlencode($fullMessage);
+                } else {
+                    $link = 'tel:' . preg_replace('/[^0-9+]/', '', $contact['phone_number']);
+                }
                 
                 $cssClass = ($contact['type'] === 'whatsapp') ? 'cc-link-whatsapp' : 'cc-link-phone';
                 $labelText = !empty($contact['subtitle']) ? $contact['subtitle'] : (($contact['type'] === 'whatsapp') ? 'CONSULTAR POR' : 'CONSULTAR POR');

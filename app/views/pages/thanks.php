@@ -26,7 +26,7 @@
         </div>
 
         <!-- Encabezado de la página -->
-        <h1 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-none mb-4">
+        <h1 class="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-none mb-4">
             ¡Muchas Gracias!
         </h1>
         <p class="text-lg md:text-xl font-bold text-secondary mb-3">

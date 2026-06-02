@@ -110,7 +110,16 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['projects_home_title', 'projects_home_subtitle', 'projects_page_title', 'projects_page_subtitle', 'carousel_projects_speed'];
+        $keys = [
+            'projects_home_title', 
+            'projects_home_subtitle', 
+            'projects_page_title', 
+            'projects_page_subtitle', 
+            'carousel_projects_speed',
+            'projects_seo_title',
+            'projects_seo_keywords',
+            'projects_seo_description'
+        ];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
@@ -140,7 +149,18 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['services_label', 'services_title', 'services_description', 'services_limit', 'page_services_title', 'page_services_description', 'carousel_services_speed'];
+        $keys = [
+            'services_label', 
+            'services_title', 
+            'services_description', 
+            'services_limit', 
+            'page_services_title', 
+            'page_services_description', 
+            'carousel_services_speed',
+            'services_seo_title',
+            'services_seo_keywords',
+            'services_seo_description'
+        ];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
@@ -1097,6 +1117,37 @@ class AdminController extends Controller {
         exit;
     }
 
+    public function homeConfig() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        
+        return $this->adminView('home_config', [
+            'title' => 'Configuración de Página Inicio',
+            'settings' => $settings
+        ]);
+    }
+
+    public function saveHomeConfig() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = [
+            'home_seo_title',
+            'home_seo_keywords',
+            'home_seo_description'
+        ];
+
+        foreach ($keys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/inicio?success=settings_saved');
+        exit;
+    }
+
     public function contactConfig() {
         $settingModel = new \App\Models\Setting();
         $settings = $settingModel->getAll();
@@ -1307,7 +1358,11 @@ class AdminController extends Controller {
             'content' => \Core\Security::sanitizeHTML($_POST['content'] ?? ''),
             'status' => \Core\Security::sanitizeInput($_POST['status'] ?? 'draft'),
             'author_id' => $author_id,
-            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? ''),
+            'cta_tagline' => \Core\Security::sanitizeInput($_POST['cta_tagline'] ?? ''),
+            'cta_title' => \Core\Security::sanitizeInput($_POST['cta_title'] ?? ''),
+            'cta_description' => \Core\Security::sanitizeInput($_POST['cta_description'] ?? ''),
+            'cta_btn_text' => \Core\Security::sanitizeInput($_POST['cta_btn_text'] ?? '')
         ];
 
         if ($data['status'] === 'published') {
@@ -1464,13 +1519,17 @@ class AdminController extends Controller {
         $keys = [
             'home_blog_tagline',
             'home_blog_title',
+            'home_blog_description',
             'blog_page_tagline',
             'blog_page_title',
             'blog_page_description',
             'blog_sidebar_cta_title',
             'blog_sidebar_cta_description',
             'blog_sidebar_cta_btn_text',
-            'carousel_blog_speed'
+            'carousel_blog_speed',
+            'blog_seo_title',
+            'blog_seo_keywords',
+            'blog_seo_description'
         ];
 
         foreach ($keys as $key) {
@@ -1797,7 +1856,7 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['clients_slider_speed', 'clients_slider_gap'];
+        $keys = ['clients_slider_speed', 'clients_slider_gap', 'clients_slider_tagline', 'clients_slider_title'];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
@@ -2041,7 +2100,8 @@ class AdminController extends Controller {
             'call_center_main_title', 
             'call_center_main_subtitle', 
             'call_center_footer_text',
-            'call_center_is_visible'
+            'call_center_is_visible',
+            'call_center_whatsapp_message'
         ];
 
         foreach ($keys as $key) {
@@ -2083,7 +2143,16 @@ class AdminController extends Controller {
         }
 
         $settingModel = new \App\Models\Setting();
-        $keys = ['products_label', 'products_title', 'products_description', 'page_products_title', 'page_products_description', 'carousel_products_speed'];
+        $keys = [
+            'products_home_title',
+            'products_home_subtitle',
+            'products_page_title',
+            'products_page_subtitle',
+            'carousel_products_speed',
+            'products_seo_title',
+            'products_seo_keywords',
+            'products_seo_description'
+        ];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');

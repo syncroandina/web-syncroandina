@@ -1,7 +1,7 @@
         <!-- Sidebar -->
         <aside class="flex-shrink-0 w-64 bg-primary text-white transition-all duration-300 shadow-2xl relative z-20" :class="{'w-64': sidebarOpen, 'w-20': !sidebarOpen, 'hidden md:block': !sidebarOpen}">
             <div class="h-16 flex items-center justify-center border-b border-white/10 bg-black/20">
-                <span class="text-2xl font-black tracking-tight" x-show="sidebarOpen">SYNCRO</span>
+                <span class="text-2xl font-black tracking-tight" x-show="sidebarOpen">SYNCRO ANDINA</span>
                 <span class="text-2xl font-black tracking-tight text-secondary" x-show="!sidebarOpen">S</span>
             </div>
             
@@ -12,6 +12,10 @@
                 </a>
                 
                 <div class="text-[10px] uppercase text-gray-400 font-bold mt-6 mb-2 pl-3 tracking-wider" x-show="sidebarOpen">Gestión de Contenido</div>
+                <a href="/admin/inicio" class="flex items-center gap-3 px-3 py-2.5 text-gray-300 hover:bg-white/10 hover:text-white rounded-xl transition-colors">
+                    <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span x-show="sidebarOpen" class="text-sm font-medium">Inicio</span>
+                </a>
                 <a href="/admin/sliders" class="flex items-center gap-3 px-3 py-2.5 text-gray-300 hover:bg-white/10 hover:text-white rounded-xl transition-colors">
                     <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     <span x-show="sidebarOpen" class="text-sm font-medium">Sliders</span>

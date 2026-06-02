@@ -3,9 +3,9 @@
 
 <main class="min-h-screen bg-gray-50 pt-20 pb-32">
     <div class="container mx-auto px-4">
-        <div class="text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['projects_page_title'] ?? 'Casos de Éxito') ?></h1>
-            <p class="text-xl text-gray-600"><?= htmlspecialchars($settings['projects_page_subtitle'] ?? 'Proyectos emblemáticos que demuestran nuestro compromiso absoluto con la calidad corporativa y la entrega de valor real.') ?></p>
+        <div class="text-center max-w-5xl mx-auto mb-16 animate-fade-in-up">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['projects_page_title'] ?? 'Casos de Éxito') ?></h1>
+            <p class="text-sm sm:text-base md:text-xl text-gray-600 mt-6 leading-relaxed"><?= htmlspecialchars($settings['projects_page_subtitle'] ?? 'Proyectos emblemáticos que demuestran nuestro compromiso absoluto con la calidad corporativa y la entrega de valor real.') ?></p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

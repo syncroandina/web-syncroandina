@@ -185,6 +185,10 @@
                         <input type="text" name="home_blog_title" value="<?= htmlspecialchars($settings['home_blog_title'] ?? 'Nuestro Blog Corporativo') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
                     </div>
                     <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Descripción de la Sección</label>
+                        <textarea name="home_blog_description" rows="2" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Escribe aquí una breve descripción para la sección en la portada..."><?= htmlspecialchars($settings['home_blog_description'] ?? '') ?></textarea>
+                    </div>
+                    <div class="md:col-span-2">
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Velocidad del Carrusel (Milisegundos)</label>
                         <input type="number" name="carousel_blog_speed" min="500" max="20000" step="100" value="<?= htmlspecialchars($settings['carousel_blog_speed'] ?? '3000') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: 3000">
                         <p class="text-[10px] text-gray-400 mt-1.5 pl-1 font-bold uppercase tracking-wider">Intervalo de auto-avance automático. Ej: 3000 para 3 segundos.</p>
@@ -235,6 +239,29 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Descripción Corta</label>
                     <textarea name="blog_sidebar_cta_description" rows="2" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Escriba una breve invitación..."><?= htmlspecialchars($settings['blog_sidebar_cta_description'] ?? 'Impulsamos tu transformación digital con tecnología premium.') ?></textarea>
+                </div>
+            </div>
+
+            <hr class="border-gray-100">
+
+            <!-- OPTIMIZACIÓN SEO -->
+            <div class="space-y-4">
+                <h5 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Optimización SEO (Página /blog)</h5>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Title (Título SEO)</label>
+                        <input type="text" name="blog_seo_title" value="<?= htmlspecialchars($settings['blog_seo_title'] ?? 'Nuestro Blog - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Keywords (Palabras clave)</label>
+                        <input type="text" name="blog_seo_keywords" value="<?= htmlspecialchars($settings['blog_seo_keywords'] ?? 'blog, tecnología, software, andina, artículos') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. blog, tecnología, artículos)...">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Description (Descripción SEO)</label>
+                    <textarea name="blog_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['blog_seo_description'] ?? 'Lee las últimas novedades, guías tecnológicas y artículos de opinión corporativos en el blog oficial de Syncro Andina.') ?></textarea>
                 </div>
             </div>
 
@@ -405,10 +432,38 @@
 
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Estado del Post</label>
-                        <select name="status" id="post-status" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all font-bold">
+                        <select name="status" id="post-status" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 focus:bg-white transition-all font-bold font-sans">
                             <option value="draft">Borrador</option>
                             <option value="published">Publicado</option>
                         </select>
+                    </div>
+
+                    <!-- Sección CTA Personalizado Opcional -->
+                    <div class="bg-gray-50 border border-gray-200/60 p-5 rounded-2xl space-y-4">
+                        <div class="flex items-center gap-2 pb-2 border-b border-gray-200/50">
+                            <span class="w-1.5 h-3 bg-secondary rounded-full"></span>
+                            <span class="text-xs font-black text-gray-900 uppercase tracking-widest">CTA Lateral Personalizado</span>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 pl-1">Tagline Superior</label>
+                            <input type="text" name="cta_tagline" id="post-cta-tagline" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary py-2.5 px-3.5 text-xs bg-white" placeholder="Ej: ¿Hablamos?">
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 pl-1">Título del Banner</label>
+                            <input type="text" name="cta_title" id="post-cta-title" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary py-2.5 px-3.5 text-xs bg-white" placeholder="Ej: Impulsa tu infraestructura hoy">
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 pl-1">Descripción del Banner</label>
+                            <textarea name="cta_description" id="post-cta-description" rows="2" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary py-2.5 px-3.5 text-xs bg-white resize-none leading-relaxed" placeholder="Conéctate con nuestros ingenieros comerciales..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 pl-1">Texto del Botón</label>
+                            <input type="text" name="cta_btn_text" id="post-cta-btn-text" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary py-2.5 px-3.5 text-xs bg-white" placeholder="Ej: Iniciar Conversación">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -460,6 +515,10 @@ function resetPostForm() {
     document.getElementById('image-preview').classList.add('hidden');
     document.getElementById('upload-placeholder').classList.remove('hidden');
     document.getElementById('post-image-alt').value = '';
+    document.getElementById('post-cta-tagline').value = '';
+    document.getElementById('post-cta-title').value = '';
+    document.getElementById('post-cta-description').value = '';
+    document.getElementById('post-cta-btn-text').value = '';
     document.getElementById('modal-title').innerText = 'Nuevo Artículo';
     if (quill) {
         quill.setContents([]);
@@ -479,6 +538,10 @@ function editPost(post) {
     document.getElementById('post-category').value = post.category_id || '';
     document.getElementById('post-status').value = post.status;
     document.getElementById('post-image-alt').value = post.image_alt || '';
+    document.getElementById('post-cta-tagline').value = post.cta_tagline || '';
+    document.getElementById('post-cta-title').value = post.cta_title || '';
+    document.getElementById('post-cta-description').value = post.cta_description || '';
+    document.getElementById('post-cta-btn-text').value = post.cta_btn_text || '';
     
     if(post.image) {
         const preview = document.getElementById('image-preview');

@@ -14,6 +14,7 @@ $router->get('blog/{slug}', 'PageController@blogDetail');
 $router->get('contacto', 'PageController@contact');
 $router->post('contacto', 'PageController@saveContact');
 $router->get('gracias', 'PageController@thanks');
+$router->get('sitemap.xml', 'PageController@sitemap');
 $router->get('iniciar-sesion', 'AuthController@login');
 $router->post('iniciar-sesion', 'AuthController@authenticate');
 $router->get('cerrar-sesion', 'AuthController@logout');
@@ -93,6 +94,10 @@ $router->post('admin/nosotros/save', 'AdminController@saveAboutConfig');
 // Contacto
 $router->get('admin/contacto', 'AdminController@contactConfig');
 $router->post('admin/contacto/save', 'AdminController@saveContactConfig');
+
+// Inicio (Home)
+$router->get('admin/inicio', 'AdminController@homeConfig');
+$router->post('admin/inicio/save', 'AdminController@saveHomeConfig');
 
 // Configuración de Notificaciones
 $router->get('admin/notificaciones', 'AdminController@notificationsConfig');

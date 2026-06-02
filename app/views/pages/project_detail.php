@@ -28,7 +28,7 @@
                     </span>
                 </div>
 
-                <h1 class="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight">
+                <h1 class="text-3xl md:text-5xl font-black tracking-tight text-white leading-tight">
                     <?= htmlspecialchars($project['title']) ?>
                 </h1>
             </div>
@@ -125,7 +125,7 @@
     <!-- Sección de Galería de Fotos del Proyecto -->
     <?php if(!empty($gallery)): ?>
     <section class="container mx-auto px-4 mt-20 animate-fade-in-up" style="animation-delay: 600ms;">
-        <h2 class="text-3xl font-black text-white mb-8 flex items-center gap-3">
+        <h2 class="text-2xl font-black text-white mb-8 flex items-center gap-3">
             <span class="w-1.5 h-8 bg-secondary rounded-full"></span>
             Galería del Proyecto
         </h2>

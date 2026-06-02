@@ -29,7 +29,9 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
         
         return $this->view('pages/services', [
-            'title' => 'Servicios - Syncro Andina',
+            'title' => !empty($settings['services_seo_title']) ? $settings['services_seo_title'] : 'Servicios - Syncro Andina',
+            'description' => !empty($settings['services_seo_description']) ? $settings['services_seo_description'] : null,
+            'keywords' => !empty($settings['services_seo_keywords']) ? $settings['services_seo_keywords'] : null,
             'services' => $services,
             'settings' => $settings
         ]);
@@ -68,7 +70,9 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
 
         return $this->view('pages/projects', [
-            'title' => 'Proyectos - Syncro Andina',
+            'title' => !empty($settings['projects_seo_title']) ? $settings['projects_seo_title'] : 'Proyectos - Syncro Andina',
+            'description' => !empty($settings['projects_seo_description']) ? $settings['projects_seo_description'] : null,
+            'keywords' => !empty($settings['projects_seo_keywords']) ? $settings['projects_seo_keywords'] : null,
             'projects' => $projects,
             'settings' => $settings
         ]);
@@ -109,7 +113,9 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
 
         return $this->view('pages/products', [
-            'title' => ($settings['page_products_title'] ?? 'Repuestos y Componentes') . ' - Syncro Andina',
+            'title' => !empty($settings['products_seo_title']) ? $settings['products_seo_title'] : (($settings['page_products_title'] ?? 'Repuestos y Componentes') . ' - Syncro Andina'),
+            'description' => !empty($settings['products_seo_description']) ? $settings['products_seo_description'] : null,
+            'keywords' => !empty($settings['products_seo_keywords']) ? $settings['products_seo_keywords'] : null,
             'products' => $products,
             'settings' => $settings
         ]);
@@ -176,7 +182,9 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
 
         return $this->view('pages/blog', [
-            'title' => 'Blog - Syncro Andina',
+            'title' => !empty($settings['blog_seo_title']) ? $settings['blog_seo_title'] : 'Blog - Syncro Andina',
+            'description' => !empty($settings['blog_seo_description']) ? $settings['blog_seo_description'] : null,
+            'keywords' => !empty($settings['blog_seo_keywords']) ? $settings['blog_seo_keywords'] : null,
             'posts' => $posts,
             'settings' => $settings,
             'categories' => $categories,
@@ -190,10 +198,9 @@ class PageController extends Controller {
         $postModel = new \App\Models\BlogPost();
         $settingModel = new \App\Models\Setting();
         
-        $results = $postModel->where('slug', $slug);
-        $post = !empty($results) ? $results[0] : null;
+        $post = $postModel->getBySlug($slug);
 
-        if (!$post || $post['status'] !== 'published' || !empty($post['deleted_at'])) {
+        if (!$post) {
             http_response_code(404);
             echo "<h1>404 Not Found</h1><p>El artículo solicitado no existe o no se encuentra disponible.</p>";
             exit;
@@ -485,5 +492,114 @@ class PageController extends Controller {
             'description' => 'Gracias por ponerte en contacto con Syncro Andina. Tu mensaje ha sido recibido.',
             'settings' => $settings
         ]);
+    }
+
+    public function sitemap() {
+        $serviceModel = new \App\Models\Service();
+        $projectModel = new \App\Models\Project();
+        $productModel = new \App\Models\Product();
+        $blogPostModel = new \App\Models\BlogPost();
+
+        // Obtener elementos activos
+        $services = $serviceModel->getActive();
+        $projects = $projectModel->getAllActive();
+        $products = $productModel->getAllActive();
+        $posts = $blogPostModel->getPublished(); // Obtener todos sin límite
+
+        // Base URL absoluta dinámica
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443) ? "https://" : "http://";
+        if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+            $protocol = $_SERVER['HTTP_X_FORWARDED_PROTO'] . "://";
+        }
+        $host = $_SERVER['HTTP_HOST'] ?? 'syncroandina.com';
+        $baseUrl = $protocol . $host;
+
+        // Páginas estáticas del sitio con prioridades y frecuencias de cambio recomendadas
+        $staticPages = [
+            ['path' => '', 'priority' => '1.0', 'changefreq' => 'daily'],
+            ['path' => 'nosotros', 'priority' => '0.8', 'changefreq' => 'weekly'],
+            ['path' => 'servicios', 'priority' => '0.8', 'changefreq' => 'weekly'],
+            ['path' => 'proyectos', 'priority' => '0.8', 'changefreq' => 'weekly'],
+            ['path' => 'repuestos', 'priority' => '0.8', 'changefreq' => 'weekly'],
+            ['path' => 'blog', 'priority' => '0.8', 'changefreq' => 'daily'],
+            ['path' => 'contacto', 'priority' => '0.8', 'changefreq' => 'weekly']
+        ];
+
+        // Construcción del XML del Sitemap
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+        // 1. Agregar páginas estáticas
+        foreach ($staticPages as $page) {
+            $loc = $baseUrl . url($page['path']);
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>" . htmlspecialchars($loc) . "</loc>\n";
+            $xml .= "    <changefreq>" . $page['changefreq'] . "</changefreq>\n";
+            $xml .= "    <priority>" . $page['priority'] . "</priority>\n";
+            $xml .= "  </url>\n";
+        }
+
+        // 2. Agregar Servicios dinámicos
+        if (!empty($services)) {
+            foreach ($services as $service) {
+                if (!empty($service['slug'])) {
+                    $loc = $baseUrl . url('servicios/' . $service['slug']);
+                    $xml .= "  <url>\n";
+                    $xml .= "    <loc>" . htmlspecialchars($loc) . "</loc>\n";
+                    $xml .= "    <changefreq>weekly</changefreq>\n";
+                    $xml .= "    <priority>0.6</priority>\n";
+                    $xml .= "  </url>\n";
+                }
+            }
+        }
+
+        // 3. Agregar Proyectos dinámicos
+        if (!empty($projects)) {
+            foreach ($projects as $project) {
+                if (!empty($project['slug'])) {
+                    $loc = $baseUrl . url('proyectos/' . $project['slug']);
+                    $xml .= "  <url>\n";
+                    $xml .= "    <loc>" . htmlspecialchars($loc) . "</loc>\n";
+                    $xml .= "    <changefreq>monthly</changefreq>\n";
+                    $xml .= "    <priority>0.6</priority>\n";
+                    $xml .= "  </url>\n";
+                }
+            }
+        }
+
+        // 4. Agregar Repuestos (Productos) dinámicos
+        if (!empty($products)) {
+            foreach ($products as $product) {
+                if (!empty($product['slug'])) {
+                    $loc = $baseUrl . url('repuestos/' . $product['slug']);
+                    $xml .= "  <url>\n";
+                    $xml .= "    <loc>" . htmlspecialchars($loc) . "</loc>\n";
+                    $xml .= "    <changefreq>weekly</changefreq>\n";
+                    $xml .= "    <priority>0.6</priority>\n";
+                    $xml .= "  </url>\n";
+                }
+            }
+        }
+
+        // 5. Agregar Artículos de Blog dinámicos
+        if (!empty($posts)) {
+            foreach ($posts as $post) {
+                if (!empty($post['slug'])) {
+                    $loc = $baseUrl . url('blog/' . $post['slug']);
+                    $xml .= "  <url>\n";
+                    $xml .= "    <loc>" . htmlspecialchars($loc) . "</loc>\n";
+                    $xml .= "    <changefreq>weekly</changefreq>\n";
+                    $xml .= "    <priority>0.6</priority>\n";
+                    $xml .= "  </url>\n";
+                }
+            }
+        }
+
+        $xml .= '</urlset>';
+
+        // Configuración de cabeceras HTTP para salida XML limpia
+        header('Content-Type: application/xml; charset=utf-8');
+        echo $xml;
+        exit;
     }
 }

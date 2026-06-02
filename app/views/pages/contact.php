@@ -28,9 +28,9 @@
             <div class="md:w-2/5 bg-primary p-12 lg:p-16 text-white flex flex-col justify-between relative overflow-hidden">
                 <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-secondary/30 rounded-full blur-3xl"></div>
                 <div class="relative z-10">
-                    <h1 class="text-4xl font-extrabold mb-6">
-                        <?= htmlspecialchars($settings['contact_heading'] ?? 'Hablemos de negocios') ?>
-                    </h1>
+                    <h1 class="text-3xl md:text-5xl font-extrabold mb-6">
+                    <?= htmlspecialchars($settings['contact_heading'] ?? 'Hablemos de negocios') ?>
+                </h1>
                     <p class="text-gray-300 mb-12 leading-relaxed text-lg">
                         <?= htmlspecialchars($settings['contact_description'] ?? 'Ponte en contacto con nuestro equipo comercial para agendar una consultoría de evaluación y escalar la tecnología de tu empresa.') ?>
                     </p>
@@ -81,7 +81,7 @@
 
             <!-- Formulario con Lógica Condicional Premium -->
             <div class="md:w-3/5 p-12 lg:p-16">
-                <h2 class="text-3xl font-extrabold text-gray-900 mb-8" id="form-title-heading">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-8" id="form-title-heading">
                     <?= htmlspecialchars($settings['contact_form_heading'] ?? 'Envíanos un mensaje') ?>
                 </h2>
 
@@ -92,7 +92,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </div>
-                    <h3 class="text-2xl font-black mb-2 text-gray-900">¡Mensaje Enviado!</h3>
+                    <h3 class="text-xl font-black mb-2 text-gray-900">¡Mensaje Enviado!</h3>
                     <p class="text-sm text-gray-600 max-w-sm leading-relaxed" id="success-msg"></p>
                 </div>
 

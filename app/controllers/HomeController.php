@@ -36,7 +36,9 @@ class HomeController extends Controller {
         $featuredProducts = $productModel->getAllActive();
 
         return $this->view('pages/home', [
-            'title' => 'Inicio - Syncro Andina',
+            'title' => !empty($settings['home_seo_title']) ? $settings['home_seo_title'] : 'Inicio - Syncro Andina',
+            'description' => !empty($settings['home_seo_description']) ? $settings['home_seo_description'] : null,
+            'keywords' => !empty($settings['home_seo_keywords']) ? $settings['home_seo_keywords'] : null,
             'sliders' => $sliders,
             'latestProjects' => $latestProjects,
             'latestPosts' => $latestPosts,
