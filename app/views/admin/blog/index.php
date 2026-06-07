@@ -290,7 +290,7 @@
 
         <!-- Formulario Inline de Categoría -->
         <div class="bg-indigo-50/50 p-6 border-b border-indigo-100">
-            <form id="cat-form" action="<?= url('admin/blog/categorias/save') ?>" method="POST" class="flex flex-wrap items-end gap-4">
+            <form id="cat-form" action="<?= url('admin/blog/categorias/save') ?>" method="POST" onsubmit="saveCategoryAjax(event)" class="flex flex-wrap items-end gap-4">
                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                 <input type="hidden" name="id" id="cat-id" value="">
                 
@@ -321,33 +321,8 @@
                         <th class="pb-3 text-right">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50">
-                    <?php if(!empty($categories)): ?>
-                        <?php foreach($categories as $cat): ?>
-                            <tr class="group hover:bg-gray-50">
-                                <td class="py-3.5 font-bold text-gray-800"><?= htmlspecialchars($cat['name']) ?></td>
-                                <td class="py-3.5 text-xs font-mono text-gray-400"><?= htmlspecialchars($cat['slug']) ?></td>
-                                <td class="py-3.5 text-right">
-                                    <div class="flex justify-end gap-1.5">
-                                        <button onclick="editCategory(<?= htmlspecialchars(json_encode($cat)) ?>)" class="w-8 h-8 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition-all" title="Editar">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                        </button>
-                                        <form action="<?= url('admin/blog/categorias/delete') ?>" method="POST" class="inline" onsubmit="return confirm('¿Eliminar categoría? Los posts vinculados quedarán sin categoría.')">
-                                            <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
-                                            <input type="hidden" name="id" value="<?= $cat['id'] ?>">
-                                            <button type="submit" class="w-8 h-8 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-all" title="Eliminar">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="3" class="py-10 text-center text-sm text-gray-400 italic">No hay categorías creadas.</td>
-                        </tr>
-                    <?php endif; ?>
+                <tbody class="divide-y divide-gray-50" id="categories-table-body">
+                    <!-- Renderizado dinámico vía JS -->
                 </tbody>
             </table>
         </div>
@@ -681,11 +656,12 @@ function closeCategoriesModal() {
     document.body.style.overflow = 'auto';
 }
 
-function resetCatForm() {
-    document.getElementById('cat-id').value = '';
-    document.getElementById('cat-name').value = '';
-    document.getElementById('cat-slug').value = '';
-    document.getElementById('btn-cancel-cat').classList.add('hidden');
+function generateCatSlug(val) {
+    const slug = val.toLowerCase()
+        .replace(/[^a-z0-9 -]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    document.getElementById('cat-slug').value = slug;
 }
 
 function editCategory(cat) {
@@ -695,4 +671,145 @@ function editCategory(cat) {
     document.getElementById('btn-cancel-cat').classList.remove('hidden');
     document.getElementById('cat-name').focus();
 }
+
+function resetCatForm() {
+    document.getElementById('cat-id').value = '';
+    document.getElementById('cat-name').value = '';
+    document.getElementById('cat-slug').value = '';
+    document.getElementById('btn-cancel-cat').classList.add('hidden');
+}
+
+// Lógica de Reactividad y AJAX para Categorías del Blog
+let categoriesData = <?= json_encode($categories ?? []) ?>;
+
+function renderCategoriesTableAndSelect() {
+    const tableBody = document.getElementById('categories-table-body');
+    const select = document.getElementById('post-category');
+    
+    // Guardar la categoría seleccionada actualmente en el select
+    const selectedVal = select.value;
+    
+    // Limpiar select
+    select.innerHTML = '<option value="">Sin Categoría</option>';
+    
+    if (categoriesData.length === 0) {
+        tableBody.innerHTML = `
+            <tr id="no-categories-row">
+                <td colspan="3" class="py-10 text-center text-sm text-gray-400 italic">No hay categorías creadas.</td>
+            </tr>
+        `;
+    } else {
+        tableBody.innerHTML = '';
+        categoriesData.forEach(cat => {
+            // Rellenar select
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+            
+            // Rellenar tabla
+            const tr = document.createElement('tr');
+            tr.className = 'group hover:bg-gray-50';
+            tr.id = 'cat-row-' + cat.id;
+            tr.innerHTML = `
+                <td class="py-3.5 font-bold text-gray-800">${escapeHtml(cat.name)}</td>
+                <td class="py-3.5 text-xs font-mono text-gray-400">${escapeHtml(cat.slug)}</td>
+                <td class="py-3.5 text-right">
+                    <div class="flex justify-end gap-1.5">
+                        <button type="button" onclick="editCategory(${JSON.stringify(cat).replace(/"/g, '&quot;')})" class="w-8 h-8 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition-all" title="Editar">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        </button>
+                        <button type="button" onclick="deleteCategoryAjax(${cat.id}, this)" class="w-8 h-8 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-all" title="Eliminar">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+    
+    // Restaurar la categoría seleccionada
+    select.value = selectedVal;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+async function saveCategoryAjax(event) {
+    event.preventDefault();
+    const form = document.getElementById('cat-form');
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            const cat = result.category;
+            // Buscar si ya existe para actualizarla o añadirla
+            const existingIndex = categoriesData.findIndex(c => c.id == cat.id);
+            if (existingIndex > -1) {
+                categoriesData[existingIndex] = cat;
+            } else {
+                categoriesData.push(cat);
+            }
+            // Re-renderizar
+            renderCategoriesTableAndSelect();
+            resetCatForm();
+        } else {
+            alert(result.message || 'Error al guardar la categoría.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Ocurrió un error al procesar la solicitud.');
+    }
+}
+
+async function deleteCategoryAjax(id, btn) {
+    if (!confirm('¿Seguro que deseas eliminar esta categoría? Los posts vinculados quedarán sin categoría.')) {
+        return;
+    }
+    
+    try {
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('csrf_token', '<?= \Core\Security::generateCSRFToken() ?>');
+        
+        const response = await fetch('<?= url('admin/blog/categorias/delete') ?>', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            // Eliminar de categoriesData
+            categoriesData = categoriesData.filter(c => c.id != id);
+            // Re-renderizar
+            renderCategoriesTableAndSelect();
+        } else {
+            alert(result.message || 'Error al eliminar la categoría.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Ocurrió un error en el servidor.');
+    }
+}
+
+// Inicializar la tabla y el select al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    renderCategoriesTableAndSelect();
+});
 </script>

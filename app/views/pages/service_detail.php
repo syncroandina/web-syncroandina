@@ -1,4 +1,8 @@
-<?php $this->component('header', ['title' => $title ?? 'Detalle del Servicio']); ?>
+<?php $this->component('header', [
+    'title' => $title ?? 'Detalle del Servicio',
+    'description' => $description ?? null,
+    'keywords' => $keywords ?? null
+]); ?>
 <?php $this->component('navbar'); ?>
 
 <style>
@@ -13,10 +17,14 @@
     margin-bottom: 1rem !important;
 }
 .rich-text-content p {
-    margin-bottom: 1rem !important;
+    margin-bottom: 1.25rem !important;
 }
 .rich-text-content p:last-child {
     margin-bottom: 0 !important;
+}
+.rich-text-content p:empty,
+.rich-text-content p:has(> br:only-child) {
+    display: none !important;
 }
 .rich-text-content strong {
     font-weight: 800 !important;
@@ -38,6 +46,7 @@
         <!-- Imagen de Fondo con Parallax Efecto -->
         <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
              alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
+             fetchpriority="high"
              class="absolute inset-0 w-full h-full object-cover opacity-30 transform scale-105 hover:scale-100 transition-transform duration-1000">
         
         <!-- Degradados e Interposición -->
@@ -54,7 +63,7 @@
                 <span class="text-white select-none"><?= htmlspecialchars($service['title']) ?></span>
             </nav>
             
-            <h1 class="text-3xl md:text-5xl font-black mb-6 tracking-tight max-w-4xl leading-tight">
+            <h1 class="text-3xl md:text-5xl font-black mb-6 tracking-tight max-w-4xl leading-relaxed" style="line-height: 1.2 !important;">
                 <?= htmlspecialchars($service['title']) ?>
             </h1>
             <div class="w-20 h-1.5 bg-secondary rounded-full"></div>
@@ -69,6 +78,14 @@
             <div class="lg:col-span-2 space-y-12">
                 <!-- Tarjeta Principal con Descripción -->
                 <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <!-- Imagen Principal del Servicio -->
+                    <div class="mb-8 rounded-3xl overflow-hidden aspect-[16/9] md:aspect-[21/9] border border-gray-100 shadow-md">
+                        <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
+                             alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
+                             loading="lazy"
+                             class="w-full h-full object-cover">
+                    </div>
+
                     <h2 class="text-2xl font-extrabold text-primary mb-6 flex items-center gap-3">
                         <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
                         <?= htmlspecialchars($service['heading_description'] ?? 'Descripción') ?>
@@ -123,6 +140,7 @@
                              data-src="<?= htmlspecialchars($img['image_path']) ?>">
                             <img src="<?= htmlspecialchars($img['image_path']) ?>" 
                                  alt="<?= htmlspecialchars($img['image_alt'] ?: 'Galería de ' . $service['title']) ?>" 
+                                 loading="lazy"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                             
                             <!-- Overlay de Hover -->

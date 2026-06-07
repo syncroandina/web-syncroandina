@@ -152,6 +152,7 @@ class AdminController extends Controller {
         $keys = [
             'services_label', 
             'services_title', 
+            'services_subtitle',
             'services_description', 
             'services_limit', 
             'page_services_title', 
@@ -202,7 +203,10 @@ class AdminController extends Controller {
             'heading_gallery' => \Core\Security::sanitizeInput($_POST['heading_gallery'] ?? ''),
             'heading_cta' => \Core\Security::sanitizeInput($_POST['heading_cta'] ?? ''),
             'cta_description' => \Core\Security::sanitizeInput($_POST['cta_description'] ?? ''),
-            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? ''),
+            'seo_title' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_title'] ?? ''), 0, 255, ''),
+            'seo_description' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_description'] ?? ''), 0, 1000, ''),
+            'seo_keywords' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_keywords'] ?? ''), 0, 1000, '')
         ];
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
@@ -284,9 +288,29 @@ class AdminController extends Controller {
             $serviceModel = new \App\Models\Service();
             $service = $serviceModel->find($id);
             if ($service) {
+                // 1. Eliminar imagen principal físicamente
                 if (!empty($service['image'])) {
                     \Core\FileHelper::delete($service['image']);
                 }
+
+                // 2. Eliminar imágenes de la galería físicamente
+                $galleryModel = new \App\Models\ServiceGallery();
+                $galleryImages = $galleryModel->getByService($id);
+                if (!empty($galleryImages)) {
+                    foreach ($galleryImages as $image) {
+                        if (!empty($image['image_path'])) {
+                            \Core\FileHelper::delete($image['image_path']);
+                        }
+                    }
+                }
+
+                // 3. Eliminar registros asociados en la base de datos de manera explícita
+                $galleryModel->deleteByService($id);
+
+                $itemModel = new \App\Models\ServiceItem();
+                $itemModel->deleteByService($id);
+
+                // 4. Eliminar el servicio principal
                 $serviceModel->delete($id);
             }
         }
@@ -627,7 +651,10 @@ class AdminController extends Controller {
             'solution_desc' => \Core\Security::sanitizeInput($_POST['solution_desc'] ?? ''),
             'impact_label' => \Core\Security::sanitizeInput($_POST['impact_label'] ?? 'Impacto Logrado'),
             'impact_value' => \Core\Security::sanitizeInput($_POST['impact_value'] ?? '100% Optimizado'),
-            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
+            'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? ''),
+            'seo_title' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_title'] ?? ''), 0, 255, ''),
+            'seo_description' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_description'] ?? ''), 0, 1000, ''),
+            'seo_keywords' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_keywords'] ?? ''), 0, 1000, '')
         ];
 
         if (isset($_FILES['main_image']) && $_FILES['main_image']['error'] === UPLOAD_ERR_OK) {
@@ -692,8 +719,26 @@ class AdminController extends Controller {
             $projectModel = new \App\Models\Project();
             $project = $projectModel->find($id);
             if ($project) {
-                // Eliminar archivo físico según política
-                \Core\FileHelper::delete($project['main_image']);
+                // 1. Eliminar archivo físico principal
+                if (!empty($project['main_image'])) {
+                    \Core\FileHelper::delete($project['main_image']);
+                }
+
+                // 2. Eliminar imágenes de la galería del proyecto físicamente
+                $galleryModel = new \App\Models\ProjectGallery();
+                $galleryImages = $galleryModel->getByProject($id);
+                if (!empty($galleryImages)) {
+                    foreach ($galleryImages as $image) {
+                        if (!empty($image['image_path'])) {
+                            \Core\FileHelper::delete($image['image_path']);
+                        }
+                    }
+                }
+
+                // 3. Eliminar los registros de la galería en la BD de forma explícita
+                $galleryModel->deleteByProject($id);
+
+                // 4. Eliminar el proyecto
                 $projectModel->delete($id);
             }
         }
@@ -1406,6 +1451,11 @@ class AdminController extends Controller {
             $postModel = new \App\Models\BlogPost();
             $post = $postModel->find($id);
             if ($post) {
+                // Eliminar archivo físico de la portada
+                if (!empty($post['image'])) {
+                    \Core\FileHelper::delete($post['image']);
+                }
+
                 $postModel->save([
                     'id' => $id,
                     'deleted_at' => date('Y-m-d H:i:s')
@@ -1543,7 +1593,8 @@ class AdminController extends Controller {
 
     public function saveBlogCategory() {
         if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-            die('Invalid CSRF token');
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            exit;
         }
 
         $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
@@ -1555,38 +1606,51 @@ class AdminController extends Controller {
         }
         $slug = preg_replace('/-+/', '-', $slug);
 
-        if (!empty($name)) {
-            $categoryModel = new \App\Models\BlogCategory();
-            $data = [
-                'name' => $name,
-                'slug' => $slug
-            ];
-            if ($id) $data['id'] = $id;
-            
-            try {
-                $categoryModel->save($data);
-            } catch(\Exception $e) {
-                header('Location: /admin/blog?error=category_duplicate');
-                exit;
-            }
+        if (empty($name)) {
+            echo json_encode(['success' => false, 'message' => 'El nombre de la categoría es requerido.']);
+            exit;
         }
 
-        header('Location: /admin/blog?success=category_saved');
-        exit;
+        $categoryModel = new \App\Models\BlogCategory();
+        $data = [
+            'name' => $name,
+            'slug' => $slug
+        ];
+        if ($id) $data['id'] = $id;
+        
+        try {
+            $savedId = $categoryModel->save($data);
+            $catId = $savedId ?: $id;
+            echo json_encode([
+                'success' => true,
+                'category' => [
+                    'id' => $catId,
+                    'name' => $name,
+                    'slug' => $slug
+                ]
+            ]);
+            exit;
+        } catch(\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Error: Categoría duplicada o problema en la base de datos.']);
+            exit;
+        }
     }
 
     public function deleteBlogCategory() {
         if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-            die('Invalid CSRF token');
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            exit;
         }
 
         $id = (int)($_POST['id'] ?? 0);
         if ($id) {
             $categoryModel = new \App\Models\BlogCategory();
             $categoryModel->delete($id);
+            echo json_encode(['success' => true]);
+            exit;
         }
 
-        header('Location: /admin/blog?success=category_deleted');
+        echo json_encode(['success' => false, 'message' => 'ID de categoría inválido']);
         exit;
     }
 
@@ -1817,6 +1881,10 @@ class AdminController extends Controller {
         $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
         if ($id) {
             $clientLogoModel = new \App\Models\ClientLogo();
+            $logo = $clientLogoModel->find($id);
+            if ($logo && !empty($logo['logo_path'])) {
+                \Core\FileHelper::delete($logo['logo_path']);
+            }
             $clientLogoModel->delete($id);
         }
 
@@ -2121,8 +2189,10 @@ class AdminController extends Controller {
     public function adminProducts() {
         $productModel = new \App\Models\Product();
         $settingModel = new \App\Models\Setting();
+        $categoryModel = new \App\Models\ProductCategory();
         $products = $productModel->all('sort_order ASC, created_at DESC');
         $settings = $settingModel->getAll();
+        $categories = $categoryModel->getAll();
         
         // Cargar galería para cada producto
         $galleryModel = new \App\Models\ProductGallery();
@@ -2133,7 +2203,8 @@ class AdminController extends Controller {
         return $this->adminView('products/index', [
             'title' => 'Gestión de Repuestos',
             'products' => $products,
-            'settings' => $settings
+            'settings' => $settings,
+            'categories' => $categories
         ]);
     }
 
@@ -2177,6 +2248,7 @@ class AdminController extends Controller {
             'slug' => \Core\Security::sanitizeInput($_POST['slug'] ?? ''),
             'description' => \Core\Security::sanitizeHTML($_POST['description'] ?? ''),
             'technical_details' => \Core\Security::sanitizeHTML($_POST['technical_details'] ?? ''),
+            'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
             'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? '')
         ];
@@ -2234,6 +2306,69 @@ class AdminController extends Controller {
         exit;
     }
 
+    public function saveProductCategory() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            exit;
+        }
+
+        $id = !empty($_POST['id']) ? (int)$_POST['id'] : null;
+        $name = \Core\Security::sanitizeInput($_POST['name'] ?? '');
+        $slug = \Core\Security::sanitizeInput($_POST['slug'] ?? '');
+
+        if (empty($slug)) {
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+        }
+        $slug = preg_replace('/-+/', '-', $slug);
+
+        if (empty($name)) {
+            echo json_encode(['success' => false, 'message' => 'El nombre de la categoría es requerido.']);
+            exit;
+        }
+
+        $categoryModel = new \App\Models\ProductCategory();
+        $data = [
+            'name' => $name,
+            'slug' => $slug
+        ];
+        if ($id) $data['id'] = $id;
+        
+        try {
+            $savedId = $categoryModel->save($data);
+            $catId = $savedId ?: $id;
+            echo json_encode([
+                'success' => true,
+                'category' => [
+                    'id' => $catId,
+                    'name' => $name,
+                    'slug' => $slug
+                ]
+            ]);
+            exit;
+        } catch(\Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Error: Categoría duplicada o problema en la base de datos.']);
+            exit;
+        }
+    }
+
+    public function deleteProductCategory() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            echo json_encode(['success' => false, 'message' => 'Invalid CSRF token']);
+            exit;
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id) {
+            $categoryModel = new \App\Models\ProductCategory();
+            $categoryModel->delete($id);
+            echo json_encode(['success' => true]);
+            exit;
+        }
+
+        echo json_encode(['success' => false, 'message' => 'ID de categoría inválido']);
+        exit;
+    }
+
     public function deleteProduct() {
         if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
             die('Invalid CSRF token');
@@ -2244,9 +2379,26 @@ class AdminController extends Controller {
             $productModel = new \App\Models\Product();
             $product = $productModel->find($id);
             if ($product) {
+                // 1. Eliminar archivo físico principal
                 if (!empty($product['main_image'])) {
                     \Core\FileHelper::delete($product['main_image']);
                 }
+
+                // 2. Eliminar imágenes de la galería físicamente
+                $galleryModel = new \App\Models\ProductGallery();
+                $galleryImages = $galleryModel->getByProduct($id);
+                if (!empty($galleryImages)) {
+                    foreach ($galleryImages as $image) {
+                        if (!empty($image['image_path'])) {
+                            \Core\FileHelper::delete($image['image_path']);
+                        }
+                    }
+                }
+
+                // 3. Eliminar registros de la galería en la base de datos de forma explícita
+                $galleryModel->deleteByProduct($id);
+
+                // 4. Eliminar el producto principal
                 $productModel->delete($id);
             }
         }

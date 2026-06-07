@@ -8,6 +8,10 @@
             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             Configurar Textos
         </button>
+        <button onclick="openCategoriesModal()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-6 py-3 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 border border-indigo-200 shadow-sm">
+            <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            Gestionar Categorías
+        </button>
         <button onclick="openProductModal()" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-lg shadow-primary/30">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Crear Repuesto
@@ -26,6 +30,10 @@
                 echo 'El producto ha sido duplicado correctamente.';
             } elseif ($_GET['success'] === 'product_deleted') {
                 echo 'El producto ha sido eliminado correctamente.';
+            } elseif ($_GET['success'] === 'category_saved') {
+                echo 'La categoría de repuesto se ha guardado correctamente.';
+            } elseif ($_GET['success'] === 'category_deleted') {
+                echo 'La categoría de repuesto se ha eliminado correctamente.';
             } else {
                 echo 'El producto ha sido guardado correctamente.';
             }
@@ -68,7 +76,12 @@
                                 </div>
                                 <div>
                                     <span class="block font-extrabold text-gray-900 group-hover:text-secondary transition-colors"><?= htmlspecialchars($product['title']) ?></span>
-                                    <span class="block text-xs text-gray-400 mt-0.5">Slug: <?= htmlspecialchars($product['slug']) ?></span>
+                                    <div class="flex flex-wrap items-center gap-2 mt-0.5">
+                                        <span class="text-xs text-gray-400">Slug: <?= htmlspecialchars($product['slug']) ?></span>
+                                        <?php if(!empty($product['category_name'])): ?>
+                                            <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[10px] font-bold border border-indigo-100"><?= htmlspecialchars($product['category_name']) ?></span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </td>
@@ -135,7 +148,7 @@
             
             <!-- Contenido Pestaña: General -->
             <div id="content-general" class="product-tab-content space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                         <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Título del Repuesto</label>
                         <input type="text" name="title" id="product-title" required oninput="generateProductSlug()" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
@@ -143,6 +156,17 @@
                     <div>
                         <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Slug (URL amigable)</label>
                         <input type="text" name="slug" id="product-slug" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Categoría</label>
+                        <select name="category_id" id="product-category-id" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow bg-white">
+                            <option value="">Sin Categoría</option>
+                            <?php if(!empty($categories)): ?>
+                                <?php foreach($categories as $cat): ?>
+                                    <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
                     </div>
                 </div>
                 
@@ -311,7 +335,63 @@
     </div>
 </div>
 
+<!-- Modal para Gestionar Categorías (CRUD Completo) -->
+<div id="categories-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300 flex flex-col max-h-[90vh]" id="categories-modal-container">
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h4 class="text-xl font-extrabold text-gray-900 flex items-center gap-2">
+                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                Gestión de Categorías de Repuestos
+            </h4>
+            <button onclick="closeCategoriesModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white rounded-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Formulario Inline de Categoría -->
+        <div class="bg-indigo-50/50 p-6 border-b border-indigo-100">
+            <form id="cat-form" action="<?= url('admin/repuestos/categorias/save') ?>" method="POST" onsubmit="saveCategoryAjax(event)" class="flex flex-wrap items-end gap-4">
+                <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                <input type="hidden" name="id" id="cat-id" value="">
+                
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-black text-indigo-900/50 uppercase tracking-wider mb-1.5 pl-1">Nombre de Categoría</label>
+                    <input type="text" name="name" id="cat-name" required oninput="generateCatSlug(this.value)" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 py-3 px-4 text-sm bg-white" placeholder="Ej: Neumáticos">
+                </div>
+                
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-xs font-black text-indigo-900/50 uppercase tracking-wider mb-1.5 pl-1">Slug (Opcional)</label>
+                    <input type="text" name="slug" id="cat-slug" class="w-full border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 py-3 px-4 text-sm bg-white" placeholder="neumaticos">
+                </div>
+                
+                <div>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-indigo-200">Guardar</button>
+                    <button type="button" id="btn-cancel-cat" onclick="resetCatForm()" class="hidden ml-2 bg-white text-gray-500 hover:text-gray-800 px-4 py-3 rounded-xl text-xs font-bold border border-gray-200 transition-all">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista Scrollable -->
+        <div class="overflow-y-auto flex-1 p-6">
+            <table class="w-full">
+                <thead class="border-b border-gray-100 text-left text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
+                    <tr>
+                           <th class="pb-3">Nombre</th>
+                           <th class="pb-3">Slug URL</th>
+                           <th class="pb-3 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50" id="categories-table-body">
+                    <!-- Renderizado dinámico vía JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <script>
+let productGalleryDataTransfer = new DataTransfer();
 function switchProductTab(tab) {
     // Esconder todos los contenidos
     document.querySelectorAll('.product-tab-content').forEach(el => el.classList.add('hidden'));
@@ -330,6 +410,7 @@ function switchProductTab(tab) {
 function openProductModal() {
     document.getElementById('modal-title').textContent = 'Crear Nuevo Repuesto';
     document.getElementById('product-id').value = '';
+    document.getElementById('product-category-id').value = '';
     document.getElementById('product-title').value = '';
     document.getElementById('product-slug').value = '';
     document.getElementById('product-technical-details').value = '';
@@ -341,6 +422,8 @@ function openProductModal() {
     document.getElementById('product-is-active').checked = true;
     
     // Resetear vista de galería
+    productGalleryDataTransfer = new DataTransfer();
+    document.getElementById('product-gallery-input').files = productGalleryDataTransfer.files;
     document.getElementById('product-gallery-container').innerHTML = '<div class="col-span-full py-8 text-center text-xs text-gray-400 italic">No hay fotos en la galería de este producto.</div>';
     
     // Reset image preview
@@ -378,8 +461,11 @@ function closeSettingsModal() {
 }
 
 function editProduct(product) {
+    productGalleryDataTransfer = new DataTransfer();
+    document.getElementById('product-gallery-input').files = productGalleryDataTransfer.files;
     document.getElementById('modal-title').textContent = 'Editar Repuesto';
     document.getElementById('product-id').value = product.id;
+    document.getElementById('product-category-id').value = product.category_id || '';
     document.getElementById('product-technical-details').value = product.technical_details || '';
     document.getElementById('product-title').value = product.title;
     document.getElementById('product-slug').value = product.slug;
@@ -473,19 +559,62 @@ function previewProductGallery(input) {
     
     if (input.files) {
         Array.from(input.files).forEach(file => {
+            // Validar duplicados
+            let alreadyExists = false;
+            for (let i = 0; i < productGalleryDataTransfer.files.length; i++) {
+                const f = productGalleryDataTransfer.files[i];
+                if (f.name === file.name && f.size === file.size && f.lastModified === file.lastModified) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            if (alreadyExists) return;
+
+            productGalleryDataTransfer.items.add(file);
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const div = document.createElement('div');
-                div.className = 'relative aspect-square bg-gray-100 rounded-xl overflow-hidden group border border-gray-100 shadow-sm opacity-70';
+                div.className = 'relative aspect-square bg-gray-100 rounded-xl overflow-hidden group border border-gray-100 shadow-sm opacity-70 flex flex-col';
                 div.innerHTML = `
-                    <img src="${e.target.result}" class="w-full h-full object-cover">
-                    <span class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-black uppercase">Nueva</span>
+                    <div class="relative w-full h-full">
+                        <img src="${e.target.result}" class="w-full h-full object-cover">
+                        <span class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-black uppercase select-none">Nueva</span>
+                        <button type="button" class="absolute top-1 right-1 w-6 h-6 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm remove-new-product-gallery-btn" title="Quitar de la lista">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
                 `;
+                
+                div.querySelector('.remove-new-product-gallery-btn').onclick = function() {
+                    removeFileFromProductGallery(file);
+                    div.remove();
+                    // Si ya no quedan fotos, mostrar mensaje vacío
+                    if (galleryContainer.children.length === 0) {
+                        galleryContainer.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-gray-400 italic">No hay fotos en la galería de este producto.</div>';
+                    }
+                };
+                
                 galleryContainer.appendChild(div);
             };
             reader.readAsDataURL(file);
         });
+        
+        // Sincronizar el input con la lista acumulada
+        input.files = productGalleryDataTransfer.files;
     }
+}
+
+function removeFileFromProductGallery(fileToRemove) {
+    const newDataTransfer = new DataTransfer();
+    for (let i = 0; i < productGalleryDataTransfer.files.length; i++) {
+        const file = productGalleryDataTransfer.files[i];
+        if (file !== fileToRemove) {
+            newDataTransfer.items.add(file);
+        }
+    }
+    productGalleryDataTransfer = newDataTransfer;
+    document.getElementById('product-gallery-input').files = productGalleryDataTransfer.files;
 }
 
 async function deleteProductGalleryImage(id, btn) {
@@ -575,4 +704,180 @@ function removeTechDetail(index) {
     textarea.value = items.join('\n');
     renderTechDetails();
 }
+
+function openCategoriesModal() {
+    const modal = document.getElementById('categories-modal');
+    const container = document.getElementById('categories-modal-container');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    setTimeout(() => {
+        container.classList.remove('scale-95', 'opacity-0');
+    }, 50);
+}
+
+function closeCategoriesModal() {
+    const modal = document.getElementById('categories-modal');
+    const container = document.getElementById('categories-modal-container');
+    container.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+function generateCatSlug(val) {
+    const slug = val.toLowerCase()
+        .replace(/[^a-z0-9 -]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+    document.getElementById('cat-slug').value = slug;
+}
+
+function editCategory(cat) {
+    document.getElementById('cat-id').value = cat.id;
+    document.getElementById('cat-name').value = cat.name;
+    document.getElementById('cat-slug').value = cat.slug;
+    document.getElementById('btn-cancel-cat').classList.remove('hidden');
+}
+
+function resetCatForm() {
+    document.getElementById('cat-id').value = '';
+    document.getElementById('cat-name').value = '';
+    document.getElementById('cat-slug').value = '';
+    document.getElementById('btn-cancel-cat').classList.add('hidden');
+}
+
+// Lógica de Reactividad y AJAX para Categorías
+let categoriesData = <?= json_encode($categories ?? []) ?>;
+
+function renderCategoriesTableAndSelect() {
+    const tableBody = document.getElementById('categories-table-body');
+    const select = document.getElementById('product-category-id');
+    
+    // Guardar la categoría seleccionada actualmente en el select
+    const selectedVal = select.value;
+    
+    // Limpiar select
+    select.innerHTML = '<option value="">Sin Categoría</option>';
+    
+    if (categoriesData.length === 0) {
+        tableBody.innerHTML = `
+            <tr id="no-categories-row">
+                <td colspan="3" class="py-10 text-center text-sm text-gray-400 italic">No hay categorías creadas.</td>
+            </tr>
+        `;
+    } else {
+        tableBody.innerHTML = '';
+        categoriesData.forEach(cat => {
+            // Rellenar select
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            select.appendChild(option);
+            
+            // Rellenar tabla
+            const tr = document.createElement('tr');
+            tr.className = 'group hover:bg-gray-50';
+            tr.id = 'cat-row-' + cat.id;
+            tr.innerHTML = `
+                <td class="py-3.5 font-bold text-gray-800">${escapeHtml(cat.name)}</td>
+                <td class="py-3.5 text-xs font-mono text-gray-400">${escapeHtml(cat.slug)}</td>
+                <td class="py-3.5 text-right">
+                    <div class="flex justify-end gap-1.5">
+                        <button type="button" onclick="editCategory(${JSON.stringify(cat).replace(/"/g, '&quot;')})" class="w-8 h-8 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition-all" title="Editar">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                        </button>
+                        <button type="button" onclick="deleteCategoryAjax(${cat.id}, this)" class="w-8 h-8 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-all" title="Eliminar">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+    
+    // Restaurar la categoría seleccionada
+    select.value = selectedVal;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+async function saveCategoryAjax(event) {
+    event.preventDefault();
+    const form = document.getElementById('cat-form');
+    const formData = new FormData(form);
+    
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            const cat = result.category;
+            // Buscar si ya existe para actualizarla o añadirla
+            const existingIndex = categoriesData.findIndex(c => c.id == cat.id);
+            if (existingIndex > -1) {
+                categoriesData[existingIndex] = cat;
+            } else {
+                categoriesData.push(cat);
+            }
+            // Re-renderizar
+            renderCategoriesTableAndSelect();
+            resetCatForm();
+        } else {
+            alert(result.message || 'Error al guardar la categoría.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Ocurrió un error al procesar la solicitud.');
+    }
+}
+
+async function deleteCategoryAjax(id, btn) {
+    if (!confirm('¿Seguro que deseas eliminar esta categoría? Los repuestos vinculados quedarán sin categoría.')) {
+        return;
+    }
+    
+    try {
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('csrf_token', '<?= \Core\Security::generateCSRFToken() ?>');
+        
+        const response = await fetch('<?= url('admin/repuestos/categorias/delete') ?>', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            // Eliminar de categoriesData
+            categoriesData = categoriesData.filter(c => c.id != id);
+            // Re-renderizar
+            renderCategoriesTableAndSelect();
+        } else {
+            alert(result.message || 'Error al eliminar la categoría.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Ocurrió un error en el servidor.');
+    }
+}
+
+// Inicializar la tabla y el select al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    renderCategoriesTableAndSelect();
+});
 </script>

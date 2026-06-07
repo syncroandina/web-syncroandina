@@ -133,6 +133,7 @@
             <button type="button" onclick="switchProjectTab('general')" id="tab-btn-general" class="px-4 py-3 text-xs font-extrabold uppercase tracking-widest border-b-2 border-secondary text-secondary transition-all project-tab-btn">General</button>
             <button type="button" onclick="switchProjectTab('custom')" id="tab-btn-custom" class="px-4 py-3 text-xs font-extrabold uppercase tracking-widest border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all project-tab-btn">Reto & Solución</button>
             <button type="button" onclick="switchProjectTab('gallery')" id="tab-btn-gallery" class="px-4 py-3 text-xs font-extrabold uppercase tracking-widest border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all project-tab-btn">Galería de Fotos</button>
+            <button type="button" onclick="switchProjectTab('seo')" id="tab-btn-seo" class="px-4 py-3 text-xs font-extrabold uppercase tracking-widest border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all project-tab-btn">Configuración SEO</button>
         </div>
         
         <form action="<?= url('admin/proyectos') ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
@@ -241,6 +242,30 @@
                     <!-- Se rellenará dinámicamente con JS -->
                 </div>
             </div>
+
+            <!-- Contenido Pestaña: Configuración SEO -->
+            <div id="content-seo" class="project-tab-content hidden space-y-6">
+                <div class="border-b border-gray-100 pb-4">
+                    <h4 class="text-sm font-extrabold text-gray-800">Optimización SEO del Proyecto</h4>
+                    <p class="text-xs text-gray-400 mt-1">Configura metaetiquetas específicas para mejorar el posicionamiento de la página de este proyecto.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Meta Title (Título del Buscador)</label>
+                        <input type="text" name="seo_title" id="project-seo-title" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow" placeholder="Ej: Implementación de Tableros | Syncro Andina">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Meta Keywords (Palabras Clave)</label>
+                        <input type="text" name="seo_keywords" id="project-seo-keywords" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow" placeholder="Ej: tableros, subestacion, media tension, ingenieria">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Meta Description (Descripción del Buscador)</label>
+                    <textarea name="seo_description" id="project-seo-description" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow resize-none" placeholder="Describe el proyecto en 150-160 caracteres para Google..."></textarea>
+                </div>
+            </div>
             
             <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                 <label class="inline-flex items-center gap-3 cursor-pointer">
@@ -339,6 +364,7 @@
 
 <script>
 const BASE_PATH = '<?= asset("") ?>'.replace(/\/$/, '');
+let projectGalleryDataTransfer = new DataTransfer();
 
 function switchProjectTab(tab) {
     // Esconder todos los contenidos
@@ -373,9 +399,16 @@ function openProjectModal() {
     document.getElementById('project-impact-label').value = 'Impacto Logrado';
     document.getElementById('project-impact-value').value = '100% Optimizado';
     
+    // Resetear campos SEO
+    document.getElementById('project-seo-title').value = '';
+    document.getElementById('project-seo-keywords').value = '';
+    document.getElementById('project-seo-description').value = '';
+    
     document.getElementById('project-is-active').checked = true;
     
     // Resetear vista de galería
+    projectGalleryDataTransfer = new DataTransfer();
+    document.getElementById('project-gallery-input').files = projectGalleryDataTransfer.files;
     document.getElementById('project-gallery-container').innerHTML = '<div class="col-span-full py-8 text-center text-xs text-gray-400 italic">No hay fotos en la galería de este proyecto.</div>';
     
     // Reset image preview
@@ -413,6 +446,8 @@ function closeSettingsModal() {
 }
 
 function editProject(project) {
+    projectGalleryDataTransfer = new DataTransfer();
+    document.getElementById('project-gallery-input').files = projectGalleryDataTransfer.files;
     document.getElementById('modal-title').textContent = 'Editar Proyecto';
     document.getElementById('project-id').value = project.id;
     document.getElementById('project-title').value = project.title;
@@ -431,6 +466,11 @@ function editProject(project) {
     document.getElementById('project-impact-value').value = project.impact_value || '100% Optimizado';
     
     document.getElementById('project-is-active').checked = parseInt(project.is_active) === 1;
+    
+    // Cargar campos SEO individuales
+    document.getElementById('project-seo-title').value = project.seo_title || '';
+    document.getElementById('project-seo-keywords').value = project.seo_keywords || '';
+    document.getElementById('project-seo-description').value = project.seo_description || '';
     
     if (project.main_image) {
         let path = project.main_image;
@@ -509,19 +549,62 @@ function previewProjectGallery(input) {
     
     if (input.files) {
         Array.from(input.files).forEach(file => {
+            // Validar duplicados
+            let alreadyExists = false;
+            for (let i = 0; i < projectGalleryDataTransfer.files.length; i++) {
+                const f = projectGalleryDataTransfer.files[i];
+                if (f.name === file.name && f.size === file.size && f.lastModified === file.lastModified) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            if (alreadyExists) return;
+
+            projectGalleryDataTransfer.items.add(file);
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const div = document.createElement('div');
-                div.className = 'relative aspect-square bg-gray-100 rounded-xl overflow-hidden group border border-gray-100 shadow-sm opacity-70';
+                div.className = 'relative aspect-square bg-gray-100 rounded-xl overflow-hidden group border border-gray-100 shadow-sm opacity-70 flex flex-col';
                 div.innerHTML = `
-                    <img src="${e.target.result}" class="w-full h-full object-cover">
-                    <span class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-black uppercase">Nueva</span>
+                    <div class="relative w-full h-full">
+                        <img src="${e.target.result}" class="w-full h-full object-cover">
+                        <span class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-black uppercase select-none">Nueva</span>
+                        <button type="button" class="absolute top-1 right-1 w-6 h-6 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm remove-new-project-gallery-btn" title="Quitar de la lista">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
                 `;
+                
+                div.querySelector('.remove-new-project-gallery-btn').onclick = function() {
+                    removeFileFromProjectGallery(file);
+                    div.remove();
+                    // Si ya no quedan fotos, mostrar mensaje vacío
+                    if (galleryContainer.children.length === 0) {
+                        galleryContainer.innerHTML = '<div class="col-span-full py-8 text-center text-xs text-gray-400 italic">No hay fotos en la galería de este proyecto.</div>';
+                    }
+                };
+                
                 galleryContainer.appendChild(div);
             };
             reader.readAsDataURL(file);
         });
+        
+        // Sincronizar el input con la lista acumulada
+        input.files = projectGalleryDataTransfer.files;
     }
+}
+
+function removeFileFromProjectGallery(fileToRemove) {
+    const newDataTransfer = new DataTransfer();
+    for (let i = 0; i < projectGalleryDataTransfer.files.length; i++) {
+        const file = projectGalleryDataTransfer.files[i];
+        if (file !== fileToRemove) {
+            newDataTransfer.items.add(file);
+        }
+    }
+    projectGalleryDataTransfer = newDataTransfer;
+    document.getElementById('project-gallery-input').files = projectGalleryDataTransfer.files;
 }
 
 async function deleteProjectGalleryImage(id, btn) {

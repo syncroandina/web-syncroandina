@@ -71,6 +71,8 @@ $router->post('admin/repuestos/toggle', 'AdminController@toggleProductStatus');
 $router->post('admin/repuestos/reorder', 'AdminController@reorderProducts');
 $router->post('admin/repuestos/settings', 'AdminController@saveProductSettings');
 $router->post('admin/repuestos/gallery/delete', 'AdminController@deleteProductGalleryImage');
+$router->post('admin/repuestos/categorias/save', 'AdminController@saveProductCategory');
+$router->post('admin/repuestos/categorias/delete', 'AdminController@deleteProductCategory');
 
 // Identidad Corporativa
 $router->get('admin/identidad', 'AdminController@identityConfig');

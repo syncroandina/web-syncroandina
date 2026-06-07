@@ -45,17 +45,21 @@ class PageController extends Controller {
         $service = !empty($results) ? $results[0] : null;
         
         if (!$service) {
-            http_response_code(404);
-            echo "<h1>404 Not Found</h1><p>El servicio solicitado no existe.</p>";
-            exit;
+            $this->error404('El servicio solicitado no existe o no se encuentra disponible.');
         }
         
         (new Analytics())->logPageView('service', $service['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
         $service = $serviceModel->getFullDetails($service['id']);
         $settings = $settingModel->getAll();
         
+        $seoTitle = !empty($service['seo_title']) ? $service['seo_title'] : ($service['title'] . ' - Syncro Andina');
+        $seoDescription = !empty($service['seo_description']) ? $service['seo_description'] : null;
+        $seoKeywords = !empty($service['seo_keywords']) ? $service['seo_keywords'] : null;
+        
         return $this->view('pages/service_detail', [
-            'title' => $service['title'] . ' - Syncro Andina',
+            'title' => $seoTitle,
+            'description' => $seoDescription,
+            'keywords' => $seoKeywords,
             'service' => $service,
             'settings' => $settings
         ]);
@@ -86,9 +90,7 @@ class PageController extends Controller {
         $project = !empty($results) ? $results[0] : null;
         
         if (!$project || !$project['is_active']) {
-            http_response_code(404);
-            echo "<h1>404 Not Found</h1><p>El proyecto solicitado no existe o no está activo.</p>";
-            exit;
+            $this->error404('El proyecto solicitado no existe o no está activo.');
         }
         
         (new Analytics())->logPageView('project', $project['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
@@ -96,8 +98,14 @@ class PageController extends Controller {
         $galleryModel = new \App\Models\ProjectGallery();
         $gallery = $galleryModel->getByProject($project['id']);
         
+        $seoTitle = !empty($project['seo_title']) ? $project['seo_title'] : ($project['title'] . ' - Syncro Andina');
+        $seoDescription = !empty($project['seo_description']) ? $project['seo_description'] : null;
+        $seoKeywords = !empty($project['seo_keywords']) ? $project['seo_keywords'] : null;
+        
         return $this->view('pages/project_detail', [
-            'title' => $project['title'] . ' - Syncro Andina',
+            'title' => $seoTitle,
+            'description' => $seoDescription,
+            'keywords' => $seoKeywords,
             'project' => $project,
             'settings' => $settings,
             'gallery' => $gallery
@@ -109,14 +117,36 @@ class PageController extends Controller {
 
         $productModel = new \App\Models\Product();
         $settingModel = new \App\Models\Setting();
-        $products = $productModel->getAllActive();
+        $categoryModel = new \App\Models\ProductCategory();
+        
+        $categories = $categoryModel->getAll();
+        
+        $selectedCategory = null;
+        $categoryId = null;
+        $categorySlug = isset($_GET['categoria']) ? trim($_GET['categoria']) : null;
+        
+        if ($categorySlug) {
+            $selectedCategory = $categoryModel->findBySlug($categorySlug);
+            if ($selectedCategory) {
+                $categoryId = $selectedCategory['id'];
+            }
+        }
+        
+        $products = $productModel->getAllActive($categoryId);
         $settings = $settingModel->getAll();
+        
+        $seoTitle = !empty($settings['products_seo_title']) ? $settings['products_seo_title'] : (($settings['page_products_title'] ?? 'Repuestos y Componentes') . ' - Syncro Andina');
+        if ($selectedCategory) {
+            $seoTitle = $selectedCategory['name'] . ' - ' . ($settings['page_products_title'] ?? 'Repuestos') . ' - Syncro Andina';
+        }
 
         return $this->view('pages/products', [
-            'title' => !empty($settings['products_seo_title']) ? $settings['products_seo_title'] : (($settings['page_products_title'] ?? 'Repuestos y Componentes') . ' - Syncro Andina'),
+            'title' => $seoTitle,
             'description' => !empty($settings['products_seo_description']) ? $settings['products_seo_description'] : null,
             'keywords' => !empty($settings['products_seo_keywords']) ? $settings['products_seo_keywords'] : null,
             'products' => $products,
+            'categories' => $categories,
+            'selectedCategory' => $selectedCategory,
             'settings' => $settings
         ]);
     }
@@ -128,9 +158,7 @@ class PageController extends Controller {
         $product = $productModel->findBySlug($slug);
         
         if (!$product || !$product['is_active']) {
-            http_response_code(404);
-            echo "<h1>404 Not Found</h1><p>El repuesto solicitado no existe o no está activo.</p>";
-            exit;
+            $this->error404('El repuesto solicitado no existe o no está activo.');
         }
         
         (new Analytics())->logPageView('product', $product['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
@@ -201,9 +229,7 @@ class PageController extends Controller {
         $post = $postModel->getBySlug($slug);
 
         if (!$post) {
-            http_response_code(404);
-            echo "<h1>404 Not Found</h1><p>El artículo solicitado no existe o no se encuentra disponible.</p>";
-            exit;
+            $this->error404('El artículo solicitado no existe o no se encuentra disponible.');
         }
 
         (new Analytics())->logPageView('blog', $post['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
@@ -601,5 +627,19 @@ class PageController extends Controller {
         header('Content-Type: application/xml; charset=utf-8');
         echo $xml;
         exit;
+    }
+
+    public function error404($customMessage = null) {
+        http_response_code(404);
+        
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+
+        return $this->view('pages/404', [
+            'title' => 'Error 404 - Página No Encontrada',
+            'description' => 'La página solicitada no está disponible en Syncro Andina.',
+            'message' => $customMessage,
+            'settings' => $settings
+        ]);
     }
 }

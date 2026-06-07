@@ -36,7 +36,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 try {
     $router->direct($uri, $method);
 } catch (Exception $e) {
-    http_response_code(404);
-    echo "<h1>404 Not Found</h1>";
-    echo "<p>" . $e->getMessage() . "</p>";
+    error_log("EXCEPCION CAPTURADA: " . $e->getMessage() . " en " . $e->getFile() . ":" . $e->getLine() . "\n" . $e->getTraceAsString());
+    $controller = new \App\Controllers\PageController();
+    $controller->error404("La página o dirección web solicitada no existe.");
 }

@@ -100,6 +100,10 @@ if (!function_exists('formatBlogDateDetail')) {
     color: #334155;
     font-size: 1.05rem;
   }
+  .prose p:empty,
+  .prose p:has(> br:only-child) {
+    display: none !important;
+  }
   .prose strong, .prose b {
     color: #0F172A;
     font-weight: 800;
@@ -239,7 +243,7 @@ if (!function_exists('formatBlogDateDetail')) {
                     <!-- Imagen Principal de Alta Calidad -->
                     <?php if(!empty($post['image'])): ?>
                         <div class="rounded-3xl overflow-hidden shadow-md mb-8 border border-gray-150 relative max-h-[480px]">
-                            <img src="<?= asset($post['image']) ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover">
+                            <img src="<?= asset($post['image']) ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" fetchpriority="high" class="w-full h-full object-cover">
                         </div>
                     <?php endif; ?>
 
@@ -269,10 +273,10 @@ if (!function_exists('formatBlogDateDetail')) {
                     
                     <!-- Sidebar Widget: Publicaciones Recientes (Fiel a la Referencia) -->
                     <div class="bg-white border border-slate-100 p-6 md:p-8 rounded-2xl shadow-sm">
-                        <h2 class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 flex items-center gap-2">
+                        <h3 class="text-xs font-black uppercase tracking-widest text-gray-900 mb-4 flex items-center gap-2">
                             <span class="w-1.5 h-3 bg-primary rounded-full"></span>
                             Publicaciones recientes
-                        </h2>
+                        </h3>
                         <hr class="border-gray-200 mb-5 select-none">
                         
                         <?php if(!empty($recommended)): ?>
@@ -302,7 +306,7 @@ if (!function_exists('formatBlogDateDetail')) {
                         
                         <div class="relative z-10">
                             <span class="text-[9px] font-black uppercase tracking-widest text-secondary bg-secondary/10 px-3 py-1.5 rounded-full inline-block mb-3 border border-secondary/10 select-none"><?= htmlspecialchars($ctaTagline) ?></span>
-                            <h2 class="text-base font-extrabold mb-2 leading-tight tracking-tight"><?= htmlspecialchars($ctaTitle) ?></h2>
+                            <h3 class="text-base font-extrabold mb-2 leading-tight tracking-tight"><?= htmlspecialchars($ctaTitle) ?></h3>
                             <p class="text-[11px] text-slate-400 mb-5 leading-relaxed"><?= htmlspecialchars($ctaDescription) ?></p>
                             
                             <button onclick="openContactModal('Consulta originada en artículo: <?= addslashes(htmlspecialchars($post['title'])) ?>')" class="w-full py-3.5 px-4 bg-white hover:bg-secondary text-slate-900 hover:text-white font-bold text-xs rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-sm hover:shadow-secondary/30 group">

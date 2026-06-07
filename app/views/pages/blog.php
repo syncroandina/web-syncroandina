@@ -126,7 +126,7 @@ if (!function_exists('formatBlogDate')) {
                                 <!-- Imagen Destacada (7 columnas en LG) -->
                                 <div class="lg:col-span-7 relative h-72 sm:h-96 lg:h-auto min-h-[340px] overflow-hidden group">
                                     <?php if(!empty($featuredPost['image'])): ?>
-                                        <img src="<?= asset($featuredPost['image']) ?>" alt="<?= htmlspecialchars($featuredPost['image_alt'] ?: $featuredPost['title']) ?>" class="w-full h-full object-cover lg:absolute lg:inset-0 group-hover:scale-103 transition-transform duration-700 ease-out">
+                                        <img src="<?= asset($featuredPost['image']) ?>" alt="<?= htmlspecialchars($featuredPost['image_alt'] ?: $featuredPost['title']) ?>" fetchpriority="high" class="w-full h-full object-cover lg:absolute lg:inset-0 group-hover:scale-103 transition-transform duration-700 ease-out">
                                     <?php else: ?>
                                         <div class="w-full h-full bg-primary/5 flex items-center justify-center text-gray-300 lg:absolute lg:inset-0">
                                             <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -165,7 +165,7 @@ if (!function_exists('formatBlogDate')) {
                             <article class="post-card bg-white rounded-[2rem] overflow-hidden border border-gray-100/80 flex flex-col interactive-shadow animate-fade-in-up" style="animation-delay: <?= ($index % 4) * 100 ?>ms;">
                                 <div class="h-56 relative overflow-hidden group">
                                     <?php if(!empty($post['image'])): ?>
-                                        <img src="<?= asset($post['image']) ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                        <img src="<?= asset($post['image']) ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                     <?php else: ?>
                                         <div class="w-full h-full bg-primary/5 flex items-center justify-center text-gray-300">
                                             <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -180,11 +180,11 @@ if (!function_exists('formatBlogDate')) {
                                         <span>&bull;</span>
                                         <span><?= formatBlogDate($post['published_at']) ?></span>
                                     </div>
-                                    <h3 class="text-lg font-extrabold text-gray-900 mb-3 hover:text-secondary transition-colors leading-snug">
+                                    <h2 class="text-lg font-extrabold text-gray-900 mb-3 hover:text-secondary transition-colors leading-snug">
                                         <a href="<?= url('blog/' . $post['slug']) ?>">
                                             <?= htmlspecialchars(html_entity_decode(htmlspecialchars_decode($post['title']), ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?>
                                         </a>
-                                    </h3>
+                                    </h2>
                                     <p class="text-gray-500 mb-6 line-clamp-3 leading-relaxed text-sm">
                                         <?= htmlspecialchars(html_entity_decode(htmlspecialchars_decode($post['excerpt']), ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?>
                                     </p>

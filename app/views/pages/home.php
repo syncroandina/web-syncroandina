@@ -10,6 +10,9 @@
             <p class="text-sm font-bold tracking-widest text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['services_label'] ?? 'Lo que hacemos') ?></p>
             <h1 class="text-3xl md:text-5xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['services_title'] ?? 'Nuestros Servicios Especializados') ?></h1>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
+            <?php if(!empty($settings['services_subtitle'])): ?>
+                <h2 class="text-xl md:text-2xl font-bold text-gray-750 mt-6 max-w-4xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['services_subtitle']) ?></h2>
+            <?php endif; ?>
             <p class="text-gray-600 max-w-5xl mx-auto text-base md:text-lg mt-6 md:mt-8 leading-relaxed animate-fade-in"><?= htmlspecialchars($settings['services_description'] ?? 'Ofrecemos soluciones integrales diseñadas para impulsar el crecimiento y la seguridad de tu infraestructura corporativa.') ?></p>
         </div>
         
@@ -42,14 +45,15 @@
                             <div class="relative h-64 overflow-hidden rounded-t-[2rem] border-b border-gray-200 gpu-clip-fix">
                                 <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
                                      alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
+                                     loading="lazy"
                                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 gpu-image-fix">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                             </div>
 
                             <div class="p-8 flex flex-col flex-grow bg-white rounded-b-[2rem]">
-                                <h2 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-1">
+                                <h3 class="text-2xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors line-clamp-1">
                                     <?= htmlspecialchars($service['title']) ?>
-                                </h2>
+                                </h3>
                                 
                                 <p class="text-gray-600 mb-8 leading-relaxed line-clamp-3">
                                     <?= htmlspecialchars(strip_tags($service['content'])) ?>
@@ -317,7 +321,7 @@
                                 <span class="text-xl font-black text-primary tracking-tight"><?= htmlspecialchars($logo['name']) ?></span>
                             </div>
                         <?php else: ?>
-                            <img src="<?= htmlspecialchars($logo['logo_path']) ?>" alt="<?= htmlspecialchars($logo['image_alt'] ?: $logo['name']) ?>" class="h-16 md:h-20 max-w-[240px] object-contain select-none pointer-events-none">
+                            <img src="<?= htmlspecialchars($logo['logo_path']) ?>" alt="<?= htmlspecialchars($logo['image_alt'] ?: $logo['name']) ?>" loading="lazy" class="h-16 md:h-20 max-w-[240px] object-contain select-none pointer-events-none">
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
@@ -506,7 +510,7 @@
                     <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] group">
                         <article class="bg-white rounded-[2.5rem] p-4 border border-gray-200 group-hover:border-primary/40 transition-all duration-300 flex flex-col h-full group-hover:-translate-y-1 relative after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
                             <div class="relative overflow-hidden rounded-[2rem] aspect-[16/10] mb-6 gpu-clip-fix" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
-                                <img src="<?= asset($post['image'] ?: 'assets/images/blog-placeholder.jpg') ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 gpu-image-fix">
+                                <img src="<?= asset($post['image'] ?: 'assets/images/blog-placeholder.jpg') ?>" alt="<?= htmlspecialchars($post['image_alt'] ?: $post['title']) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 gpu-image-fix">
                                 <div class="absolute top-4 left-4">
                                     <span class="bg-white/90 backdrop-blur-md text-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
                                         <?= date('d M, Y', strtotime($post['published_at'] ?? $post['created_at'])) ?>

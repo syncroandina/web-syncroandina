@@ -86,7 +86,7 @@
                                 </td>
                                 <td class="px-8 py-5">
                                     <span class="block font-extrabold text-gray-900 group-hover:text-secondary transition-colors"><?= htmlspecialchars($service['title']) ?></span>
-                                    <span class="block text-xs text-gray-500 mt-0.5 line-clamp-1"><?= htmlspecialchars(strip_tags($service['content'])) ?></span>
+                                    <span class="block text-xs text-gray-500 mt-0.5 line-clamp-1"><?= htmlspecialchars(mb_strimwidth(strip_tags($service['content'] ?? ''), 0, 120, '...')) ?></span>
                                 </td>
                                 <td class="px-8 py-5">
                                     <code class="text-[10px] bg-gray-100 px-2 py-1 rounded text-gray-500 font-bold">/services/<?= htmlspecialchars($service['slug']) ?></code>
@@ -265,6 +265,28 @@
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Descripción del Bloque de Contacto / CTA</label>
                     <textarea name="cta_description" id="service-cta-description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Describe brevemente la invitación a cotizar..."></textarea>
                 </div>
+
+                <!-- Campos de Meta Etiquetas SEO individuales -->
+                <div class="border-t border-b border-gray-100 py-4 my-6">
+                    <h5 class="text-sm font-bold text-gray-900 uppercase tracking-widest pl-2 border-l-4 border-secondary">Etiquetas Meta SEO del Servicio (Individual)</h5>
+                    <p class="text-xs text-gray-500">Configura etiquetas meta específicas para esta página de servicio, mejorando la indexación en buscadores.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Meta Title (Título del Buscador)</label>
+                        <input type="text" name="seo_title" id="service-seo-title" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: Servicio de Energía Ininterrumpida | Syncro Andina">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Meta Keywords (Palabras Clave)</label>
+                        <input type="text" name="seo_keywords" id="service-seo-keywords" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: energia, tableros, mantenimiento, ingenieria">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Meta Description (Descripción del Buscador)</label>
+                    <textarea name="seo_description" id="service-seo-description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Describe el servicio en 150-160 caracteres para Google..."></textarea>
+                </div>
             </div>
 
             <!-- Footer -->
@@ -319,6 +341,11 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Descripción de la Sección</label>
                     <textarea name="services_description" rows="2" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve descripción de la sección..."><?= htmlspecialchars($settings['services_description'] ?? '') ?></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título Intermedio (H2)</label>
+                    <input type="text" name="services_subtitle" value="<?= htmlspecialchars($settings['services_subtitle'] ?? '') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: Soluciones de Generación Eléctrica, Fabricación de Tableros y Servicios Electromecánicos">
                 </div>
                 
                 <div>
@@ -385,6 +412,7 @@
 
 <script>
 let quill;
+let galleryDataTransfer = new DataTransfer();
 const modal = document.getElementById('service-modal');
 const container = document.getElementById('modal-container');
 const itemsContainer = document.getElementById('items-container');
@@ -444,9 +472,17 @@ function resetServiceForm() {
     document.getElementById('modal-title').innerText = 'Nuevo Servicio';
     itemsContainer.innerHTML = '';
     galleryContainer.innerHTML = '';
+    
+    // Limpiar campos SEO
+    document.getElementById('service-seo-title').value = '';
+    document.getElementById('service-seo-keywords').value = '';
+    document.getElementById('service-seo-description').value = '';
+    
     if (quill) {
         quill.setContents([]);
     }
+    galleryDataTransfer = new DataTransfer();
+    document.getElementById('gallery-upload').files = galleryDataTransfer.files;
     switchTab('general');
 }
 
@@ -483,6 +519,11 @@ async function editService(id) {
         document.getElementById('service-heading-gallery').value = service.heading_gallery || '';
         document.getElementById('service-heading-cta').value = service.heading_cta || '';
         document.getElementById('service-cta-description').value = service.cta_description || '';
+        
+        // Cargar campos SEO individuales
+        document.getElementById('service-seo-title').value = service.seo_title || '';
+        document.getElementById('service-seo-keywords').value = service.seo_keywords || '';
+        document.getElementById('service-seo-description').value = service.seo_description || '';
         
         if(service.image) {
             const preview = document.getElementById('image-preview');
@@ -552,17 +593,56 @@ function addGalleryItem(path, id, alt = '') {
 function previewGallery(input) {
     if (input.files) {
         Array.from(input.files).forEach(file => {
+            // Validar que no se agregue el mismo archivo duplicado en la lista
+            let alreadyExists = false;
+            for (let i = 0; i < galleryDataTransfer.files.length; i++) {
+                const f = galleryDataTransfer.files[i];
+                if (f.name === file.name && f.size === file.size && f.lastModified === file.lastModified) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            if (alreadyExists) return;
+
+            galleryDataTransfer.items.add(file);
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const div = document.createElement('div');
-                div.className = 'relative aspect-square rounded-xl overflow-hidden shadow-sm border border-secondary/30 ring-2 ring-secondary/20';
-                div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover opacity-60">
-                                 <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-secondary uppercase bg-white/40">Nuevo</div>`;
+                div.className = 'relative aspect-square rounded-xl overflow-hidden shadow-sm border border-secondary/30 ring-2 ring-secondary/20 group';
+                div.innerHTML = `
+                    <img src="${e.target.result}" class="w-full h-full object-cover opacity-60">
+                    <div class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-secondary uppercase bg-white/40 select-none">Nuevo</div>
+                    <button type="button" class="absolute top-2 right-2 w-7 h-7 bg-red-600 text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg remove-new-gallery-btn">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                `;
+                
+                div.querySelector('.remove-new-gallery-btn').onclick = function() {
+                    removeFileFromGallery(file);
+                    div.remove();
+                };
+                
                 galleryContainer.appendChild(div);
             }
             reader.readAsDataURL(file);
         });
+        
+        // Sincronizar el input de archivos con la lista acumulada
+        input.files = galleryDataTransfer.files;
     }
+}
+
+function removeFileFromGallery(fileToRemove) {
+    const newDataTransfer = new DataTransfer();
+    for (let i = 0; i < galleryDataTransfer.files.length; i++) {
+        const file = galleryDataTransfer.files[i];
+        if (file !== fileToRemove) {
+            newDataTransfer.items.add(file);
+        }
+    }
+    galleryDataTransfer = newDataTransfer;
+    document.getElementById('gallery-upload').files = galleryDataTransfer.files;
 }
 
 async function deleteGalleryImage(id, btn) {

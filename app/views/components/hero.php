@@ -6,11 +6,11 @@ if (!$hasSliders) return;
 <!-- Swiper Container -->
 <div class="swiper heroSwiper relative group h-[580px] sm:h-[680px] lg:h-[750px]">
     <div class="swiper-wrapper">
-        <?php foreach($sliders as $slider): ?>
+        <?php foreach($sliders as $index => $slider): ?>
             <div class="swiper-slide relative bg-primary overflow-hidden h-full flex items-center">
                 <!-- Background Image with Overlay -->
                 <div class="absolute inset-0">
-                    <img src="<?= asset($slider['image_path']) ?>" alt="<?= htmlspecialchars($slider['image_alt'] ?: $slider['title']) ?>" class="w-full h-full object-cover opacity-40">
+                    <img src="<?= asset($slider['image_path']) ?>" alt="<?= htmlspecialchars($slider['image_alt'] ?: $slider['title']) ?>" class="w-full h-full object-cover opacity-40" <?= $index === 0 ? 'fetchpriority="high"' : 'loading="lazy"' ?>>
                     <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
                 </div>
 

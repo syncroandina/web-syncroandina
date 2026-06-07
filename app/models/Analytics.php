@@ -7,11 +7,17 @@ class Analytics extends Model {
     protected $table = 'page_views';
 
     public function logPageView($pageType, $entityId, $url, $ip, $userAgent) {
+        if (isset($_SESSION['user'])) {
+            return true;
+        }
         $stmt = $this->db->prepare("INSERT INTO page_views (page_type, entity_id, url, ip_address, user_agent) VALUES (?, ?, ?, ?, ?)");
         return $stmt->execute([$pageType, $entityId, $url, $ip, $userAgent]);
     }
 
     public function logInteraction($type, $url, $ip) {
+        if (isset($_SESSION['user'])) {
+            return true;
+        }
         $stmt = $this->db->prepare("INSERT INTO interactions (interaction_type, url, ip_address) VALUES (?, ?, ?)");
         return $stmt->execute([$type, $url, $ip]);
     }
@@ -128,7 +134,7 @@ class Analytics extends Model {
         $query = "SELECT b.title, b.slug, b.image, COUNT(p.id) as visits 
                   FROM page_views p 
                   JOIN blog_posts b ON p.entity_id = b.id 
-                  WHERE p.page_type = 'blog' AND p.created_at BETWEEN ? AND ? 
+                  WHERE p.page_type = 'blog' AND b.deleted_at IS NULL AND p.created_at BETWEEN ? AND ? 
                   GROUP BY p.entity_id 
                   ORDER BY visits DESC LIMIT ?";
         $stmt = $this->db->prepare($query);

@@ -15,21 +15,21 @@
             <!-- Columna Izquierda: Imágenes (6 columnas en Desktop) -->
             <div class="lg:col-span-6 space-y-6 animate-fade-in-up" style="animation-delay: 100ms;">
                 <div class="bg-gray-100 rounded-[2rem] border border-gray-100 flex items-center justify-center aspect-square shadow-sm relative group overflow-hidden">
-                    <img id="main-product-image" src="<?= asset($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105">
+                    <img id="main-product-image" src="<?= asset($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" fetchpriority="high" class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105">
                 </div>
                 
                 <?php if(!empty($gallery)): ?>
                 <div class="grid grid-cols-4 sm:grid-cols-5 gap-4">
                     <!-- Thumbnail de la principal -->
                     <div class="bg-gray-100 rounded-2xl border-2 border-secondary cursor-pointer aspect-square flex items-center justify-center thumbnail-trigger transition-all overflow-hidden" data-src="<?= asset($product['main_image']) ?>" onclick="updateMainImage(this)">
-                        <img src="<?= asset($product['main_image']) ?>" class="w-full h-full object-cover">
+                        <img src="<?= asset($product['main_image']) ?>" loading="lazy" class="w-full h-full object-cover">
                     </div>
                     <!-- Thumbnails de la galería -->
                     <?php foreach($gallery as $img): 
                         if ($img['image_path'] === $product['main_image']) continue;
                     ?>
                     <div class="bg-gray-100 rounded-2xl border-2 border-transparent hover:border-gray-200 cursor-pointer aspect-square flex items-center justify-center thumbnail-trigger transition-all overflow-hidden" data-src="<?= asset($img['image_path']) ?>" onclick="updateMainImage(this)">
-                        <img src="<?= asset($img['image_path']) ?>" class="w-full h-full object-cover">
+                        <img src="<?= asset($img['image_path']) ?>" loading="lazy" class="w-full h-full object-cover">
                     </div>
                     <?php endforeach; ?>
                 </div>

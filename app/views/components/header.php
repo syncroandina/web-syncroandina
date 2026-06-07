@@ -8,6 +8,15 @@
     <meta name="keywords" content="<?= htmlspecialchars($keywords ?? 'transformación digital, desarrollo web, software a medida, aplicaciones corporativas') ?>">
     <meta name="author" content="Syncro Andina">
     
+    <!-- Preconexiones de Rendimiento (PageSpeed Optimizations) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     <?php
     $settingModel = new \App\Models\Setting();
     $settings = $settingModel->getAll();
@@ -39,7 +48,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <!-- Estilos Globales Dinámicos -->
-    <link rel="stylesheet" href="<?= asset('assets/css/theme.css') ?>?v=<?= time() ?>">
+    <link rel="stylesheet" href="<?= asset('assets/css/theme.css') ?>?v=<?= file_exists(__DIR__ . '/../../../public/assets/css/theme.css') ? filemtime(__DIR__ . '/../../../public/assets/css/theme.css') : '1.0.2' ?>">
     
     <!-- Open Graph (Redes Sociales) -->
     <meta property="og:title" content="<?= htmlspecialchars($title ?? 'Syncro Andina') ?>">
