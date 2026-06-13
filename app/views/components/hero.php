@@ -76,7 +76,7 @@ if (!$hasSliders) return;
             effect: 'fade',
             fadeEffect: { crossFade: true },
             autoplay: {
-                delay: 5000,
+                delay: <?= (int)($settings['slider_autoplay_delay'] ?? 8000) ?>,
                 disableOnInteraction: false,
             },
             pagination: {

@@ -2,7 +2,7 @@
 <?php $this->component('navbar'); ?>
 
 <main class="min-h-screen bg-white">
-    <?php $this->component('hero', ['sliders' => $sliders ?? []]); ?>
+    <?php $this->component('hero', ['sliders' => $sliders ?? [], 'settings' => $settings ?? []]); ?>
     
     <!-- Sección de Servicios (Ahora arriba) -->
     <section class="py-24 bg-gray-50 border-b border-gray-100 overflow-hidden relative">

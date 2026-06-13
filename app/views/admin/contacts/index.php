@@ -37,7 +37,17 @@
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-2xl relative mb-6">
             <strong class="font-bold">¡Éxito!</strong>
             <span class="block sm:inline">
-                <?= $_GET['success'] === 'lead_deleted' ? 'El lead ha sido eliminado correctamente.' : 'Operación completada con éxito.' ?>
+                <?php 
+                if ($_GET['success'] === 'lead_deleted') {
+                    echo 'El lead ha sido archivado correctamente.';
+                } elseif ($_GET['success'] === 'lead_restored') {
+                    echo 'El lead ha sido restaurado correctamente.';
+                } elseif ($_GET['success'] === 'lead_deleted_permanent') {
+                    echo 'El lead ha sido eliminado permanentemente de la base de datos.';
+                } else {
+                    echo 'Operación completada con éxito.';
+                }
+                ?>
             </span>
         </div>
     <?php endif; ?>
@@ -46,12 +56,12 @@
     <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
         <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4">
             <!-- Tabs de Filtrado -->
-            <div class="flex p-1.5 bg-gray-50 rounded-2xl border border-gray-100 self-start">
+            <div class="flex p-1.5 bg-gray-50 rounded-2xl border border-gray-100 self-start flex-wrap gap-1">
                 <button @click="activeTab = 'todos'" 
                     class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2"
                     :class="activeTab === 'todos' ? 'bg-white text-gray-900 shadow-md shadow-gray-200/50' : 'text-gray-500 hover:text-gray-900'">
                     Todos
-                    <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-lg font-black" x-text="leads.length"></span>
+                    <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-lg font-black" x-text="activeCount"></span>
                 </button>
                 <button @click="activeTab = 'unread'" 
                     class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2"
@@ -64,6 +74,12 @@
                     :class="activeTab === 'read' ? 'bg-green-500 text-white shadow-md shadow-green-200' : 'text-gray-500 hover:text-green-500'">
                     Leídos
                     <span class="px-2 py-0.5 rounded-lg font-black" :class="activeTab === 'read' ? 'bg-green-600 text-white' : 'bg-green-50 text-green-500'" x-text="readCount"></span>
+                </button>
+                <button @click="activeTab = 'archivados'" 
+                    class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-2"
+                    :class="activeTab === 'archivados' ? 'bg-gray-800 text-white shadow-md shadow-gray-700/30' : 'text-gray-500 hover:text-gray-800'">
+                    Archivados
+                    <span class="px-2 py-0.5 rounded-lg font-black" :class="activeTab === 'archivados' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500'" x-text="archivedCount"></span>
                 </button>
             </div>
 
@@ -169,13 +185,39 @@
                                         <button @click="selectedLead = lead; if(lead.is_read == 0) toggleReadStatus(lead)" class="p-2 bg-blue-50 hover:bg-blue-100 text-secondary rounded-xl transition-all hover:scale-105" title="Ver Detalles">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                         </button>
-                                        <form action="/admin/contactos/delete" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este lead permanentemente? Esta acción es irreversible.');" class="inline">
-                                            <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
-                                            <input type="hidden" name="id" :value="lead.id">
-                                            <button type="submit" class="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-all hover:scale-105" title="Eliminar Permanentemente">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                            </button>
-                                        </form>
+                                        
+                                        <!-- Si está archivado (deleted_at !== null) -->
+                                        <template x-if="lead.deleted_at !== null">
+                                            <div class="flex gap-2">
+                                                <!-- Restaurar -->
+                                                <form action="/admin/contactos/restore" method="POST" class="inline">
+                                                    <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                                                    <input type="hidden" name="id" :value="lead.id">
+                                                    <button type="submit" class="p-2 bg-green-50 hover:bg-green-100 text-green-600 rounded-xl transition-all hover:scale-105" title="Restaurar Lead">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 6.577M20.69 4h.52v.52M3 10h.52v.52"></path></svg>
+                                                    </button>
+                                                </form>
+                                                <!-- Eliminar Permanentemente -->
+                                                <form action="/admin/contactos/delete-permanent" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este lead permanentemente de la base de datos? Esta acción es irreversible.');" class="inline">
+                                                    <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                                                    <input type="hidden" name="id" :value="lead.id">
+                                                    <button type="submit" class="p-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-all hover:scale-105" title="Eliminar Permanentemente">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </template>
+
+                                        <!-- Si NO está archivado (deleted_at === null) -->
+                                        <template x-if="lead.deleted_at === null">
+                                            <form action="/admin/contactos/delete" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas archivar este lead? Podrás recuperarlo en la pestaña de Archivados.');" class="inline">
+                                                <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+                                                <input type="hidden" name="id" :value="lead.id">
+                                                <button type="submit" class="p-2 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-xl transition-all hover:scale-105" title="Archivar Lead">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                                                </button>
+                                            </form>
+                                        </template>
                                     </div>
                                 </td>
                             </tr>
@@ -349,9 +391,18 @@ function leadsManager() {
         leads: <?= json_encode($leads) ?>,
         get filteredLeads() {
             return this.leads.filter(lead => {
-                const matchesTab = this.activeTab === 'todos' || 
-                    (this.activeTab === 'unread' && lead.is_read == 0) || 
-                    (this.activeTab === 'read' && lead.is_read == 1);
+                const isArchived = lead.deleted_at !== null;
+                let matchesTab = false;
+
+                if (this.activeTab === 'todos') {
+                    matchesTab = !isArchived;
+                } else if (this.activeTab === 'unread') {
+                    matchesTab = !isArchived && lead.is_read == 0;
+                } else if (this.activeTab === 'read') {
+                    matchesTab = !isArchived && lead.is_read == 1;
+                } else if (this.activeTab === 'archivados') {
+                    matchesTab = isArchived;
+                }
                     
                 const matchesSearch = !this.searchQuery || 
                     lead.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
@@ -364,10 +415,16 @@ function leadsManager() {
             });
         },
         get unreadCount() {
-            return this.leads.filter(l => l.is_read == 0).length;
+            return this.leads.filter(l => l.deleted_at === null && l.is_read == 0).length;
         },
         get readCount() {
-            return this.leads.filter(l => l.is_read == 1).length;
+            return this.leads.filter(l => l.deleted_at === null && l.is_read == 1).length;
+        },
+        get activeCount() {
+            return this.leads.filter(l => l.deleted_at === null).length;
+        },
+        get archivedCount() {
+            return this.leads.filter(l => l.deleted_at !== null).length;
         },
         toggleReadStatus(lead) {
             const formData = new FormData();

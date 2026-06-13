@@ -138,7 +138,6 @@
                         <select name="interest_type" id="contact-modal-interest-type" required class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700 font-medium">
                             <option value="general">Consulta General / Otros</option>
                             <option value="servicio">Servicios Técnicos</option>
-                            <option value="proyecto">Proyectos y Casos de Éxito</option>
                             <option value="producto">Repuestos y Componentes</option>
                         </select>
                         <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
@@ -165,21 +164,37 @@
                     </div>
                 </div>
 
-                <!-- Selector Condicional: Proyectos -->
-                <div class="space-y-1.5 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="contact-modal-project-wrapper">
-                    <label class="text-sm font-semibold text-gray-700">Selecciona el Proyecto <span class="text-red-500">*</span></label>
-                    <div class="relative">
-                        <select name="project_id" id="contact-modal-project-id" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm appearance-none cursor-pointer text-gray-700">
-                            <option value="">-- Seleccionar Proyecto --</option>
-                            <?php if(!empty($projects)): ?>
-                                <?php foreach($projects as $proj): ?>
-                                    <option value="<?= $proj['id'] ?>" data-slug="<?= htmlspecialchars($proj['slug'] ?? '') ?>"><?= htmlspecialchars($proj['title']) ?></option>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
+
+
+                <!-- Selector Condicional: Repuestos (Productos) - Paso 1: Elegir método -->
+                <div class="space-y-2 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="contact-modal-product-selector-wrapper">
+                    <label class="text-sm font-semibold text-gray-700 block">¿Cómo deseas seleccionar el repuesto? <span class="text-red-500">*</span></label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Del Catálogo -->
+                        <label class="relative flex items-center justify-between p-3 bg-gray-50 border-2 border-secondary/80 rounded-xl cursor-pointer hover:bg-white transition-all shadow-sm group" id="contact-modal-product-type-catalog-lbl">
+                            <span class="flex items-center gap-2">
+                                <span class="p-2 bg-blue-50 text-secondary rounded-lg group-hover:bg-blue-100 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                                </span>
+                                <span class="font-bold text-gray-800 text-xs">Elegir del catálogo</span>
+                            </span>
+                            <span class="flex items-center h-4">
+                                <input type="radio" name="product_selection_type" value="catalog" checked class="text-secondary focus:ring-secondary w-3.5 h-3.5 cursor-pointer m-0">
+                            </span>
+                        </label>
+                        
+                        <!-- Manual (Otro) -->
+                        <label class="relative flex items-center justify-between p-3 bg-gray-50 border-2 border-gray-100 rounded-xl cursor-pointer hover:bg-white hover:border-secondary/30 transition-all shadow-sm group" id="contact-modal-product-type-manual-lbl">
+                            <span class="flex items-center gap-2">
+                                <span class="p-2 bg-blue-50 text-secondary rounded-lg group-hover:bg-blue-100 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                </span>
+                                <span class="font-bold text-gray-800 text-xs">Escribir manualmente</span>
+                            </span>
+                            <span class="flex items-center h-4">
+                                <input type="radio" name="product_selection_type" value="manual" class="text-secondary focus:ring-secondary w-3.5 h-3.5 cursor-pointer m-0">
+                            </span>
+                        </label>
                     </div>
                 </div>
 
@@ -199,6 +214,12 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </div>
                     </div>
+                </div>
+
+                <!-- Input adicional para especificar repuesto cuando se selecciona 'otro' -->
+                <div class="space-y-1.5 hidden transform origin-top transition-all duration-300 scale-95 opacity-0" id="contact-modal-product-custom-wrapper">
+                    <label class="text-sm font-semibold text-gray-700">Especificar Repuesto / Componente <span class="text-red-500">*</span></label>
+                    <input type="text" name="custom_product" id="contact-modal-product-custom" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all shadow-sm" placeholder="Ej. Filtro de aire personalizado">
                 </div>
 
                 <!-- Asunto -->
@@ -223,41 +244,116 @@
 </div>
 
 <script>
+function toggleModalProductSelectionType(selectionType) {
+    const productWrapper = document.getElementById('contact-modal-product-wrapper');
+    const customProductWrapper = document.getElementById('contact-modal-product-custom-wrapper');
+
+    const productSelect = document.getElementById('contact-modal-product-id');
+    const customProductInput = document.getElementById('contact-modal-product-custom');
+
+    const catalogLabel = document.getElementById('contact-modal-product-type-catalog-lbl');
+    const manualLabel = document.getElementById('contact-modal-product-type-manual-lbl');
+
+    // Reset required
+    if (productSelect) productSelect.removeAttribute('required');
+    if (customProductInput) {
+        customProductInput.removeAttribute('required');
+        customProductInput.value = '';
+    }
+
+    if (selectionType === 'catalog') {
+        // Mostrar catálogo
+        if (productWrapper && productSelect) {
+            productWrapper.classList.remove('hidden');
+            productSelect.setAttribute('required', 'true');
+            setTimeout(() => { productWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+        }
+        // Ocultar manual
+        if (customProductWrapper) {
+            customProductWrapper.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { customProductWrapper.classList.add('hidden'); }, 150);
+        }
+        // Estilos de borde activo
+        if (catalogLabel) {
+            catalogLabel.classList.remove('border-gray-100', 'bg-gray-50');
+            catalogLabel.classList.add('border-secondary/80', 'bg-white');
+        }
+        if (manualLabel) {
+            manualLabel.classList.remove('border-secondary/80', 'bg-white');
+            manualLabel.classList.add('border-gray-100', 'bg-gray-50');
+        }
+    } else {
+        // Mostrar manual
+        if (customProductWrapper && customProductInput) {
+            customProductWrapper.classList.remove('hidden');
+            customProductInput.setAttribute('required', 'true');
+            setTimeout(() => { customProductWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+        }
+        // Ocultar catálogo
+        if (productWrapper) {
+            productWrapper.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { productWrapper.classList.add('hidden'); }, 150);
+        }
+        // Estilos de borde activo
+        if (manualLabel) {
+            manualLabel.classList.remove('border-gray-100', 'bg-gray-50');
+            manualLabel.classList.add('border-secondary/80', 'bg-white');
+        }
+        if (catalogLabel) {
+            catalogLabel.classList.remove('border-secondary/80', 'bg-white');
+            catalogLabel.classList.add('border-gray-100', 'bg-gray-50');
+        }
+    }
+}
+
 function toggleModalInterestFields(type) {
     const serviceWrapper = document.getElementById('contact-modal-service-wrapper');
     const projectWrapper = document.getElementById('contact-modal-project-wrapper');
+    const productSelectorWrapper = document.getElementById('contact-modal-product-selector-wrapper');
     const productWrapper = document.getElementById('contact-modal-product-wrapper');
+    const customProductWrapper = document.getElementById('contact-modal-product-custom-wrapper');
 
     const serviceSelect = document.getElementById('contact-modal-service-id');
     const projectSelect = document.getElementById('contact-modal-project-id');
     const productSelect = document.getElementById('contact-modal-product-id');
+    const customProductInput = document.getElementById('contact-modal-product-custom');
 
     // Ocultar todos
-    [serviceWrapper, projectWrapper, productWrapper].forEach(wrapper => {
-        wrapper.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            wrapper.classList.add('hidden');
-        }, 150);
+    [serviceWrapper, projectWrapper, productSelectorWrapper, productWrapper, customProductWrapper].forEach(wrapper => {
+        if (wrapper) {
+            wrapper.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                wrapper.classList.add('hidden');
+            }, 150);
+        }
     });
     
     // Quitar required temporalmente
-    serviceSelect.removeAttribute('required');
-    projectSelect.removeAttribute('required');
-    productSelect.removeAttribute('required');
+    if (serviceSelect) serviceSelect.removeAttribute('required');
+    if (projectSelect) projectSelect.removeAttribute('required');
+    if (productSelect) productSelect.removeAttribute('required');
+    if (customProductInput) {
+        customProductInput.removeAttribute('required');
+        customProductInput.value = '';
+    }
 
     setTimeout(() => {
-        if (type === 'servicio') {
+        if (type === 'servicio' && serviceWrapper && serviceSelect) {
             serviceWrapper.classList.remove('hidden');
             serviceSelect.setAttribute('required', 'true');
             setTimeout(() => { serviceWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
-        } else if (type === 'proyecto') {
+        } else if (type === 'proyecto' && projectWrapper && projectSelect) {
             projectWrapper.classList.remove('hidden');
             projectSelect.setAttribute('required', 'true');
             setTimeout(() => { projectWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
-        } else if (type === 'producto') {
-            productWrapper.classList.remove('hidden');
-            productSelect.setAttribute('required', 'true');
-            setTimeout(() => { productWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+        } else if (type === 'producto' && productSelectorWrapper) {
+            productSelectorWrapper.classList.remove('hidden');
+            setTimeout(() => { productSelectorWrapper.classList.remove('scale-95', 'opacity-0'); }, 10);
+            
+            // Ver qué radio está seleccionado
+            const selectedRadio = document.querySelector('#contact-modal-form input[name="product_selection_type"]:checked');
+            const selectionType = selectedRadio ? selectedRadio.value : 'catalog';
+            toggleModalProductSelectionType(selectionType);
         }
     }, 160);
 }
@@ -399,6 +495,13 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleModalInterestFields(e.target.value);
         });
     }
+
+    const productSelectionRadios = document.querySelectorAll('#contact-modal-form input[name="product_selection_type"]');
+    productSelectionRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            toggleModalProductSelectionType(e.target.value);
+        });
+    });
 
     if (form) {
         form.addEventListener('submit', async (e) => {

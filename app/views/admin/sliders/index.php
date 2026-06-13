@@ -9,10 +9,56 @@
     </button>
 </div>
 
+<!-- Card de Configuración de la Animación de los Sliders -->
+<div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 mb-8 animate-fade-in">
+    <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div>
+            <h3 class="text-base font-extrabold text-gray-900">Configuración de la Animación de los Sliders</h3>
+            <p class="text-gray-500 text-xs mt-0.5">Controla el tiempo de espera de visualización de cada lámina de presentación en la página de inicio.</p>
+        </div>
+    </div>
+    
+    <form action="<?= url('admin/sliders/settings') ?>" method="POST" class="space-y-6">
+        <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Tiempo de Espera entre Sliders</label>
+                <?php $delayValue = $settings['slider_autoplay_delay'] ?? '8000'; ?>
+                <select name="slider_autoplay_delay" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium">
+                    <option value="4000" <?= $delayValue === '4000' ? 'selected' : '' ?>>Rápido (4 segundos)</option>
+                    <option value="6000" <?= $delayValue === '6000' ? 'selected' : '' ?>>Normal (6 segundos)</option>
+                    <option value="8000" <?= $delayValue === '8000' ? 'selected' : '' ?>>Recomendado (8 segundos)</option>
+                    <option value="10000" <?= $delayValue === '10000' ? 'selected' : '' ?>>Lento (10 segundos)</option>
+                    <option value="12000" <?= $delayValue === '12000' ? 'selected' : '' ?>>Muy Lento (12 segundos)</option>
+                    <option value="15000" <?= $delayValue === '15000' ? 'selected' : '' ?>>Personalizado (15 segundos)</option>
+                </select>
+            </div>
+            
+            <div>
+                <button type="submit" class="w-full bg-primary hover:bg-secondary text-white py-3.5 rounded-2xl text-sm font-bold transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]">
+                    Guardar Ajustes
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
 <?php if(isset($_GET['success'])): ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative mb-6 shadow-sm flex items-center gap-3">
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl relative mb-6 shadow-sm flex items-center gap-3 animate-fade-in">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span class="block sm:inline font-medium">¡Operación realizada con éxito!</span>
+        <span class="block sm:inline font-medium">
+            <?php 
+            if ($_GET['success'] === 'slider_saved') echo '¡El slider ha sido guardado con éxito!';
+            elseif ($_GET['success'] === 'slider_deleted') echo '¡El slider ha sido eliminado permanentemente!';
+            elseif ($_GET['success'] === 'slider_duplicated') echo '¡El slider ha sido duplicado con éxito!';
+            elseif ($_GET['success'] === 'settings_saved') echo '¡La configuración de los sliders ha sido guardada con éxito!';
+            else echo '¡Operación realizada con éxito!';
+            ?>
+        </span>
     </div>
 <?php endif; ?>
 

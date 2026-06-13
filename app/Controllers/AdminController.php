@@ -485,6 +485,25 @@ class AdminController extends Controller {
         ]);
     }
 
+    public function saveSliderSettings() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $settingModel = new \App\Models\Setting();
+        $keys = [
+            'slider_autoplay_delay'
+        ];
+
+        foreach ($keys as $key) {
+            $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
+            $settingModel->updateSetting($key, $value);
+        }
+
+        header('Location: /admin/sliders?success=settings_saved');
+        exit;
+    }
+
     public function saveSlider() {
         if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
             die('Invalid CSRF token');
@@ -1718,6 +1737,40 @@ class AdminController extends Controller {
         exit;
     }
 
+    public function restoreLead() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        $contactModel = new \App\Models\Contact();
+        
+        if ($contactModel->restore($id)) {
+            header('Location: /admin/contactos?success=lead_restored');
+            exit;
+        }
+
+        header('Location: /admin/contactos?error=lead_not_restored');
+        exit;
+    }
+
+    public function deleteLeadPermanent() {
+        if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            die('Invalid CSRF token');
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        $contactModel = new \App\Models\Contact();
+        
+        if ($contactModel->forceDelete($id)) {
+            header('Location: /admin/contactos?success=lead_deleted_permanent');
+            exit;
+        }
+
+        header('Location: /admin/contactos?error=lead_not_deleted_permanent');
+        exit;
+    }
+
     public function exportLeads() {
         $contactModel = new \App\Models\Contact();
         $stmt = $contactModel->db->query("
@@ -1729,6 +1782,7 @@ class AdminController extends Controller {
             LEFT JOIN services_pages s ON c.service_id = s.id 
             LEFT JOIN projects p ON c.project_id = p.id
             LEFT JOIN products pr ON c.product_id = pr.id
+            WHERE c.deleted_at IS NULL
             ORDER BY c.created_at DESC
         ");
         $leads = $stmt->fetchAll(\PDO::FETCH_ASSOC);

@@ -33,6 +33,7 @@ $router->post('admin/sliders/delete', 'AdminController@deleteSlider');
 $router->post('admin/sliders/duplicate', 'AdminController@duplicateSlider');
 $router->post('admin/sliders/toggle', 'AdminController@toggleSliderStatus');
 $router->post('admin/sliders/reorder', 'AdminController@reorderSliders');
+$router->post('admin/sliders/settings', 'AdminController@saveSliderSettings');
 $router->get('admin/cta', 'AdminController@ctaConfig');
 $router->post('admin/cta/save', 'AdminController@saveHomeCTA');
 
@@ -109,6 +110,8 @@ $router->post('admin/notificaciones/save', 'AdminController@saveNotificationsCon
 $router->get('admin/contactos', 'AdminController@leadsList');
 $router->post('admin/contactos/toggle-read', 'AdminController@toggleLeadRead');
 $router->post('admin/contactos/delete', 'AdminController@deleteLead');
+$router->post('admin/contactos/restore', 'AdminController@restoreLead');
+$router->post('admin/contactos/delete-permanent', 'AdminController@deleteLeadPermanent');
 $router->get('admin/contactos/exportar', 'AdminController@exportLeads');
 
 // Footer

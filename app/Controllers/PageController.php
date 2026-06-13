@@ -319,7 +319,12 @@ class PageController extends Controller {
         $interestType = \Core\Security::sanitizeInput($_POST['interest_type'] ?? 'general');
         $serviceId = ($interestType === 'servicio' && !empty($_POST['service_id'])) ? (int)$_POST['service_id'] : null;
         $projectId = ($interestType === 'proyecto' && !empty($_POST['project_id'])) ? (int)$_POST['project_id'] : null;
-        $productId = ($interestType === 'producto' && !empty($_POST['product_id'])) ? (int)$_POST['product_id'] : null;
+        $productId = ($interestType === 'producto' && !empty($_POST['product_id']) && $_POST['product_id'] !== 'otro') ? (int)$_POST['product_id'] : null;
+
+        $customProduct = ($interestType === 'producto' && !empty($_POST['custom_product'])) ? \Core\Security::sanitizeInput($_POST['custom_product']) : '';
+        if (!empty($customProduct)) {
+            $message = "Repuesto solicitado (no registrado): " . $customProduct . "\n\n" . $message;
+        }
 
         // Validaciones básicas
         if (empty($name) || empty($email) || empty($phone)) {
@@ -391,6 +396,12 @@ class PageController extends Controller {
                             <span class='field-value'><strong>" . htmlspecialchars($prod['title']) . "</strong></span>
                         </div>";
                     }
+                } elseif ($interestType === 'producto' && !empty($_POST['custom_product'])) {
+                    $interestDetailHtml = "
+                    <div class='field-row'>
+                        <span class='field-label'>Repuesto Solicitado (Otro):</span>
+                        <span class='field-value'><strong>" . htmlspecialchars($_POST['custom_product']) . "</strong></span>
+                    </div>";
                 } else {
                     $interestDetailHtml = "
                     <div class='field-row'>
