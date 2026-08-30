@@ -115,7 +115,7 @@
             </button>
         </div>
         
-        <form id="menu-form" action="<?= url('admin/cabecera/menu') ?>" method="POST" class="p-6 space-y-4">
+        <form id="menu-form" action="<?= url('admin/cabecera/menu') ?>" method="POST" enctype="multipart/form-data" onsubmit="return validateMenuForm()" class="p-6 space-y-4">
             <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
             <input type="hidden" name="id" id="form-id" value="">
             
@@ -126,7 +126,20 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">URL / Ruta Destino</label>
-                <input type="text" name="url" id="form-url" required class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 border transition-all" placeholder="Ej: /services o https://...">
+                <input type="text" name="url" id="form-url" class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 border transition-all" placeholder="Ej: /services o https://...">
+            </div>
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">O Subir Archivo (ej: Brochure PDF)</label>
+                <div class="relative flex items-center justify-between border border-gray-300 rounded-xl p-2 bg-gray-50/50 hover:bg-gray-50 transition-all">
+                    <input type="file" name="menu_file" id="form-file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="updateFileLabel(this)">
+                    <div class="flex items-center gap-2 ps-2">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span id="file-label" class="text-sm text-gray-500 truncate max-w-[250px]">Ningún archivo seleccionado</span>
+                    </div>
+                    <button type="button" onclick="clearFile()" id="btn-clear-file" class="hidden text-xs text-red-500 hover:text-red-700 font-bold px-3 py-2 bg-red-50 hover:bg-red-100 rounded-lg transition-all">Quitar</button>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-wider font-bold">PDF, Word, Excel, ZIP o imágenes. Reemplazará la URL escrita.</p>
             </div>
             
             <div>
@@ -177,6 +190,7 @@ function resetForm() {
     
     document.getElementById('modal-title').innerText = 'Añadir Nuevo Enlace';
     document.getElementById('form-btn').innerText = 'Guardar Enlace';
+    clearFile();
 }
 
 function editMenuLink(id, title, url, parent_id) {
@@ -190,6 +204,46 @@ function editMenuLink(id, title, url, parent_id) {
     document.getElementById('form-btn').innerText = 'Actualizar Enlace';
     
     openModal();
+}
+
+function updateFileLabel(input) {
+    const label = document.getElementById('file-label');
+    const clearBtn = document.getElementById('btn-clear-file');
+    if (input.files && input.files.length > 0) {
+        label.textContent = input.files[0].name;
+        label.classList.remove('text-gray-500');
+        label.classList.add('text-gray-800', 'font-semibold');
+        clearBtn.classList.remove('hidden');
+    } else {
+        label.textContent = 'Ningún archivo seleccionado';
+        label.classList.remove('text-gray-800', 'font-semibold');
+        label.classList.add('text-gray-500');
+        clearBtn.classList.add('hidden');
+    }
+}
+
+function clearFile() {
+    const input = document.getElementById('form-file');
+    input.value = '';
+    updateFileLabel(input);
+}
+
+function validateMenuForm() {
+    const titleVal = document.getElementById('form-title').value.trim();
+    const urlVal = document.getElementById('form-url').value.trim();
+    const fileInput = document.getElementById('form-file');
+    
+    if (!titleVal) {
+        alert('Por favor, ingresa un título para el enlace.');
+        return false;
+    }
+    
+    if (!urlVal && (!fileInput.files || fileInput.files.length === 0)) {
+        alert('Debe ingresar una URL / Ruta Destino o subir un archivo.');
+        return false;
+    }
+    
+    return true;
 }
 
 document.addEventListener('DOMContentLoaded', function () {

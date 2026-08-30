@@ -29,16 +29,22 @@ $menuLinks = $menuLinkModel->getActive();
         <!-- Desktop Menu -->
         <div class="hidden lg:flex space-x-8">
             <?php foreach($menuLinks as $link): ?>
+                <?php 
+                $linkTarget = (strpos($link['url'], '/uploads/menu_files/') === 0) ? ' target="_blank" rel="noopener noreferrer"' : ''; 
+                ?>
                 <?php if(!empty($link['children'])): ?>
                     <div class="relative group">
-                        <a href="<?= htmlspecialchars($link['url']) ?>" class="text-sm font-bold text-gray-700 hover:text-secondary transition-colors flex items-center gap-1 py-2">
+                        <a href="<?= htmlspecialchars($link['url']) ?>"<?= $linkTarget ?> class="text-sm font-bold text-gray-700 hover:text-secondary transition-colors flex items-center gap-1 py-2">
                             <?= htmlspecialchars($link['title']) ?>
                             <svg class="w-4 h-4 text-gray-400 group-hover:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </a>
                         <div class="absolute left-0 mt-2 w-56 rounded-2xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top-left group-hover:translate-y-0 translate-y-4">
                             <div class="py-2 p-2" role="menu">
                                 <?php foreach($link['children'] as $child): ?>
-                                    <a href="<?= htmlspecialchars($child['url']) ?>" class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-secondary rounded-xl transition-all" role="menuitem">
+                                    <?php 
+                                    $childTarget = (strpos($child['url'], '/uploads/menu_files/') === 0) ? ' target="_blank" rel="noopener noreferrer"' : ''; 
+                                    ?>
+                                    <a href="<?= htmlspecialchars($child['url']) ?>"<?= $childTarget ?> class="block px-4 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-secondary rounded-xl transition-all" role="menuitem">
                                         <?= htmlspecialchars($child['title']) ?>
                                     </a>
                                 <?php endforeach; ?>
@@ -46,7 +52,7 @@ $menuLinks = $menuLinkModel->getActive();
                         </div>
                     </div>
                 <?php else: ?>
-                    <a href="<?= htmlspecialchars($link['url']) ?>" class="text-sm font-bold text-gray-700 hover:text-secondary transition-colors py-2"><?= htmlspecialchars($link['title']) ?></a>
+                    <a href="<?= htmlspecialchars($link['url']) ?>"<?= $linkTarget ?> class="text-sm font-bold text-gray-700 hover:text-secondary transition-colors py-2"><?= htmlspecialchars($link['title']) ?></a>
                 <?php endif; ?>
             <?php endforeach; ?>
         </div>
@@ -65,69 +71,97 @@ $menuLinks = $menuLinkModel->getActive();
             <svg id="close-icon" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
     </div>
+</nav>
 
-    <!-- Mobile Menu Container -->
-    <div id="mobile-menu" class="lg:hidden fixed inset-x-0 top-[81px] bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-2xl opacity-0 invisible -translate-y-4 transition-all duration-300 z-40 overflow-y-auto max-h-[80vh] rounded-b-[2rem]">
-        <div class="px-6 pt-12 pb-6 space-y-4 text-center">
-            <div class="flex flex-col space-y-1">
-                <?php foreach($menuLinks as $link): ?>
-                    <?php if(!empty($link['children'])): ?>
-                        <div class="mobile-dropdown group">
-                            <button class="w-full flex items-center justify-center gap-2 py-2.5 text-lg font-bold text-gray-800 transition-all dropdown-toggle">
-                                <?= htmlspecialchars($link['title']) ?>
-                                <svg class="w-4 h-4 text-gray-400 transition-transform duration-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            <div class="dropdown-content hidden flex-col space-y-1 bg-gray-50/50 rounded-2xl mb-2 py-2">
-                                <?php foreach($link['children'] as $child): ?>
-                                    <a href="<?= htmlspecialchars($child['url']) ?>" class="block py-2 text-base font-semibold text-gray-600 hover:text-secondary transition-all">
-                                        <?= htmlspecialchars($child['title']) ?>
-                                    </a>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    <?php else: ?>
-                        <a href="<?= htmlspecialchars($link['url']) ?>" class="block py-2.5 text-lg font-bold text-gray-800 hover:text-secondary transition-all">
+<!-- Mobile Menu Container (Full-Screen Slide-in Drawer) -->
+<div id="mobile-menu" class="lg:hidden fixed inset-0 bg-white opacity-0 invisible translate-x-full transition-all duration-300 z-[9999] flex flex-col justify-between p-6 shadow-2xl">
+    <!-- Header: Logo & Close Button -->
+    <div class="flex justify-between items-center pb-4 border-b border-gray-100">
+        <a href="<?= url() ?>" class="flex items-center">
+            <?php if(!empty($logoUrl)): ?>
+                <img src="<?= asset($logoUrl) ?>" alt="<?= htmlspecialchars($logoAlt) ?>" class="h-10 w-auto object-contain">
+            <?php else: ?>
+                <span class="text-primary text-xl font-bold">Syncro Andina</span>
+            <?php endif; ?>
+        </a>
+        <button id="mobile-menu-close-btn" class="p-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
+    <!-- Body: Scrollable Menu Links -->
+    <div class="flex-grow overflow-y-auto py-8 my-auto max-h-[calc(100vh-160px)] flex flex-col items-center justify-start">
+        <div class="flex flex-col space-y-4 text-center w-full">
+            <?php foreach($menuLinks as $link): ?>
+                <?php 
+                $linkTarget = (strpos($link['url'], '/uploads/menu_files/') === 0) ? ' target="_blank" rel="noopener noreferrer"' : ''; 
+                ?>
+                <?php if(!empty($link['children'])): ?>
+                    <div class="mobile-dropdown group w-full">
+                        <button class="w-full flex items-center justify-center gap-2 py-2.5 text-lg font-bold text-gray-800 transition-all dropdown-toggle">
                             <?= htmlspecialchars($link['title']) ?>
-                        </a>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Mobile CTA (Inside Menu) -->
-            <div class="pt-4 border-t border-gray-50">
-                <a href="tel:<?= htmlspecialchars($contactPhone) ?>" class="w-full py-4 bg-primary text-white text-center font-bold rounded-2xl shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-95 transition-transform">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                    Llamar Ahora
-                </a>
-            </div>
+                            <svg class="w-4 h-4 text-gray-400 transition-transform duration-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="dropdown-content hidden flex-col space-y-1 bg-gray-50/50 rounded-2xl mb-2 py-2 w-full">
+                            <?php foreach($link['children'] as $child): ?>
+                                <?php 
+                                $childTarget = (strpos($child['url'], '/uploads/menu_files/') === 0) ? ' target="_blank" rel="noopener noreferrer"' : ''; 
+                                ?>
+                                <a href="<?= htmlspecialchars($child['url']) ?>"<?= $childTarget ?> class="block py-2 text-base font-semibold text-gray-600 hover:text-secondary transition-all">
+                                    <?= htmlspecialchars($child['title']) ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <a href="<?= htmlspecialchars($link['url']) ?>"<?= $linkTarget ?> class="block py-2.5 text-lg font-bold text-gray-800 hover:text-secondary transition-all">
+                        <?= htmlspecialchars($link['title']) ?>
+                    </a>
+                <?php endif; ?>
+            <?php endforeach; ?>
         </div>
     </div>
-</nav>
+
+    <!-- Footer: Llamar Ahora CTA -->
+    <div class="pt-4 border-t border-gray-100">
+        <a href="tel:<?= htmlspecialchars($contactPhone) ?>" class="w-full py-4 bg-primary text-white text-center font-bold rounded-2xl shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-95 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            Llamar Ahora
+        </a>
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const btn = document.getElementById('mobile-menu-btn');
+    const closeBtn = document.getElementById('mobile-menu-close-btn');
     const menu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    const closeIcon = document.getElementById('close-icon');
     let isOpen = false;
 
-    btn.addEventListener('click', () => {
-        isOpen = !isOpen;
-        if (isOpen) {
-            menu.classList.remove('invisible', 'opacity-0', '-translate-y-4');
-            menu.classList.add('visible', 'opacity-100', 'translate-y-0');
-            menuIcon.classList.add('hidden');
-            closeIcon.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        } else {
-            menu.classList.remove('visible', 'opacity-100', 'translate-y-0');
-            menu.classList.add('invisible', 'opacity-0', '-translate-y-4');
-            menuIcon.classList.remove('hidden');
-            closeIcon.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-    });
+    function openMobileMenu() {
+        isOpen = true;
+        menu.classList.remove('invisible', 'opacity-0', 'translate-x-full');
+        menu.classList.add('visible', 'opacity-100', 'translate-x-0');
+        document.body.style.overflow = 'hidden';
+        
+        // Ocultar botón flotante de Call Center para evitar superposiciones
+        const ccWidget = document.getElementById('cc-widget');
+        if (ccWidget) ccWidget.style.display = 'none';
+    }
+
+    function closeMobileMenu() {
+        isOpen = false;
+        menu.classList.remove('visible', 'opacity-100', 'translate-x-0');
+        menu.classList.add('invisible', 'opacity-0', 'translate-x-full');
+        document.body.style.overflow = '';
+        
+        // Restaurar botón flotante de Call Center
+        const ccWidget = document.getElementById('cc-widget');
+        if (ccWidget) ccWidget.style.display = '';
+    }
+
+    if (btn) btn.addEventListener('click', openMobileMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMobileMenu);
 
     // Dropdowns móviles
     const toggles = menu.querySelectorAll('.dropdown-toggle');
@@ -138,7 +172,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const isHidden = content.classList.contains('hidden');
             
             // Cerrar otros dropdowns
-            menu.querySelectorAll('.dropdown-content').forEach(c => c.classList.add('hidden'));
+            menu.querySelectorAll('.dropdown-content').forEach(c => {
+                c.classList.add('hidden');
+                c.classList.remove('flex');
+            });
             menu.querySelectorAll('.arrow-icon').forEach(a => a.classList.remove('rotate-180'));
 
             if (isHidden) {
@@ -149,16 +186,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close menu when clicking on a link
+    // Cerrar menú al hacer clic en cualquier enlace
     const links = menu.querySelectorAll('a');
     links.forEach(link => {
-        link.addEventListener('click', () => {
-            isOpen = false;
-            menu.classList.add('invisible', 'opacity-0', '-translate-y-4');
-            menuIcon.classList.remove('hidden');
-            closeIcon.classList.add('hidden');
-            document.body.style.overflow = '';
-        });
+        link.addEventListener('click', closeMobileMenu);
     });
 });
 </script>

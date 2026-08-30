@@ -1095,6 +1095,38 @@ class AdminController extends Controller {
         $parent_id = !empty($_POST['parent_id']) ? $_POST['parent_id'] : null;
         $order = (int)($_POST['order_index'] ?? 999);
         
+        // Procesar archivo si se ha subido uno o si hubo un intento fallido (por ejemplo, archivo muy grande)
+        if (isset($_FILES['menu_file']) && $_FILES['menu_file']['error'] !== UPLOAD_ERR_NO_FILE) {
+            if ($_FILES['menu_file']['error'] === UPLOAD_ERR_OK) {
+                $allowed = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'zip', 'rar', 'png', 'jpg', 'jpeg', 'webp'];
+                $fileUrl = \Core\FileHelper::upload($_FILES['menu_file'], 'uploads/menu_files/', $allowed);
+                if ($fileUrl) {
+                    // Si estamos editando y existía un archivo en ese enlace, borrarlo del disco
+                    if ($id) {
+                        $menuLinkModel = new \App\Models\MenuLink();
+                        $oldLink = $menuLinkModel->find($id);
+                        if ($oldLink && !empty($oldLink['url']) && strpos($oldLink['url'], '/uploads/menu_files/') === 0) {
+                            \Core\FileHelper::delete($oldLink['url']);
+                        }
+                    }
+                    $url = $fileUrl;
+                } else {
+                    header('Location: /admin/cabecera?error=upload_failed');
+                    exit;
+                }
+            } else {
+                // Si el archivo supera upload_max_filesize (UPLOAD_ERR_INI_SIZE = 1) u otro error de carga
+                header('Location: /admin/cabecera?error=upload_failed');
+                exit;
+            }
+        }
+
+        // Validación de respaldo en backend: debe tener una URL o ruta
+        if (empty($url)) {
+            header('Location: /admin/cabecera?error=upload_failed');
+            exit;
+        }
+        
         $menuLinkModel = new \App\Models\MenuLink();
         $menuLinkModel->saveLink($id, $title, $url, $order, $parent_id);
 
@@ -1110,6 +1142,11 @@ class AdminController extends Controller {
         $id = $_POST['id'] ?? null;
         if($id) {
             $menuLinkModel = new \App\Models\MenuLink();
+            // Buscar enlace y eliminar archivo físico si existe y pertenece a nuestras subidas
+            $link = $menuLinkModel->find($id);
+            if ($link && !empty($link['url']) && strpos($link['url'], '/uploads/menu_files/') === 0) {
+                \Core\FileHelper::delete($link['url']);
+            }
             $menuLinkModel->deleteLink($id);
         }
         
