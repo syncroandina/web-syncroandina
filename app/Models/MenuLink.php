@@ -8,6 +8,10 @@ class MenuLink extends Model {
     protected $table = 'menu_links';
 
     public function getActive() {
+        try {
+            $this->db->exec("UPDATE {$this->table} SET title = 'Productos', url = '/productos' WHERE url LIKE '%/repuestos%' OR title LIKE '%Repuestos%'");
+        } catch (\Exception $e) {}
+        
         // Fetch all, then we will group them in PHP, or just fetch top level and their children
         $stmt = $this->db->query("SELECT * FROM {$this->table} WHERE is_active = 1 ORDER BY parent_id ASC, order_index ASC");
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -113,7 +113,7 @@ class PageController extends Controller {
     }
 
     public function products() {
-        (new Analytics())->logPageView('products', null, $_SERVER['REQUEST_URI'] ?? '/repuestos', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
+        (new Analytics())->logPageView('products', null, $_SERVER['REQUEST_URI'] ?? '/productos', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
 
         $productModel = new \App\Models\Product();
         $settingModel = new \App\Models\Setting();
@@ -135,9 +135,9 @@ class PageController extends Controller {
         $products = $productModel->getAllActive($categoryId);
         $settings = $settingModel->getAll();
         
-        $seoTitle = !empty($settings['products_seo_title']) ? $settings['products_seo_title'] : (($settings['page_products_title'] ?? 'Repuestos y Componentes') . ' - Syncro Andina');
+        $seoTitle = !empty($settings['products_seo_title']) ? $settings['products_seo_title'] : (($settings['page_products_title'] ?? 'Productos y Componentes') . ' - Syncro Andina');
         if ($selectedCategory) {
-            $seoTitle = $selectedCategory['name'] . ' - ' . ($settings['page_products_title'] ?? 'Repuestos') . ' - Syncro Andina';
+            $seoTitle = $selectedCategory['name'] . ' - ' . ($settings['page_products_title'] ?? 'Productos') . ' - Syncro Andina';
         }
 
         return $this->view('pages/products', [
@@ -158,7 +158,7 @@ class PageController extends Controller {
         $product = $productModel->findBySlug($slug);
         
         if (!$product || !$product['is_active']) {
-            $this->error404('El repuesto solicitado no existe o no está activo.');
+            $this->error404('El producto solicitado no existe o no está activo.');
         }
         
         (new Analytics())->logPageView('product', $product['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
@@ -557,7 +557,7 @@ class PageController extends Controller {
             ['path' => 'nosotros', 'priority' => '0.8', 'changefreq' => 'weekly'],
             ['path' => 'servicios', 'priority' => '0.8', 'changefreq' => 'weekly'],
             ['path' => 'proyectos', 'priority' => '0.8', 'changefreq' => 'weekly'],
-            ['path' => 'repuestos', 'priority' => '0.8', 'changefreq' => 'weekly'],
+            ['path' => 'productos', 'priority' => '0.8', 'changefreq' => 'weekly'],
             ['path' => 'blog', 'priority' => '0.8', 'changefreq' => 'daily'],
             ['path' => 'contacto', 'priority' => '0.8', 'changefreq' => 'weekly']
         ];
@@ -604,11 +604,11 @@ class PageController extends Controller {
             }
         }
 
-        // 4. Agregar Repuestos (Productos) dinámicos
+        // 4. Agregar Productos dinámicos
         if (!empty($products)) {
             foreach ($products as $product) {
                 if (!empty($product['slug'])) {
-                    $loc = $baseUrl . url('repuestos/' . $product['slug']);
+                    $loc = $baseUrl . url('productos/' . $product['slug']);
                     $xml .= "  <url>\n";
                     $xml .= "    <loc>" . htmlspecialchars($loc) . "</loc>\n";
                     $xml .= "    <changefreq>weekly</changefreq>\n";

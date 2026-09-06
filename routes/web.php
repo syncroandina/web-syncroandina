@@ -7,6 +7,8 @@ $router->get('servicios', 'PageController@services');
 $router->get('servicios/{slug}', 'PageController@serviceDetail');
 $router->get('proyectos', 'PageController@projects');
 $router->get('proyectos/{slug}', 'PageController@projectDetail');
+$router->get('productos', 'PageController@products');
+$router->get('productos/{slug}', 'PageController@productDetail');
 $router->get('repuestos', 'PageController@products');
 $router->get('repuestos/{slug}', 'PageController@productDetail');
 $router->get('blog', 'PageController@blog');
@@ -63,7 +65,18 @@ $router->post('admin/proyectos/toggle', 'AdminController@toggleProjectStatus');
 $router->post('admin/proyectos/settings', 'AdminController@saveProjectSettings');
 $router->post('admin/proyectos/gallery/delete', 'AdminController@deleteProjectGalleryImage');
 
-// Repuestos (Productos)
+// Productos
+$router->get('admin/productos', 'AdminController@adminProducts');
+$router->post('admin/productos', 'AdminController@saveProduct');
+$router->post('admin/productos/delete', 'AdminController@deleteProduct');
+$router->post('admin/productos/duplicate', 'AdminController@duplicateProduct');
+$router->post('admin/productos/toggle', 'AdminController@toggleProductStatus');
+$router->post('admin/productos/reorder', 'AdminController@reorderProducts');
+$router->post('admin/productos/settings', 'AdminController@saveProductSettings');
+$router->post('admin/productos/gallery/delete', 'AdminController@deleteProductGalleryImage');
+$router->post('admin/productos/categorias/save', 'AdminController@saveProductCategory');
+$router->post('admin/productos/categorias/delete', 'AdminController@deleteProductCategory');
+
 $router->get('admin/repuestos', 'AdminController@adminProducts');
 $router->post('admin/repuestos', 'AdminController@saveProduct');
 $router->post('admin/repuestos/delete', 'AdminController@deleteProduct');

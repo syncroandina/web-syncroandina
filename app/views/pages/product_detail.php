@@ -5,7 +5,7 @@
     <div class="container mx-auto px-4">
         <!-- Breadcrumbs -->
         <nav class="mb-10 animate-fade-in-up">
-            <a href="/repuestos" class="text-sm font-bold text-gray-400 hover:text-secondary transition-colors">Catálogo de Productos</a>
+            <a href="/productos" class="text-sm font-bold text-gray-400 hover:text-secondary transition-colors">Catálogo de Productos</a>
             <span class="mx-3 text-gray-300">/</span>
             <span class="text-sm font-bold text-gray-900"><?= htmlspecialchars($product['title']) ?></span>
         </nav>

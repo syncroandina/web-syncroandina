@@ -97,14 +97,14 @@
                                 <button onclick="editProduct(<?= htmlspecialchars(json_encode($product)) ?>)" class="w-8 h-8 rounded-lg bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Editar">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
-                                <form action="<?= url('admin/repuestos/duplicate') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas duplicar este producto? Se creará una copia con su propia imagen independiente.');">
+                                <form action="<?= url('admin/productos/duplicate') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas duplicar este producto? Se creará una copia con su propia imagen independiente.');">
                                     <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                     <input type="hidden" name="id" value="<?= $product['id'] ?>">
                                     <button type="submit" class="w-8 h-8 rounded-lg bg-gray-100 text-teal-600 hover:bg-teal-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Duplicar/Clonar">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                                     </button>
                                 </form>
-                                <form action="<?= url('admin/repuestos/delete') ?>" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este producto? Se borrará permanentemente la imagen asociada.');" class="inline-block">
+                                <form action="<?= url('admin/productos/delete') ?>" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este producto? Se borrará permanentemente la imagen asociada.');" class="inline-block">
                                     <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                     <input type="hidden" name="id" value="<?= $product['id'] ?>">
                                     <button type="submit" class="w-8 h-8 rounded-lg bg-gray-100 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Eliminar">
@@ -142,7 +142,7 @@
             <button type="button" onclick="switchProductTab('gallery')" id="tab-btn-gallery" class="px-4 py-3 text-xs font-extrabold uppercase tracking-widest border-b-2 border-transparent text-gray-400 hover:text-gray-600 transition-all product-tab-btn">Galería de Fotos</button>
         </div>
         
-        <form action="<?= url('admin/repuestos') ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+        <form action="<?= url('admin/productos') ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
             <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
             <input type="hidden" name="id" id="product-id">
             
@@ -268,7 +268,7 @@
             </button>
         </div>
         
-        <form action="<?= url('admin/repuestos/settings') ?>" method="POST" class="p-8 space-y-6 overflow-y-auto flex-1">
+        <form action="<?= url('admin/productos/settings') ?>" method="POST" class="p-8 space-y-6 overflow-y-auto flex-1">
             <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
             
             <div class="space-y-4">
@@ -351,7 +351,7 @@
 
         <!-- Formulario Inline de Categoría -->
         <div class="bg-indigo-50/50 p-6 border-b border-indigo-100">
-            <form id="cat-form" action="<?= url('admin/repuestos/categorias/save') ?>" method="POST" onsubmit="saveCategoryAjax(event)" class="flex flex-wrap items-end gap-4">
+            <form id="cat-form" action="<?= url('admin/productos/categorias/save') ?>" method="POST" onsubmit="saveCategoryAjax(event)" class="flex flex-wrap items-end gap-4">
                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                 <input type="hidden" name="id" id="cat-id" value="">
                 
@@ -625,7 +625,7 @@ async function deleteProductGalleryImage(id, btn) {
         formData.append('id', id);
         formData.append('csrf_token', '<?= \Core\Security::generateCSRFToken() ?>');
         
-        const response = await fetch('<?= url('admin/repuestos/gallery/delete') ?>', {
+        const response = await fetch('<?= url('admin/productos/gallery/delete') ?>', {
             method: 'POST',
             body: formData
         });
@@ -856,7 +856,7 @@ async function deleteCategoryAjax(id, btn) {
         formData.append('id', id);
         formData.append('csrf_token', '<?= \Core\Security::generateCSRFToken() ?>');
         
-        const response = await fetch('<?= url('admin/repuestos/categorias/delete') ?>', {
+        const response = await fetch('<?= url('admin/productos/categorias/delete') ?>', {
             method: 'POST',
             body: formData
         });

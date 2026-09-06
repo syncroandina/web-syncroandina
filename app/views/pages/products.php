@@ -23,12 +23,12 @@
                 <!-- Panel de Opciones (Dropdown Menu) -->
                 <div id="category-dropdown-menu" class="absolute left-0 right-0 mt-2 bg-white border border-gray-150 rounded-2xl shadow-xl z-30 opacity-0 scale-95 pointer-events-none transition-all duration-300 overflow-hidden">
                     <div class="py-1.5 max-h-60 overflow-y-auto">
-                        <a href="/repuestos" class="block px-5 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors border-b border-gray-50 <?= !$selectedCategory ? 'bg-primary/5 text-primary' : '' ?>">
+                        <a href="/productos" class="block px-5 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors border-b border-gray-50 <?= !$selectedCategory ? 'bg-primary/5 text-primary' : '' ?>">
                             Todos
                         </a>
                         <?php if(!empty($categories)): ?>
                             <?php foreach($categories as $cat): ?>
-                                <a href="/repuestos?categoria=<?= htmlspecialchars($cat['slug']) ?>" class="block px-5 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors border-b border-gray-50/50 last:border-b-0 <?= ($selectedCategory && $selectedCategory['id'] === $cat['id']) ? 'bg-primary/5 text-primary' : '' ?>">
+                                <a href="/productos?categoria=<?= htmlspecialchars($cat['slug']) ?>" class="block px-5 py-3 text-sm font-bold text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors border-b border-gray-50/50 last:border-b-0 <?= ($selectedCategory && $selectedCategory['id'] === $cat['id']) ? 'bg-primary/5 text-primary' : '' ?>">
                                     <?= htmlspecialchars($cat['name']) ?>
                                 </a>
                             <?php endforeach; ?>
@@ -39,12 +39,12 @@
 
             <!-- Filtro de Categorías Desktop (Botones centrados horizontalmente) -->
             <div class="hidden md:flex flex-wrap justify-center gap-3 animate-fade-in-up" style="animation-delay: 100ms;">
-                <a href="/repuestos" class="px-5 py-2.5 rounded-full text-xs font-bold border transition-all duration-300 <?= !$selectedCategory ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25' : 'bg-white border-gray-200 text-gray-600 hover:border-primary hover:text-primary shadow-sm' ?>">
+                <a href="/productos" class="px-5 py-2.5 rounded-full text-xs font-bold border transition-all duration-300 <?= !$selectedCategory ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25' : 'bg-white border-gray-200 text-gray-600 hover:border-primary hover:text-primary shadow-sm' ?>">
                     Todos
                 </a>
                 <?php if(!empty($categories)): ?>
                     <?php foreach($categories as $cat): ?>
-                        <a href="/repuestos?categoria=<?= htmlspecialchars($cat['slug']) ?>" class="px-5 py-2.5 rounded-full text-xs font-bold border transition-all duration-300 <?= ($selectedCategory && $selectedCategory['id'] === $cat['id']) ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25' : 'bg-white border-gray-200 text-gray-600 hover:border-primary hover:text-primary shadow-sm' ?>">
+                        <a href="/productos?categoria=<?= htmlspecialchars($cat['slug']) ?>" class="px-5 py-2.5 rounded-full text-xs font-bold border transition-all duration-300 <?= ($selectedCategory && $selectedCategory['id'] === $cat['id']) ? 'bg-primary border-primary text-white shadow-lg shadow-primary/25' : 'bg-white border-gray-200 text-gray-600 hover:border-primary hover:text-primary shadow-sm' ?>">
                             <?= htmlspecialchars($cat['name']) ?>
                         </a>
                     <?php endforeach; ?>
@@ -82,7 +82,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php if(!empty($products)): ?>
                 <?php foreach($products as $index => $product): ?>
-                <a href="/repuestos/<?= htmlspecialchars($product['slug']) ?>" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 animate-fade-in-up flex flex-col" style="animation-delay: <?= $index * 100 ?>ms;">
+                <a href="/productos/<?= htmlspecialchars($product['slug']) ?>" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 animate-fade-in-up flex flex-col" style="animation-delay: <?= $index * 100 ?>ms;">
                     <div class="relative bg-gray-100 overflow-hidden border-b border-gray-100 aspect-w-4 aspect-h-3">
                         <img src="<?= htmlspecialchars($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" loading="lazy" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
@@ -103,7 +103,7 @@
                 <div class="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm p-8 max-w-xl mx-auto">
                     <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                     <p class="text-gray-500 text-lg mb-4">No se encontraron productos activos en esta categoría.</p>
-                    <a href="/repuestos" class="inline-flex items-center px-6 py-2.5 bg-primary hover:bg-secondary text-white font-bold rounded-xl transition-colors text-sm shadow-md">
+                    <a href="/productos" class="inline-flex items-center px-6 py-2.5 bg-primary hover:bg-secondary text-white font-bold rounded-xl transition-colors text-sm shadow-md">
                         Ver todos los productos
                     </a>
                 </div>

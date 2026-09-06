@@ -169,7 +169,7 @@
             <div class="products-track flex gap-6 overflow-x-auto snap-x snap-mandatory pt-2 pb-6 <?= $justifySm ?> <?= $justifyLg ?> <?= $justifyXl ?>" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <?php foreach($featuredProducts as $index => $product): ?>
                 <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)] group">
-                    <a href="/repuestos/<?= htmlspecialchars($product['slug']) ?>" class="block bg-white rounded-3xl border border-gray-200 group-hover:border-primary/40 transition-all duration-300 h-full flex flex-col relative group-hover:-translate-y-1 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
+                    <a href="/productos/<?= htmlspecialchars($product['slug']) ?>" class="block bg-white rounded-3xl border border-gray-200 group-hover:border-primary/40 transition-all duration-300 h-full flex flex-col relative group-hover:-translate-y-1 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
                         <div class="relative bg-gray-100 overflow-hidden rounded-t-3xl border-b border-gray-200 aspect-w-4 aspect-h-3 gpu-clip-fix">
                             <img src="<?= asset($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" loading="lazy" class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700 gpu-image-fix">
                             <!-- Efecto gradiente premium -->
@@ -192,7 +192,7 @@
         </div>
 
         <div class="text-center mt-12 mb-10 animate-fade-in relative z-10">
-            <a href="/repuestos" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
+            <a href="/productos" class="inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold rounded-2xl hover:bg-secondary shadow-lg shadow-primary/10 hover:shadow-secondary/20 hover:scale-105 active:scale-95 transition-all duration-300">
                 Ver Catálogo Completo
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>

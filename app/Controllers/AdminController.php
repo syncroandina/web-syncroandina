@@ -2460,7 +2460,7 @@ class AdminController extends Controller {
             $settingModel->updateSetting($key, $value);
         }
 
-        header('Location: /admin/repuestos?success=settings_saved');
+        header('Location: /admin/productos?success=settings_saved');
         exit;
     }
 
@@ -2532,7 +2532,7 @@ class AdminController extends Controller {
             }
         }
 
-        header('Location: /admin/repuestos?success=product_saved');
+        header('Location: /admin/productos?success=product_saved');
         exit;
     }
 
@@ -2633,7 +2633,7 @@ class AdminController extends Controller {
             }
         }
 
-        header('Location: /admin/repuestos?success=product_deleted');
+        header('Location: /admin/productos?success=product_deleted');
         exit;
     }
 
@@ -2714,7 +2714,7 @@ class AdminController extends Controller {
             }
         }
 
-        header('Location: /admin/repuestos?success=product_duplicated');
+        header('Location: /admin/productos?success=product_duplicated');
         exit;
     }
 
