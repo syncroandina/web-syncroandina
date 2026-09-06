@@ -133,12 +133,21 @@ class AdminController extends Controller {
     public function services() {
         $serviceModel = new \App\Models\Service();
         $settingModel = new \App\Models\Setting();
+        $projectModel = new \App\Models\Project();
+
+        // Limpiar registros huérfanos/prueba de la tabla de proyectos
+        try {
+            $projectModel->db->exec("DELETE FROM projects WHERE title LIKE '%Migración Cloud%' OR title LIKE '%App Móvil%' OR title LIKE '%Copia%' OR title LIKE '%Test%'");
+        } catch (\Exception $e) {}
+
         $services = $serviceModel->all('sort_order ASC, id ASC');
+        $projects = $projectModel->where('is_active', 1, '=', 'id ASC');
         $settings = $settingModel->getAll();
         
         return $this->adminView('services/index', [
             'title' => 'Gestión de Servicios',
             'services' => $services,
+            'projects' => $projects,
             'settings' => $settings
         ]);
     }
@@ -172,6 +181,16 @@ class AdminController extends Controller {
         exit;
     }
 
+    private function cleanHtmlEntities($val) {
+        if (empty($val)) return '';
+        while (preg_match('/&(lt|gt|amp|quot|#039);/i', $val)) {
+            $decoded = html_entity_decode($val, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            if ($decoded === $val) break;
+            $val = $decoded;
+        }
+        return $val;
+    }
+
     public function getService() {
         $id = $_GET['id'] ?? null;
         if (!$id) return json_encode(['success' => false]);
@@ -179,6 +198,13 @@ class AdminController extends Controller {
         $serviceModel = new \App\Models\Service();
         $service = $serviceModel->getFullDetails($id);
         
+        $htmlFields = ['cta_description', 'consists_of', 'materials_methodology', 'pricing_timeline', 'why_choose_us', 'coverage'];
+        foreach ($htmlFields as $field) {
+            if (!empty($service[$field])) {
+                $service[$field] = $this->cleanHtmlEntities($service[$field]);
+            }
+        }
+
         header('Content-Type: application/json');
         echo json_encode($service);
         exit;
@@ -193,16 +219,98 @@ class AdminController extends Controller {
         $serviceModel = new \App\Models\Service();
         $oldService = $id ? $serviceModel->find($id) : null;
 
+        $types = [];
+        if (!empty($_POST['type_title']) && is_array($_POST['type_title'])) {
+            foreach ($_POST['type_title'] as $i => $tTitle) {
+                if (!empty(trim($tTitle))) {
+                    $types[] = [
+                        'title' => \Core\Security::sanitizeInput($tTitle),
+                        'description' => \Core\Security::sanitizeInput($_POST['type_description'][$i] ?? ''),
+                        'icon' => \Core\Security::sanitizeInput($_POST['type_icon'][$i] ?? '')
+                    ];
+                }
+            }
+        }
+
+        $benefits = [];
+        if (!empty($_POST['benefit_title']) && is_array($_POST['benefit_title'])) {
+            foreach ($_POST['benefit_title'] as $i => $bTitle) {
+                if (!empty(trim($bTitle))) {
+                    $benefits[] = [
+                        'title' => \Core\Security::sanitizeInput($bTitle),
+                        'description' => \Core\Security::sanitizeInput($_POST['benefit_description'][$i] ?? ''),
+                        'icon' => \Core\Security::sanitizeInput($_POST['benefit_icon'][$i] ?? '')
+                    ];
+                }
+            }
+        }
+
+        $process = [];
+        if (!empty($_POST['process_title']) && is_array($_POST['process_title'])) {
+            foreach ($_POST['process_title'] as $i => $pTitle) {
+                if (!empty(trim($pTitle))) {
+                    $process[] = [
+                        'step' => \Core\Security::sanitizeInput($_POST['process_step'][$i] ?? ($i + 1)),
+                        'title' => \Core\Security::sanitizeInput($pTitle),
+                        'description' => \Core\Security::sanitizeInput($_POST['process_description'][$i] ?? '')
+                    ];
+                }
+            }
+        }
+
+        $faqs = [];
+        if (!empty($_POST['faq_question']) && is_array($_POST['faq_question'])) {
+            foreach ($_POST['faq_question'] as $i => $question) {
+                if (!empty(trim($question))) {
+                    $faqs[] = [
+                        'question' => \Core\Security::sanitizeInput($question),
+                        'answer' => \Core\Security::sanitizeInput($_POST['faq_answer'][$i] ?? '')
+                    ];
+                }
+            }
+        }
+
+        $relatedIds = [];
+        if (!empty($_POST['related_services']) && is_array($_POST['related_services'])) {
+            $relatedIds = array_map('intval', $_POST['related_services']);
+        }
+
+        $relatedProjectIds = [];
+        if (!empty($_POST['related_projects']) && is_array($_POST['related_projects'])) {
+            $relatedProjectIds = array_map('intval', $_POST['related_projects']);
+        }
+
         $data = [
             'title' => \Core\Security::sanitizeInput($_POST['title'] ?? ''),
             'slug' => \Core\Security::sanitizeInput($_POST['slug'] ?? ''),
-            'content' => \Core\Security::sanitizeHTML($_POST['content'] ?? ''),
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
             'heading_description' => \Core\Security::sanitizeInput($_POST['heading_description'] ?? ''),
             'heading_details' => \Core\Security::sanitizeInput($_POST['heading_details'] ?? ''),
-            'heading_gallery' => \Core\Security::sanitizeInput($_POST['heading_gallery'] ?? ''),
+            'heading_gallery' => \Core\Security::sanitizeInput($_POST['heading_gallery'] ?? 'Galería de fotos'),
+            'heading_projects' => \Core\Security::sanitizeInput($_POST['heading_projects'] ?? 'Proyectos relacionados'),
             'heading_cta' => \Core\Security::sanitizeInput($_POST['heading_cta'] ?? ''),
-            'cta_description' => \Core\Security::sanitizeInput($_POST['cta_description'] ?? ''),
+            'cta_description' => \Core\Security::sanitizeHTML($this->cleanHtmlEntities($_POST['cta_description'] ?? '')),
+            'heading_consists_of' => \Core\Security::sanitizeInput($_POST['heading_consists_of'] ?? '¿En qué consiste?'),
+            'heading_types' => \Core\Security::sanitizeInput($_POST['heading_types'] ?? 'Tipos de servicio'),
+            'heading_benefits' => \Core\Security::sanitizeInput($_POST['heading_benefits'] ?? 'Beneficios'),
+            'heading_process' => \Core\Security::sanitizeInput($_POST['heading_process'] ?? 'Proceso de trabajo'),
+            'heading_materials' => \Core\Security::sanitizeInput($_POST['heading_materials'] ?? 'Materiales o metodología'),
+            'heading_pricing' => \Core\Security::sanitizeInput($_POST['heading_pricing'] ?? 'Precio y tiempo'),
+            'heading_why_choose_us' => \Core\Security::sanitizeInput($_POST['heading_why_choose_us'] ?? '¿Por qué elegirnos?'),
+            'heading_coverage' => \Core\Security::sanitizeInput($_POST['heading_coverage'] ?? 'Cobertura'),
+            'heading_faqs' => \Core\Security::sanitizeInput($_POST['heading_faqs'] ?? 'Preguntas frecuentes'),
+            'heading_related' => \Core\Security::sanitizeInput($_POST['heading_related'] ?? 'Servicios relacionados'),
+            'consists_of' => \Core\Security::sanitizeHTML($this->cleanHtmlEntities($_POST['consists_of'] ?? '')),
+            'materials_methodology' => \Core\Security::sanitizeHTML($this->cleanHtmlEntities($_POST['materials_methodology'] ?? '')),
+            'pricing_timeline' => \Core\Security::sanitizeHTML($this->cleanHtmlEntities($_POST['pricing_timeline'] ?? '')),
+            'why_choose_us' => \Core\Security::sanitizeHTML($this->cleanHtmlEntities($_POST['why_choose_us'] ?? '')),
+            'coverage' => \Core\Security::sanitizeHTML($this->cleanHtmlEntities($_POST['coverage'] ?? '')),
+            'types_json' => !empty($types) ? json_encode($types, JSON_UNESCAPED_UNICODE) : null,
+            'benefits_json' => !empty($benefits) ? json_encode($benefits, JSON_UNESCAPED_UNICODE) : null,
+            'process_json' => !empty($process) ? json_encode($process, JSON_UNESCAPED_UNICODE) : null,
+            'faqs_json' => !empty($faqs) ? json_encode($faqs, JSON_UNESCAPED_UNICODE) : null,
+            'related_services_json' => !empty($relatedIds) ? json_encode($relatedIds) : null,
+            'related_projects_json' => !empty($relatedProjectIds) ? json_encode($relatedProjectIds) : null,
             'image_alt' => \Core\Security::sanitizeInput($_POST['image_alt'] ?? ''),
             'seo_title' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_title'] ?? ''), 0, 255, ''),
             'seo_description' => mb_strimwidth(\Core\Security::sanitizeInput($_POST['seo_description'] ?? ''), 0, 1000, ''),
@@ -264,8 +372,17 @@ class AdminController extends Controller {
             }
         }
 
-        // Actualizar ALT de imágenes existentes en Galería
-        if (isset($_POST['service_gallery_alts']) && is_array($_POST['service_gallery_alts'])) {
+        // Actualizar ALT y Orden de imágenes existentes en Galería
+        if (isset($_POST['service_gallery_ids']) && is_array($_POST['service_gallery_ids'])) {
+            foreach ($_POST['service_gallery_ids'] as $sortOrder => $galleryImgId) {
+                $altText = $_POST['service_gallery_alts'][$galleryImgId] ?? '';
+                $galleryModel->save([
+                    'id' => (int)$galleryImgId,
+                    'image_alt' => \Core\Security::sanitizeInput($altText),
+                    'sort_order' => (int)$sortOrder
+                ]);
+            }
+        } else if (isset($_POST['service_gallery_alts']) && is_array($_POST['service_gallery_alts'])) {
             foreach ($_POST['service_gallery_alts'] as $galleryImgId => $altText) {
                 $galleryModel->save([
                     'id' => (int)$galleryImgId,
@@ -354,14 +471,36 @@ class AdminController extends Controller {
                 $serviceData = [
                     'title' => $service['title'] . ' (Copia)',
                     'slug' => $newSlug,
-                    'content' => $service['content'],
                     'image' => $newImagePath ?: $service['image'],
                     'is_active' => 0,
                     'heading_description' => $service['heading_description'] ?? null,
                     'heading_details' => $service['heading_details'] ?? null,
                     'heading_gallery' => $service['heading_gallery'] ?? null,
                     'heading_cta' => $service['heading_cta'] ?? null,
+                    'heading_consists_of' => $service['heading_consists_of'] ?? null,
+                    'heading_types' => $service['heading_types'] ?? null,
+                    'heading_benefits' => $service['heading_benefits'] ?? null,
+                    'heading_process' => $service['heading_process'] ?? null,
+                    'heading_materials' => $service['heading_materials'] ?? null,
+                    'heading_pricing' => $service['heading_pricing'] ?? null,
+                    'heading_why_choose_us' => $service['heading_why_choose_us'] ?? null,
+                    'heading_coverage' => $service['heading_coverage'] ?? null,
+                    'heading_faqs' => $service['heading_faqs'] ?? null,
+                    'heading_related' => $service['heading_related'] ?? null,
+                    'consists_of' => $service['consists_of'] ?? null,
+                    'materials_methodology' => $service['materials_methodology'] ?? null,
+                    'pricing_timeline' => $service['pricing_timeline'] ?? null,
+                    'why_choose_us' => $service['why_choose_us'] ?? null,
+                    'coverage' => $service['coverage'] ?? null,
                     'cta_description' => $service['cta_description'] ?? null,
+                    'types_json' => $service['types_json'] ?? null,
+                    'benefits_json' => $service['benefits_json'] ?? null,
+                    'process_json' => $service['process_json'] ?? null,
+                    'faqs_json' => $service['faqs_json'] ?? null,
+                    'related_services_json' => $service['related_services_json'] ?? null,
+                    'seo_title' => $service['seo_title'] ?? null,
+                    'seo_keywords' => $service['seo_keywords'] ?? null,
+                    'seo_description' => $service['seo_description'] ?? null,
                     'image_alt' => $service['image_alt'] ?? null
                 ];
 
@@ -2292,7 +2431,7 @@ class AdminController extends Controller {
         }
         
         return $this->adminView('products/index', [
-            'title' => 'Gestión de Repuestos',
+            'title' => 'Gestión de Productos',
             'products' => $products,
             'settings' => $settings,
             'categories' => $categories

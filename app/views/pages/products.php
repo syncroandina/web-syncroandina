@@ -1,11 +1,11 @@
-<?php $this->component('header', ['title' => $title ?? 'Repuestos']); ?>
+<?php $this->component('header', ['title' => $title ?? 'Productos']); ?>
 <?php $this->component('navbar'); ?>
 
 <main class="min-h-screen bg-gray-50 pt-20 pb-32">
     <div class="container mx-auto px-4">
         <div class="text-center max-w-5xl mx-auto mb-16 animate-fade-in-up">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['products_page_title'] ?? 'Nuestros Repuestos') ?></h1>
-            <p class="text-sm sm:text-base md:text-xl text-gray-600 mt-6 leading-relaxed"><?= htmlspecialchars($settings['products_page_subtitle'] ?? 'Encuentra componentes y repuestos de la más alta calidad para asegurar el rendimiento de tus equipos.') ?></p>
+            <h1 class="text-3xl md:text-5xl font-extrabold text-primary mb-6"><?= htmlspecialchars($settings['products_page_title'] ?? 'Nuestros Productos') ?></h1>
+            <p class="text-sm sm:text-base md:text-xl text-gray-600 mt-6 leading-relaxed"><?= htmlspecialchars($settings['products_page_subtitle'] ?? 'Encuentra componentes y productos de la más alta calidad para asegurar el rendimiento de tus equipos.') ?></p>
         </div>
         
         <!-- Contenedor de Filtros Pegajoso (Sticky justo debajo del Navbar y Logo Sobresaliente) -->
@@ -102,9 +102,9 @@
             <?php else: ?>
                 <div class="col-span-full text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm p-8 max-w-xl mx-auto">
                     <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                    <p class="text-gray-500 text-lg mb-4">No se encontraron repuestos activos en esta categoría.</p>
+                    <p class="text-gray-500 text-lg mb-4">No se encontraron productos activos en esta categoría.</p>
                     <a href="/repuestos" class="inline-flex items-center px-6 py-2.5 bg-primary hover:bg-secondary text-white font-bold rounded-xl transition-colors text-sm shadow-md">
-                        Ver todos los repuestos
+                        Ver todos los productos
                     </a>
                 </div>
             <?php endif; ?>

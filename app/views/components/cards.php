@@ -16,7 +16,7 @@
                 </h2>
                 
                 <p class="text-gray-600 mb-8 leading-relaxed line-clamp-3">
-                    <?= htmlspecialchars(strip_tags($service['content'])) ?>
+                    <?= htmlspecialchars(strip_tags($service['consists_of'] ?? '')) ?>
                 </p>
                 
                 <div class="mt-auto">

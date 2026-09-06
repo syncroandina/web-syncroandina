@@ -56,7 +56,7 @@
                                 </h3>
                                 
                                 <p class="text-gray-600 mb-8 leading-relaxed line-clamp-3">
-                                    <?= htmlspecialchars(strip_tags($service['content'])) ?>
+                                    <?= htmlspecialchars(strip_tags($service['consists_of'] ?? '')) ?>
                                 </p>
                                 
                                 <div class="mt-auto">
@@ -136,13 +136,13 @@
         </div>
     </section>
 
-    <!-- Sección de Repuestos Destacados -->
+    <!-- Sección de Productos Destacados -->
     <?php if(!empty($featuredProducts)): ?>
     <section class="py-24 bg-gray-50 border-b border-gray-100 overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center relative z-10">
-            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Repuestos Recientes') ?></h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Productos Recientes') ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
-            <p class="text-gray-600 max-w-5xl mx-auto text-base md:text-lg mt-6 md:mt-8 leading-relaxed animate-fade-in"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Componentes y repuestos que demuestran nuestra calidad.') ?></p>
+            <p class="text-gray-600 max-w-5xl mx-auto text-base md:text-lg mt-6 md:mt-8 leading-relaxed animate-fade-in"><?= htmlspecialchars($settings['products_home_subtitle'] ?? 'Componentes y productos que demuestran nuestra calidad.') ?></p>
         </div>
 
         <div class="container mx-auto px-4 relative z-10">

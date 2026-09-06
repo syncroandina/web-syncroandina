@@ -41,16 +41,16 @@
 </style>
 
 <main class="min-h-screen bg-gray-50/50 pb-32">
-    <!-- Hero / Banner de Servicio -->
-    <div class="relative h-[450px] overflow-hidden bg-primary flex items-center">
+    <!-- H1 • Nombre del servicio (Resumen + Imagen + Llamada a la acción) -->
+    <div class="relative min-h-[480px] overflow-hidden bg-primary flex items-center py-16">
         <!-- Imagen de Fondo con Parallax Efecto -->
         <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
              alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
              fetchpriority="high"
-             class="absolute inset-0 w-full h-full object-cover opacity-30 transform scale-105 hover:scale-100 transition-transform duration-1000">
+             class="absolute inset-0 w-full h-full object-cover opacity-25 transform scale-105 hover:scale-100 transition-transform duration-1000">
         
-        <!-- Degradados e Interposición -->
-        <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
+        <!-- Degradados -->
+        <div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/85 to-transparent"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,var(--secondary),transparent_50%)] opacity-30"></div>
         
         <div class="container mx-auto px-4 relative z-10 text-white animate-fade-in-up">
@@ -63,22 +63,23 @@
                 <span class="text-white select-none"><?= htmlspecialchars($service['title']) ?></span>
             </nav>
             
-            <h1 class="text-3xl md:text-5xl font-black mb-6 tracking-tight max-w-4xl leading-relaxed" style="line-height: 1.2 !important;">
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight max-w-4xl leading-tight">
                 <?= htmlspecialchars($service['title']) ?>
             </h1>
-            <div class="w-20 h-1.5 bg-secondary rounded-full"></div>
+            <div class="w-24 h-1.5 bg-secondary rounded-full"></div>
         </div>
     </div>
 
-    <!-- Contenido Principal -->
-    <div class="container mx-auto px-4 -mt-16 relative z-20">
+    <!-- Contenido Principal Estructurado (13 Secciones SEO) -->
+    <div class="container mx-auto px-4 -mt-12 relative z-20">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
             
             <!-- Columna de Contenido (Izquierda 2/3) -->
             <div class="lg:col-span-2 space-y-12">
-                <!-- Tarjeta Principal con Descripción -->
+                
+                <!-- H2 • ¿En qué consiste? -->
+                <?php if (!empty($service['consists_of'])): ?>
                 <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
-                    <!-- Imagen Principal del Servicio -->
                     <div class="mb-8 rounded-3xl overflow-hidden aspect-[16/9] md:aspect-[21/9] border border-gray-100 shadow-md">
                         <img src="<?= htmlspecialchars($service['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
                              alt="<?= htmlspecialchars($service['image_alt'] ?: $service['title']) ?>" 
@@ -86,18 +87,275 @@
                              class="w-full h-full object-cover">
                     </div>
 
-                    <h2 class="text-2xl font-extrabold text-primary mb-6 flex items-center gap-3">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-6 flex items-center gap-3">
                         <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
-                        <?= htmlspecialchars($service['heading_description'] ?? 'Descripción') ?>
+                        <?= htmlspecialchars($service['heading_consists_of'] ?? '¿En qué consiste?') ?>
                     </h2>
                     <div class="text-gray-600 leading-relaxed text-lg rich-text-content">
-                        <?= $service['content'] ?>
+                        <?= $service['consists_of'] ?>
                     </div>
                 </div>
+                <?php endif; ?>
 
-                <!-- Lista de Sub-servicios o Entregables (Items) -->
+                <!-- H2 • Tipos de servicio -->
+                <?php if (!empty($service['types'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_types'] ?? 'Tipos de servicio') ?>
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <?php foreach($service['types'] as $type): ?>
+                        <div class="p-6 rounded-3xl bg-gray-50/80 border border-gray-100 hover:border-secondary/30 hover:bg-white hover:shadow-xl transition-all duration-300 group">
+                            <div class="w-12 h-12 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center mb-4 group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                                <?= htmlspecialchars($type['title']) ?>
+                            </h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">
+                                <?= htmlspecialchars($type['description']) ?>
+                            </p>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Beneficios -->
+                <?php if (!empty($service['benefits'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_benefits'] ?? 'Beneficios') ?>
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        <?php foreach($service['benefits'] as $benefit): ?>
+                        <div class="p-6 rounded-3xl bg-primary/5 border border-primary/10 hover:bg-primary hover:text-white transition-all duration-300 group">
+                            <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center mb-4 shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <h3 class="font-extrabold text-gray-900 text-lg mb-2 group-hover:text-white transition-colors">
+                                <?= htmlspecialchars($benefit['title']) ?>
+                            </h3>
+                            <p class="text-gray-600 text-sm leading-relaxed group-hover:text-white/80 transition-colors">
+                                <?= htmlspecialchars($benefit['description']) ?>
+                            </p>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Proceso de trabajo -->
+                <?php if (!empty($service['process'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_process'] ?? 'Proceso de trabajo') ?>
+                    </h2>
+                    
+                    <div class="relative pl-6 md:pl-10 space-y-8 before:absolute before:left-3 md:before:left-5 before:top-3 before:bottom-3 before:w-1 before:bg-secondary/20">
+                        <?php foreach($service['process'] as $index => $proc): ?>
+                        <div class="relative flex items-start gap-6 group">
+                            <div class="w-10 h-10 rounded-full bg-secondary text-white font-black text-sm flex items-center justify-center flex-shrink-0 shadow-lg relative z-10 transform group-hover:scale-110 transition-transform">
+                                <?= htmlspecialchars($proc['step'] ?? ($index + 1)) ?>
+                            </div>
+                            <div class="flex-1 bg-gray-50 p-6 rounded-3xl border border-gray-100 group-hover:bg-white group-hover:shadow-md transition-all">
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                    <?= htmlspecialchars($proc['title']) ?>
+                                </h3>
+                                <p class="text-gray-600 text-sm leading-relaxed">
+                                    <?= htmlspecialchars($proc['description']) ?>
+                                </p>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Materiales o metodología -->
+                <?php if (!empty($service['materials_methodology'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-6 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_materials'] ?? 'Materiales o metodología') ?>
+                    </h2>
+                    <div class="text-gray-600 leading-relaxed text-lg rich-text-content">
+                        <?= $service['materials_methodology'] ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Trabajos realizados (Galería) -->
+                <?php if (!empty($service['gallery'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_gallery'] ?? 'Trabajos Realizados') ?>
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <?php foreach($service['gallery'] as $img): ?>
+                        <div class="gallery-item-trigger group relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-secondary/20 border border-gray-100 cursor-pointer transition-all duration-500 hover:-translate-y-1.5" 
+                             data-src="<?= htmlspecialchars($img['image_path']) ?>">
+                            <img src="<?= htmlspecialchars($img['image_path']) ?>" 
+                                 alt="<?= htmlspecialchars($img['image_alt'] ?: 'Galería de ' . $service['title']) ?>" 
+                                 loading="lazy"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            
+                            <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                <div class="w-14 h-14 rounded-full bg-white text-primary flex items-center justify-center shadow-2xl transform scale-75 group-hover:scale-100 transition-all duration-500">
+                                    <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Proyectos relacionados -->
+                <?php if (!empty($service['related_projects'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_projects'] ?? 'Proyectos relacionados') ?>
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <?php foreach($service['related_projects'] as $relProj): ?>
+                        <a href="/proyectos/<?= htmlspecialchars($relProj['slug']) ?>" class="group block bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 hover:border-secondary/40 hover:shadow-xl transition-all duration-300">
+                            <div class="aspect-[16/9] overflow-hidden bg-gray-200">
+                                <img src="<?= htmlspecialchars($relProj['main_image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
+                                     alt="<?= htmlspecialchars($relProj['title']) ?>" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <div class="p-6">
+                                <?php if (!empty($relProj['client'])): ?>
+                                    <span class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-full mb-3"><?= htmlspecialchars($relProj['client']) ?></span>
+                                <?php endif; ?>
+                                <h3 class="font-extrabold text-gray-900 text-lg mb-2 group-hover:text-secondary transition-colors">
+                                    <?= htmlspecialchars($relProj['title']) ?>
+                                </h3>
+                                <span class="text-xs font-bold text-secondary flex items-center gap-1 uppercase tracking-wider">
+                                    Ver Proyecto 
+                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </span>
+                            </div>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Precio y tiempo -->
+                <?php if (!empty($service['pricing_timeline'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-6 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_pricing'] ?? 'Precio y tiempo') ?>
+                    </h2>
+                    <div class="bg-secondary/5 border-l-4 border-secondary p-6 rounded-2xl text-gray-700 text-base leading-relaxed rich-text-content">
+                        <?= $service['pricing_timeline'] ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • ¿Por qué elegirnos? -->
+                <?php if (!empty($service['why_choose_us'])): ?>
+                <div class="bg-gradient-to-br from-primary to-primary/90 text-white rounded-[2.5rem] shadow-xl p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-6 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_why_choose_us'] ?? '¿Por qué elegirnos?') ?>
+                    </h2>
+                    <div class="text-white/90 text-lg leading-relaxed rich-text-content">
+                        <?= $service['why_choose_us'] ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Cobertura -->
+                <?php if (!empty($service['coverage'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-6 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_coverage'] ?? 'Cobertura') ?>
+                    </h2>
+                    <div class="text-gray-600 leading-relaxed text-lg rich-text-content">
+                        <?= $service['coverage'] ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Preguntas frecuentes -->
+                <?php if (!empty($service['faqs'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_faqs'] ?? 'Preguntas frecuentes') ?>
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <?php foreach($service['faqs'] as $index => $faq): ?>
+                        <details class="group bg-gray-50 rounded-2xl border border-gray-100 p-6 transition-all duration-300 open:bg-white open:shadow-md">
+                            <summary class="flex items-center justify-between cursor-pointer font-bold text-gray-900 text-lg select-none list-none">
+                                <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-3">
+                                    <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                                    <?= htmlspecialchars($faq['question']) ?>
+                                </h3>
+                                <span class="w-8 h-8 rounded-full bg-white text-secondary flex items-center justify-center group-open:rotate-180 transition-transform shadow-sm">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </span>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-gray-100 text-gray-600 text-base leading-relaxed">
+                                <?= nl2br(htmlspecialchars($faq['answer'])) ?>
+                            </div>
+                        </details>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- H2 • Servicios relacionados -->
+                <?php if (!empty($service['related_services'])): ?>
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-primary mb-8 flex items-center gap-3">
+                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
+                        <?= htmlspecialchars($service['heading_related'] ?? 'Servicios relacionados') ?>
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <?php foreach($service['related_services'] as $rel): ?>
+                        <a href="/servicios/<?= htmlspecialchars($rel['slug']) ?>" class="group block bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 hover:border-secondary/40 hover:shadow-xl transition-all duration-300">
+                            <div class="aspect-[16/9] overflow-hidden bg-gray-200">
+                                <img src="<?= htmlspecialchars($rel['image'] ?: asset('assets/img/service-placeholder.jpg')) ?>" 
+                                     alt="<?= htmlspecialchars($rel['title']) ?>" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            </div>
+                            <div class="p-6">
+                                <h3 class="font-extrabold text-gray-900 text-lg mb-2 group-hover:text-secondary transition-colors">
+                                    <?= htmlspecialchars($rel['title']) ?>
+                                </h3>
+                                <span class="text-xs font-bold text-secondary flex items-center gap-1 uppercase tracking-wider">
+                                    Ver Servicio 
+                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </span>
+                            </div>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <!-- Lista de Ítems Tradicionales (Detalles del servicio) -->
                 <?php if (!empty($service['items'])): ?>
-                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up" style="animation-delay: 100ms;">
+                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up">
                     <h2 class="text-2xl font-extrabold text-primary mb-8 flex items-center gap-3">
                         <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
                         <?= htmlspecialchars($service['heading_details'] ?? 'Detalles del servicio') ?>
@@ -106,7 +364,6 @@
                     <div class="space-y-6">
                         <?php foreach($service['items'] as $index => $item): ?>
                         <div class="group flex items-start gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-all duration-300">
-                            <!-- Icono check minimalista -->
                             <div class="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center flex-shrink-0 group-hover:bg-secondary group-hover:text-white transition-all duration-300 shadow-sm">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
@@ -126,50 +383,19 @@
                 </div>
                 <?php endif; ?>
 
-                <!-- Galería del Servicio -->
-                <?php if (!empty($service['gallery'])): ?>
-                <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 animate-fade-in-up" style="animation-delay: 200ms;">
-                    <h2 class="text-2xl font-extrabold text-primary mb-8 flex items-center gap-3">
-                        <span class="w-2.5 h-8 bg-secondary rounded-full inline-block"></span>
-                        <?= htmlspecialchars($service['heading_gallery'] ?? 'Trabajos Realizados') ?>
-                    </h2>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <?php foreach($service['gallery'] as $img): ?>
-                        <div class="gallery-item-trigger group relative aspect-[4/3] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-secondary/20 border border-gray-100 cursor-pointer transition-all duration-500 hover:-translate-y-1.5" 
-                             data-src="<?= htmlspecialchars($img['image_path']) ?>">
-                            <img src="<?= htmlspecialchars($img['image_path']) ?>" 
-                                 alt="<?= htmlspecialchars($img['image_alt'] ?: 'Galería de ' . $service['title']) ?>" 
-                                 loading="lazy"
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            
-                            <!-- Overlay de Hover -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                                <div class="w-14 h-14 rounded-full bg-white text-primary flex items-center justify-center shadow-2xl transform scale-75 group-hover:scale-100 transition-all duration-500">
-                                    <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-                <?php endif; ?>
             </div>
 
-            <!-- Columna de Cotización (Derecha 1/3) -->
+            <!-- Columna de Cotización (Derecha 1/3) - H2 • Solicita una cotización -->
             <div class="lg:col-span-1">
-                <div class="sticky top-28 space-y-8 animate-fade-in-up" style="animation-delay: 150ms;">
+                <div class="sticky top-28 space-y-8 animate-fade-in-up">
                     <!-- Widget de Contacto/CTA -->
                     <div class="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 relative overflow-hidden">
-                        <!-- Decoración de Fondo -->
                         <div class="absolute -top-12 -right-12 w-32 h-32 bg-secondary/10 rounded-full blur-2xl"></div>
                         
-                        <h2 class="text-2xl font-black text-primary mb-4 relative z-10"><?= htmlspecialchars($service['heading_cta'] ?? '¿Interesado en este Servicio?') ?></h2>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-8 relative z-10">
-                            <?= htmlspecialchars($service['cta_description'] ?? 'Nuestro equipo de especialistas está listo para diseñar una cotización personalizada adaptada a los requerimientos de tu proyecto.') ?>
-                        </p>
+                        <h2 class="text-2xl font-black text-primary mb-4 relative z-10"><?= htmlspecialchars($service['heading_cta'] ?? 'Solicita una cotización') ?></h2>
+                        <div class="text-gray-500 text-sm leading-relaxed mb-8 relative z-10 rich-text-content">
+                            <?= $service['cta_description'] ?? 'Nuestro equipo de especialistas está listo para diseñar una cotización personalizada adaptada a los requerimientos de tu proyecto.' ?>
+                        </div>
                         
                         <div class="space-y-6 mb-8 relative z-10">
                             <div class="flex items-center gap-4 group">

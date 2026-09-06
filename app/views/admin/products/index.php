@@ -1,6 +1,6 @@
 <div class="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
     <div>
-        <h1 class="text-3xl font-extrabold text-gray-900">Repuestos</h1>
+        <h1 class="text-3xl font-extrabold text-gray-900">Productos</h1>
         <p class="text-gray-500 text-sm mt-1">Gestiona los casos de éxito, asigna imágenes, maneja sus galerías y publícalos en el portal.</p>
     </div>
     <div class="flex items-center gap-3">
@@ -14,7 +14,7 @@
         </button>
         <button onclick="openProductModal()" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-lg shadow-primary/30">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            Crear Repuesto
+            Crear Producto
         </button>
     </div>
 </div>
@@ -31,9 +31,9 @@
             } elseif ($_GET['success'] === 'product_deleted') {
                 echo 'El producto ha sido eliminado correctamente.';
             } elseif ($_GET['success'] === 'category_saved') {
-                echo 'La categoría de repuesto se ha guardado correctamente.';
+                echo 'La categoría de producto se ha guardado correctamente.';
             } elseif ($_GET['success'] === 'category_deleted') {
-                echo 'La categoría de repuesto se ha eliminado correctamente.';
+                echo 'La categoría de producto se ha eliminado correctamente.';
             } else {
                 echo 'El producto ha sido guardado correctamente.';
             }
@@ -54,7 +54,7 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-white text-gray-400 text-[11px] font-bold uppercase tracking-widest border-b border-gray-100">
-                    <th class="px-8 py-5">Repuesto</th>
+                    <th class="px-8 py-5">Producto</th>
                     <th class="px-8 py-5">Estado</th>
                     <th class="px-8 py-5 text-right">Acciones</th>
                 </tr>
@@ -117,7 +117,7 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="3" class="px-8 py-10 text-center text-gray-400 italic">No se encontraron repuestos activos.</td>
+                        <td colspan="3" class="px-8 py-10 text-center text-gray-400 italic">No se encontraron productos activos.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -125,11 +125,11 @@
     </div>
 </div>
 
-<!-- Modal de Repuesto -->
+<!-- Modal de Producto -->
 <div id="product-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
     <div class="bg-white rounded-3xl shadow-2xl border border-gray-100 max-w-2xl w-full mx-4 overflow-hidden transform scale-95 transition-all duration-300" id="product-modal-container">
         <div class="px-8 py-6 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="text-xl font-bold text-gray-800" id="modal-title">Crear Nuevo Repuesto</h3>
+            <h3 class="text-xl font-bold text-gray-800" id="modal-title">Crear Nuevo Producto</h3>
             <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -150,7 +150,7 @@
             <div id="content-general" class="product-tab-content space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Título del Repuesto</label>
+                        <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Título del Producto</label>
                         <input type="text" name="title" id="product-title" required oninput="generateProductSlug()" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow">
                     </div>
                     <div>
@@ -194,7 +194,7 @@
                 </div>
                 
                 <div>
-                    <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Descripción / Contenido del Repuesto</label>
+                    <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Descripción / Contenido del Producto</label>
                     <textarea name="description" id="product-description" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow resize-none" placeholder="Escribe los detalles o alcance del producto..."></textarea>
                 </div>
             </div>
@@ -223,7 +223,7 @@
             <div id="content-gallery" class="product-tab-content hidden space-y-6">
                 <div class="flex justify-between items-center bg-gray-50 p-5 rounded-2xl border border-gray-100">
                     <div>
-                        <h4 class="text-sm font-extrabold text-gray-800">Galería de Fotos del Repuesto</h4>
+                        <h4 class="text-sm font-extrabold text-gray-800">Galería de Fotos del Producto</h4>
                         <p class="text-xs text-gray-400 mt-1">Sube múltiples imágenes asociadas a este caso de éxito.</p>
                     </div>
                     <div>
@@ -248,7 +248,7 @@
                 </label>
                 <div class="flex gap-3">
                     <button type="button" onclick="closeProductModal()" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors">Cancelar</button>
-                    <button type="submit" class="px-6 py-3 bg-primary hover:bg-secondary text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/30 transition-colors">Guardar Repuesto</button>
+                    <button type="submit" class="px-6 py-3 bg-primary hover:bg-secondary text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/30 transition-colors">Guardar Producto</button>
                 </div>
             </div>
         </form>
@@ -261,7 +261,7 @@
         <div class="px-8 py-6 bg-gray-50 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                 <svg class="w-5 h-5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                Configurar Textos y Ajustes de Repuestos
+                Configurar Textos y Ajustes de Productos
             </h3>
             <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white rounded-xl">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -276,7 +276,7 @@
                 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título de la Sección</label>
-                    <input type="text" name="products_home_title" value="<?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Repuestos Recientes') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
+                    <input type="text" name="products_home_title" value="<?= htmlspecialchars($settings['products_home_title'] ?? 'Nuestros Productos Recientes') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Subtítulo de la Sección</label>
@@ -292,15 +292,15 @@
             <hr class="border-gray-100">
 
             <div class="space-y-4">
-                <h4 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Página Principal de Repuestos General (/repuestos)</h4>
+                <h4 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Página Principal de Productos General (/productos)</h4>
                 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título de la Página</label>
-                    <input type="text" name="products_page_title" value="<?= htmlspecialchars($settings['products_page_title'] ?? 'Repuestos de Alta Calidad') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
+                    <input type="text" name="products_page_title" value="<?= htmlspecialchars($settings['products_page_title'] ?? 'Productos de Alta Calidad') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Subtítulo de la Página</label>
-                    <textarea name="products_page_subtitle" rows="2" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none"><?= htmlspecialchars($settings['products_page_subtitle'] ?? 'Repuestos emblemáticos que demuestran nuestro compromiso absoluto con la calidad corporativa y la entrega de valor real.') ?></textarea>
+                    <textarea name="products_page_subtitle" rows="2" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none"><?= htmlspecialchars($settings['products_page_subtitle'] ?? 'Productos emblemáticos que demuestran nuestro compromiso absoluto con la calidad corporativa y la entrega de valor real.') ?></textarea>
                 </div>
             </div>
 
@@ -308,22 +308,22 @@
 
             <!-- OPTIMIZACIÓN SEO -->
             <div class="space-y-4">
-                <h5 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Optimización SEO (Página /repuestos)</h5>
+                <h5 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Optimización SEO (Página /productos)</h5>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Title (Título SEO)</label>
-                        <input type="text" name="products_seo_title" value="<?= htmlspecialchars($settings['products_seo_title'] ?? 'Nuestros Repuestos - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
+                        <input type="text" name="products_seo_title" value="<?= htmlspecialchars($settings['products_seo_title'] ?? 'Nuestros Productos - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Keywords (Palabras clave)</label>
-                        <input type="text" name="products_seo_keywords" value="<?= htmlspecialchars($settings['products_seo_keywords'] ?? 'repuestos, piezas, andina, componentes') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. repuestos, calidad, componentes)...">
+                        <input type="text" name="products_seo_keywords" value="<?= htmlspecialchars($settings['products_seo_keywords'] ?? 'productos, piezas, andina, componentes') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. productos, calidad, componentes)...">
                     </div>
                 </div>
                 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Description (Descripción SEO)</label>
-                    <textarea name="products_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['products_seo_description'] ?? 'Catálogo de repuestos originales de alta durabilidad y performance garantizada ofrecidos por Syncro Andina.') ?></textarea>
+                    <textarea name="products_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['products_seo_description'] ?? 'Catálogo de productos originales de alta durabilidad y performance garantizada ofrecidos por Syncro Andina.') ?></textarea>
                 </div>
             </div>
             
@@ -342,7 +342,7 @@
         <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <h4 class="text-xl font-extrabold text-gray-900 flex items-center gap-2">
                 <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                Gestión de Categorías de Repuestos
+                Gestión de Categorías de Productos
             </h4>
             <button onclick="closeCategoriesModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white rounded-xl">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -408,7 +408,7 @@ function switchProductTab(tab) {
 }
 
 function openProductModal() {
-    document.getElementById('modal-title').textContent = 'Crear Nuevo Repuesto';
+    document.getElementById('modal-title').textContent = 'Crear Nuevo Producto';
     document.getElementById('product-id').value = '';
     document.getElementById('product-category-id').value = '';
     document.getElementById('product-title').value = '';
@@ -463,7 +463,7 @@ function closeSettingsModal() {
 function editProduct(product) {
     productGalleryDataTransfer = new DataTransfer();
     document.getElementById('product-gallery-input').files = productGalleryDataTransfer.files;
-    document.getElementById('modal-title').textContent = 'Editar Repuesto';
+    document.getElementById('modal-title').textContent = 'Editar Producto';
     document.getElementById('product-id').value = product.id;
     document.getElementById('product-category-id').value = product.category_id || '';
     document.getElementById('product-technical-details').value = product.technical_details || '';
@@ -847,7 +847,7 @@ async function saveCategoryAjax(event) {
 }
 
 async function deleteCategoryAjax(id, btn) {
-    if (!confirm('¿Seguro que deseas eliminar esta categoría? Los repuestos vinculados quedarán sin categoría.')) {
+    if (!confirm('¿Seguro que deseas eliminar esta categoría? Los productos vinculados quedarán sin categoría.')) {
         return;
     }
     
