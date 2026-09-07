@@ -1,6 +1,11 @@
 <?php
 /** @var \Core\Router $router */
 
+// Rutas de Instalación Web (Wizard)
+$router->get('install', 'InstallController@index');
+$router->post('install/test-db', 'InstallController@testDatabase');
+$router->post('install/process', 'InstallController@processInstallation');
+
 $router->get('', 'HomeController@index');
 $router->get('nosotros', 'PageController@about');
 $router->get('servicios', 'PageController@services');

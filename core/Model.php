@@ -11,9 +11,10 @@ class Model {
     public function __construct() {
         $config = require __DIR__ . '/../config/database.php';
         
+        $portStr = !empty($config['port']) ? ";port={$config['port']}" : "";
         try {
             $this->db = new PDO(
-                "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}",
+                "mysql:host={$config['host']}{$portStr};dbname={$config['dbname']};charset={$config['charset']}",
                 $config['username'],
                 $config['password'],
                 $config['options']

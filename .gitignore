@@ -1,0 +1,29 @@
+# Entornos y Configuración Local
+.env
+.env.local
+config/database.php
+
+# Bloqueos y almacenamiento temporal
+storage/*
+!storage/.gitkeep
+scratch/
+
+# Carpetas y archivos de compilación / distribución
+dist/*.zip
+!dist/.gitkeep
+*.zip
+
+# Backups de Base de Datos
+backup_bd/*.sql
+!backup_bd/.gitkeep
+
+# Node & Composer
+node_modules/
+vendor/
+
+# Archivos de Sistema Operativo e IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

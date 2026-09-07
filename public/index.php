@@ -33,6 +33,23 @@ $uri = trim($uri, '/');
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Verificación de estado de instalación
+$dbConfigFile = __DIR__ . '/../config/database.php';
+$installLockFile = __DIR__ . '/../storage/installed.lock';
+$isInstalled = file_exists($dbConfigFile) && file_exists($installLockFile);
+
+if (!$isInstalled) {
+    if (strpos($uri, 'install') !== 0) {
+        header('Location: ' . url('install'));
+        exit;
+    }
+} else {
+    if (strpos($uri, 'install') === 0) {
+        header('Location: ' . url('admin/login'));
+        exit;
+    }
+}
+
 try {
     $router->direct($uri, $method);
 } catch (Exception $e) {
