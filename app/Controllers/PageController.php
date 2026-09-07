@@ -55,12 +55,67 @@ class PageController extends Controller {
         $seoTitle = !empty($service['seo_title']) ? $service['seo_title'] : ($service['title'] . ' - Syncro Andina');
         $seoDescription = !empty($service['seo_description']) ? $service['seo_description'] : null;
         $seoKeywords = !empty($service['seo_keywords']) ? $service['seo_keywords'] : null;
+        $allActiveLocations = (new \App\Models\Location())->getAllActiveFlat();
         
         return $this->view('pages/service_detail', [
             'title' => $seoTitle,
             'description' => $seoDescription,
             'keywords' => $seoKeywords,
             'service' => $service,
+            'allLocations' => $allActiveLocations,
+            'settings' => $settings
+        ]);
+    }
+
+    public function serviceDetailLocalized($serviceSlug, $locationSlug) {
+        $serviceModel = new \App\Models\Service();
+        $settingModel = new \App\Models\Setting();
+        $locationModel = new \App\Models\Location();
+        
+        $results = $serviceModel->where('slug', $serviceSlug);
+        $service = !empty($results) ? $results[0] : null;
+        
+        if (!$service || !$service['is_active']) {
+            $this->error404('El servicio solicitado no existe o no se encuentra disponible.');
+        }
+
+        // Si la clonación SEO está desactivada, redirigir al servicio base
+        if (empty($service['enable_seo_clones'])) {
+            header('Location: ' . url('servicios/' . $serviceSlug));
+            exit;
+        }
+
+        // Limpiar prefijo 'en-' si vino en el slug
+        $cleanLocationSlug = preg_replace('/^en-/', '', $locationSlug);
+        $location = $locationModel->findBySlug($cleanLocationSlug);
+
+        if (!$location || !$location['is_active']) {
+            header('Location: ' . url('servicios/' . $serviceSlug));
+            exit;
+        }
+
+        (new Analytics())->logPageView('service_localized', $service['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
+        $service = $serviceModel->getFullDetails($service['id']);
+        $settings = $settingModel->getAll();
+        $allActiveLocations = $locationModel->getAllActiveFlat();
+        
+        // Construir metadatos SEO dinámicos "Servicio en Lugar"
+        $localizedName = $location['name'];
+        $seoTitle = $service['title'] . ' en ' . $localizedName . ' - Syncro Andina';
+        $seoDescription = !empty($service['seo_description']) 
+            ? ($service['seo_description'] . ' Cobertura y atención especializada en ' . $localizedName . '.') 
+            : ('Servicios de ' . $service['title'] . ' en ' . $localizedName . '. Soluciones profesionales diseñadas a la medida.');
+        $seoKeywords = !empty($service['seo_keywords']) 
+            ? ($service['seo_keywords'] . ', ' . $localizedName) 
+            : ($service['title'] . ' ' . $localizedName);
+
+        return $this->view('pages/service_detail', [
+            'title' => $seoTitle,
+            'description' => $seoDescription,
+            'keywords' => $seoKeywords,
+            'service' => $service,
+            'location' => $location,
+            'allLocations' => $allActiveLocations,
             'settings' => $settings
         ]);
     }
@@ -576,7 +631,9 @@ class PageController extends Controller {
             $xml .= "  </url>\n";
         }
 
-        // 2. Agregar Servicios dinámicos
+        // 2. Agregar Servicios dinámicos y sus clones SEO por ubicación
+        $activeLocations = (new \App\Models\Location())->getAllActiveFlat();
+
         if (!empty($services)) {
             foreach ($services as $service) {
                 if (!empty($service['slug'])) {
@@ -584,8 +641,22 @@ class PageController extends Controller {
                     $xml .= "  <url>\n";
                     $xml .= "    <loc>" . htmlspecialchars($loc) . "</loc>\n";
                     $xml .= "    <changefreq>weekly</changefreq>\n";
-                    $xml .= "    <priority>0.6</priority>\n";
+                    $xml .= "    <priority>0.8</priority>\n";
                     $xml .= "  </url>\n";
+
+                    // Si tiene activada la clonación SEO por ubicación
+                    if (!empty($service['enable_seo_clones']) && !empty($activeLocations)) {
+                        foreach ($activeLocations as $locationItem) {
+                            if (!empty($locationItem['slug'])) {
+                                $locLocalized = $baseUrl . url('servicios/' . $service['slug'] . '/en-' . $locationItem['slug']);
+                                $xml .= "  <url>\n";
+                                $xml .= "    <loc>" . htmlspecialchars($locLocalized) . "</loc>\n";
+                                $xml .= "    <changefreq>weekly</changefreq>\n";
+                                $xml .= "    <priority>0.7</priority>\n";
+                                $xml .= "  </url>\n";
+                            }
+                        }
+                    }
                 }
             }
         }

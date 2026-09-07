@@ -68,4 +68,12 @@ class Service extends Model {
         }
         return $service;
     }
+
+    public function toggleSeoClones($id) {
+        $service = $this->find($id);
+        if (!$service) return false;
+        $newStatus = !empty($service['enable_seo_clones']) ? 0 : 1;
+        $stmt = $this->db->prepare("UPDATE {$this->table} SET enable_seo_clones = ? WHERE id = ?");
+        return $stmt->execute([$newStatus, (int)$id]);
+    }
 }

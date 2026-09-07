@@ -45,6 +45,12 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 10px; }
         
+        .custom-scrollbar-visible { scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9; }
+        .custom-scrollbar-visible::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar-visible::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        .custom-scrollbar-visible::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 8px; border: 2px solid #f1f5f9; }
+        .custom-scrollbar-visible::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+        
         .modal-scrollbar::-webkit-scrollbar { width: 8px; }
         .modal-scrollbar::-webkit-scrollbar-track { background: transparent; margin: 16px 0; }
         .modal-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); background-clip: padding-box; border: 2px solid transparent; border-radius: 10px; }

@@ -5,6 +5,7 @@ $router->get('', 'HomeController@index');
 $router->get('nosotros', 'PageController@about');
 $router->get('servicios', 'PageController@services');
 $router->get('servicios/{slug}', 'PageController@serviceDetail');
+$router->get('servicios/{serviceSlug}/en-{locationSlug}', 'PageController@serviceDetailLocalized');
 $router->get('proyectos', 'PageController@projects');
 $router->get('proyectos/{slug}', 'PageController@projectDetail');
 $router->get('productos', 'PageController@products');
@@ -46,6 +47,7 @@ $router->post('admin/servicios', 'AdminController@saveService');
 $router->post('admin/servicios/delete', 'AdminController@deleteService');
 $router->post('admin/servicios/duplicate', 'AdminController@duplicateService');
 $router->post('admin/servicios/toggle', 'AdminController@toggleServiceStatus');
+$router->post('admin/servicios/toggle-clones', 'AdminController@toggleServiceSeoClones');
 $router->post('admin/servicios/reorder', 'AdminController@reorderServices');
 $router->post('admin/servicios/gallery/delete', 'AdminController@deleteGalleryImage');
 $router->post('admin/servicios/settings', 'AdminController@saveServiceSettings');
@@ -160,5 +162,13 @@ $router->get('admin/scripts', 'AdminController@scripts');
 $router->post('admin/scripts/save', 'AdminController@saveScript');
 $router->post('admin/scripts/delete', 'AdminController@deleteScript');
 $router->post('admin/scripts/toggle', 'AdminController@toggleScriptStatus');
+
+// Lugares (Ciudades y Distritos)
+$router->get('admin/lugares', 'AdminController@locations');
+$router->post('admin/lugares/save', 'AdminController@saveLocation');
+$router->post('admin/lugares/delete', 'AdminController@deleteLocation');
+$router->post('admin/lugares/toggle', 'AdminController@toggleLocationStatus');
+$router->post('admin/lugares/reorder', 'AdminController@reorderLocations');
+
 
 

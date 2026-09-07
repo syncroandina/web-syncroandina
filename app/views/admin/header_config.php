@@ -66,7 +66,13 @@
                             <span class="bg-gray-100 px-2 py-1 rounded text-xs font-mono"><?= htmlspecialchars($link['url']) ?></span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button type="button" onclick="editMenuLink(<?= $link['id'] ?>, '<?= htmlspecialchars(addslashes($link['title'])) ?>', '<?= htmlspecialchars(addslashes($link['url'])) ?>', '')" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors mr-2">Editar</button>
+                            <button type="button" 
+                                    data-id="<?= $link['id'] ?>"
+                                    data-title="<?= htmlspecialchars($link['title'], ENT_QUOTES) ?>"
+                                    data-url="<?= htmlspecialchars($link['url'], ENT_QUOTES) ?>"
+                                    data-parent=""
+                                    onclick="openEditMenuLink(this)" 
+                                    class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors mr-2">Editar</button>
                             <form action="<?= url('admin/cabecera/menu/delete') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este enlace?');">
                                 <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                 <input type="hidden" name="id" value="<?= $link['id'] ?>">
@@ -88,7 +94,13 @@
                                     <span class="bg-white px-2 py-1 rounded text-xs font-mono border border-gray-100"><?= htmlspecialchars($child['url']) ?></span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button type="button" onclick="editMenuLink(<?= $child['id'] ?>, '<?= htmlspecialchars(addslashes($child['title'])) ?>', '<?= htmlspecialchars(addslashes($child['url'])) ?>', '<?= $link['id'] ?>')" class="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-colors mr-2">Editar</button>
+                                    <button type="button" 
+                                            data-id="<?= $child['id'] ?>"
+                                            data-title="<?= htmlspecialchars($child['title'], ENT_QUOTES) ?>"
+                                            data-url="<?= htmlspecialchars($child['url'], ENT_QUOTES) ?>"
+                                            data-parent="<?= $link['id'] ?>"
+                                            onclick="openEditMenuLink(this)" 
+                                            class="text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-colors mr-2">Editar</button>
                                     <form action="<?= url('admin/cabecera/menu/delete') ?>" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este enlace?');">
                                         <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
                                         <input type="hidden" name="id" value="<?= $child['id'] ?>">
@@ -107,7 +119,7 @@
 
 <!-- Modal para Enlaces -->
 <div id="menu-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-lg overflow-hidden transform transition-all">
+    <div id="menu-modal-container" onclick="event.stopPropagation()" class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-lg overflow-hidden transform transition-all">
         <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
             <h4 id="modal-title" class="text-xl font-bold text-gray-800">Añadir Nuevo Enlace</h4>
             <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
@@ -206,6 +218,14 @@ function editMenuLink(id, title, url, parent_id) {
     openModal();
 }
 
+function openEditMenuLink(btn) {
+    const id = btn.getAttribute('data-id');
+    const title = btn.getAttribute('data-title') || '';
+    const url = btn.getAttribute('data-url') || '';
+    const parentId = btn.getAttribute('data-parent') || '';
+    editMenuLink(id, title, url, parentId);
+}
+
 function updateFileLabel(input) {
     const label = document.getElementById('file-label');
     const clearBtn = document.getElementById('btn-clear-file');
@@ -273,9 +293,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Close modal on click outside
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) closeModal();
+    // Close modal safely on backdrop click only (ignoring text dragging inside inputs)
+    let isMouseDownOnModalBackdrop = false;
+    modal.addEventListener('mousedown', function(e) {
+        isMouseDownOnModalBackdrop = (e.target === modal);
+    });
+    modal.addEventListener('mouseup', function(e) {
+        if (isMouseDownOnModalBackdrop && e.target === modal) {
+            closeModal();
+        }
+        isMouseDownOnModalBackdrop = false;
     });
 });
 </script>

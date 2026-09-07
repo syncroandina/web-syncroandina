@@ -30,7 +30,11 @@ try {
         if (!in_array($filename, $executed)) {
             echo "Ejecutando migración: {$filename}\n";
             $sql = require $file;
-            $db->exec($sql);
+            if (is_callable($sql)) {
+                $sql($db);
+            } else if (is_string($sql) && !empty(trim($sql))) {
+                $db->exec($sql);
+            }
             
             $stmt = $db->prepare("INSERT INTO migrations (migration) VALUES (?)");
             $stmt->execute([$filename]);

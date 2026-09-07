@@ -40,7 +40,7 @@
 .rich-text-content h4 { font-size: 1.125rem !important; }
 </style>
 
-<main class="min-h-screen bg-gray-50/50 pb-32">
+<main class="min-h-screen bg-gray-50/50 pb-0">
     <!-- H1 • Nombre del servicio (Resumen + Imagen + Llamada a la acción) -->
     <div class="relative min-h-[480px] overflow-hidden bg-primary flex items-center py-16">
         <!-- Imagen de Fondo con Parallax Efecto -->
@@ -55,16 +55,29 @@
         
         <div class="container mx-auto px-4 relative z-10 text-white animate-fade-in-up">
             <!-- Breadcrumbs -->
-            <nav class="flex items-center gap-2.5 text-xs font-bold uppercase tracking-widest text-white/60 mb-6">
+            <nav class="flex items-center gap-2.5 text-xs font-bold uppercase tracking-widest text-white/60 mb-6 flex-wrap">
                 <a href="/" class="hover:text-secondary transition-colors">Inicio</a>
                 <svg class="w-3.5 h-3.5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 <a href="/servicios" class="hover:text-secondary transition-colors">Servicios</a>
                 <svg class="w-3.5 h-3.5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
-                <span class="text-white select-none"><?= htmlspecialchars($service['title']) ?></span>
+                <?php if (isset($location)): ?>
+                    <a href="<?= url('servicios/' . $service['slug']) ?>" class="hover:text-secondary transition-colors"><?= htmlspecialchars($service['title']) ?></a>
+                    <svg class="w-3.5 h-3.5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                    <span class="text-white select-none"><?= htmlspecialchars($location['name']) ?></span>
+                <?php else: ?>
+                    <span class="text-white select-none"><?= htmlspecialchars($service['title']) ?></span>
+                <?php endif; ?>
             </nav>
             
+            <?php if (isset($location)): ?>
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md text-white border border-white/20 mb-4 shadow-sm">
+                    <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                    <span>Cobertura en <?= htmlspecialchars($location['name']) ?></span>
+                </div>
+            <?php endif; ?>
+
             <h1 class="text-3xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight max-w-4xl leading-tight">
-                <?= htmlspecialchars($service['title']) ?>
+                <?= htmlspecialchars($service['title']) ?><?= isset($location) ? ' en ' . htmlspecialchars($location['name']) : '' ?>
             </h1>
             <div class="w-24 h-1.5 bg-secondary rounded-full"></div>
         </div>
@@ -157,9 +170,9 @@
                         <?= htmlspecialchars($service['heading_process'] ?? 'Proceso de trabajo') ?>
                     </h2>
                     
-                    <div class="relative pl-6 md:pl-10 space-y-8 before:absolute before:left-3 md:before:left-5 before:top-3 before:bottom-3 before:w-1 before:bg-secondary/20">
+                    <div class="relative pl-6 md:pl-10 space-y-8 before:absolute before:left-3 md:before:left-5 before:top-6 before:bottom-6 before:w-1 before:bg-secondary/20">
                         <?php foreach($service['process'] as $index => $proc): ?>
-                        <div class="relative flex items-start gap-6 group">
+                        <div class="relative flex items-center gap-6 group">
                             <div class="w-10 h-10 rounded-full bg-secondary text-white font-black text-sm flex items-center justify-center flex-shrink-0 shadow-lg relative z-10 transform group-hover:scale-110 transition-transform">
                                 <?= htmlspecialchars($proc['step'] ?? ($index + 1)) ?>
                             </div>
@@ -434,9 +447,174 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+
+    <!-- Section: Cobertura de Servicios por Ubicación a Ancho Completo (SEO Interlinking) -->
+    <?php if (!empty($service['enable_seo_clones']) && !empty($allLocations)): 
+        // Clasificar por tipo
+        $countries = array_values(array_filter($allLocations, fn($l) => ($l['type'] ?? 'country') === 'country'));
+        $departments = array_values(array_filter($allLocations, fn($l) => ($l['type'] ?? '') === 'department'));
+        $districts = array_values(array_filter($allLocations, fn($l) => ($l['type'] ?? '') === 'district'));
+
+        // Agrupar departamentos por parent_id y distritos por parent_id
+        $deptByParent = [];
+        foreach ($departments as $dept) {
+            $pId = $dept['parent_id'] ?? 0;
+            $deptByParent[$pId][] = $dept;
+        }
+
+        $distByParent = [];
+        foreach ($districts as $dist) {
+            $pId = $dist['parent_id'] ?? 0;
+            $distByParent[$pId][] = $dist;
+        }
+
+        $bgMapImage = !empty($settings['services_locations_bg_image']) ? asset($settings['services_locations_bg_image']) : null;
+        $sectionTitle = !empty($settings['services_locations_title']) ? $settings['services_locations_title'] : 'Este servicio también se brinda en:';
+    ?>
+    <section class="w-full bg-[#0B192C] text-slate-300 py-16 mt-20 -mb-20 relative overflow-hidden border-t border-slate-800/80">
+        <!-- Imagen de Mapa de Fondo Administrable -->
+        <?php if ($bgMapImage): ?>
+            <div class="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none" style="background-image: url('<?= $bgMapImage ?>');"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0B192C]/90 via-[#0B192C]/80 to-[#0B192C]/95 pointer-events-none"></div>
+        <?php else: ?>
+            <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:20px_20px] opacity-25 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#0B192C] via-transparent to-[#0B192C] pointer-events-none"></div>
+        <?php endif; ?>
+
+        <div class="container mx-auto px-4 md:px-8 relative z-10">
+            <div class="max-w-5xl mx-auto space-y-8">
+                
+                <!-- Encabezado de la Sección -->
+                <div class="border-b border-slate-800 pb-5">
+                    <span class="text-[11px] font-black uppercase tracking-widest text-secondary mb-1.5 block flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                        Cobertura Geográfica
+                    </span>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-100 tracking-tight">
+                        <?= htmlspecialchars($sectionTitle) ?>
+                    </h2>
+                </div>
+
+                <!-- Estructura de Texto Jerárquico (Limpia y Discreta) -->
+                <div class="space-y-6 text-sm text-slate-400 font-normal leading-relaxed">
+                    <?php if (!empty($countries)): ?>
+                        <?php foreach ($countries as $cLoc): 
+                            $isCurrentC = isset($location) && $location['id'] == $cLoc['id'];
+                            $cUrl = url('servicios/' . $service['slug'] . '/en-' . $cLoc['slug']);
+                            $childDepts = $deptByParent[$cLoc['id']] ?? [];
+                        ?>
+                            <div class="space-y-3 bg-slate-900/50 backdrop-blur-xs p-6 rounded-3xl border border-slate-800/60">
+                                <!-- Nivel 1: País -->
+                                <div class="flex items-center gap-2 text-base">
+                                    <span class="text-secondary font-bold">•</span>
+                                    <?php if ($isCurrentC): ?>
+                                        <span aria-current="page" class="font-extrabold text-secondary cursor-default underline select-none"><?= htmlspecialchars($cLoc['name']) ?></span>
+                                    <?php else: ?>
+                                        <a href="<?= $cUrl ?>" class="font-extrabold text-slate-100 hover:text-secondary hover:underline transition-colors">
+                                            <?= htmlspecialchars($cLoc['name']) ?>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Nivel 2: Departamentos e Hijos -->
+                                <?php if (!empty($childDepts)): ?>
+                                    <div class="pl-4 md:pl-6 space-y-4 border-l-2 border-slate-800/80 ml-2">
+                                        <?php foreach ($childDepts as $dLoc): 
+                                            $isCurrentD = isset($location) && $location['id'] == $dLoc['id'];
+                                            $dUrl = url('servicios/' . $service['slug'] . '/en-' . $dLoc['slug']);
+                                            $childDistricts = $distByParent[$dLoc['id']] ?? [];
+                                        ?>
+                                            <div class="space-y-2">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-slate-500 text-xs">└─</span>
+                                                    <?php if ($isCurrentD): ?>
+                                                        <span aria-current="page" class="font-bold text-secondary cursor-default underline select-none"><?= htmlspecialchars($dLoc['name']) ?></span>
+                                                    <?php else: ?>
+                                                        <a href="<?= $dUrl ?>" class="font-bold text-slate-200 hover:text-secondary hover:underline transition-colors">
+                                                            <?= htmlspecialchars($dLoc['name']) ?>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                </div>
+
+                                                <!-- Nivel 3: Distritos (Enlaces de texto plano separados por comas) -->
+                                                <?php if (!empty($childDistricts)): ?>
+                                                    <div class="pl-5 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-xs text-slate-400">
+                                                        <span class="text-slate-500 font-semibold">Distritos:</span>
+                                                        <?php 
+                                                        $distLinks = [];
+                                                        foreach ($childDistricts as $disLoc) {
+                                                            $isCurrentDis = isset($location) && $location['id'] == $disLoc['id'];
+                                                            $disUrl = url('servicios/' . $service['slug'] . '/en-' . $disLoc['slug']);
+                                                            if ($isCurrentDis) {
+                                                                $distLinks[] = '<span aria-current="page" class="font-bold text-secondary underline cursor-default">' . htmlspecialchars($disLoc['name']) . '</span>';
+                                                            } else {
+                                                                $distLinks[] = '<a href="' . $disUrl . '" class="hover:text-slate-100 hover:underline transition-colors">' . htmlspecialchars($disLoc['name']) . '</a>';
+                                                            }
+                                                        }
+                                                        echo implode('<span class="text-slate-600">,</span> ', $distLinks);
+                                                        ?>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <!-- Si no hay países definidos explícitamente como padres -->
+                        <div class="bg-slate-900/50 backdrop-blur-xs p-6 rounded-3xl border border-slate-800/60 space-y-4">
+                            <?php if (!empty($departments)): ?>
+                                <div class="space-y-2">
+                                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Departamentos:</h3>
+                                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                                        <?php 
+                                        $deptLinks = [];
+                                        foreach ($departments as $dLoc) {
+                                            $isCurrentD = isset($location) && $location['id'] == $dLoc['id'];
+                                            $dUrl = url('servicios/' . $service['slug'] . '/en-' . $dLoc['slug']);
+                                            if ($isCurrentD) {
+                                                $deptLinks[] = '<span aria-current="page" class="font-bold text-secondary underline cursor-default">' . htmlspecialchars($dLoc['name']) . '</span>';
+                                            } else {
+                                                $deptLinks[] = '<a href="' . $dUrl . '" class="hover:text-slate-100 hover:underline transition-colors">' . htmlspecialchars($dLoc['name']) . '</a>';
+                                            }
+                                        }
+                                        echo implode('<span class="text-slate-600">•</span> ', $deptLinks);
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if (!empty($districts)): ?>
+                                <div class="space-y-2 pt-2 border-t border-slate-800/60">
+                                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Distritos y Ciudades:</h3>
+                                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs">
+                                        <?php 
+                                        $distLinks = [];
+                                        foreach ($districts as $disLoc) {
+                                            $isCurrentDis = isset($location) && $location['id'] == $disLoc['id'];
+                                            $disUrl = url('servicios/' . $service['slug'] . '/en-' . $disLoc['slug']);
+                                            if ($isCurrentDis) {
+                                                $distLinks[] = '<span aria-current="page" class="font-bold text-secondary underline cursor-default">' . htmlspecialchars($disLoc['name']) . '</span>';
+                                            } else {
+                                                $distLinks[] = '<a href="' . $disUrl . '" class="hover:text-slate-100 hover:underline transition-colors">' . htmlspecialchars($disLoc['name']) . '</a>';
+                                            }
+                                        }
+                                        echo implode('<span class="text-slate-600">•</span> ', $distLinks);
+                                        ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
 </main>
 
 <!-- Lightbox Modal Moderno -->

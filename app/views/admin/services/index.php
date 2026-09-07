@@ -58,23 +58,26 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/50 text-gray-400 text-[11px] font-bold uppercase tracking-widest border-b border-gray-100">
-                        <th class="px-8 py-5 text-center w-20">Orden</th>
-                        <th class="px-8 py-5">Imagen</th>
-                        <th class="px-8 py-5">Servicio</th>
-                        <th class="px-8 py-5">Slug / URL</th>
-                        <th class="px-8 py-5 text-center">Estado</th>
-                        <th class="px-8 py-5 text-right">Acciones</th>
+                        <th class="px-6 py-5 text-center w-16">Orden</th>
+                        <th class="px-6 py-5">Imagen</th>
+                        <th class="px-6 py-5">Servicio</th>
+                        <th class="px-6 py-5">Slug / URL</th>
+                        <th class="px-6 py-5 text-center">Clonar (SEO)</th>
+                        <th class="px-6 py-5 text-center">Estado</th>
+                        <th class="px-6 py-5 text-right">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="sortable-services" class="divide-y divide-gray-50">
                     <?php if(!empty($services)): ?>
-                        <?php foreach($services as $service): ?>
+                        <?php foreach($services as $service): 
+                            $isClonedEnabled = !empty($service['enable_seo_clones']);
+                        ?>
                             <tr data-id="<?= $service['id'] ?>" class="hover:bg-blue-50/30 transition-colors group">
-                                <td class="px-8 py-5 text-center cursor-move text-gray-300 group-hover:text-secondary drag-handle">
+                                <td class="px-6 py-5 text-center cursor-move text-gray-300 group-hover:text-secondary drag-handle">
                                     <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                                 </td>
-                                <td class="px-8 py-5">
-                                    <div class="w-20 h-12 rounded-xl bg-gray-100 overflow-hidden shadow-sm border border-gray-200">
+                                <td class="px-6 py-5">
+                                    <div class="w-16 h-12 rounded-xl bg-gray-100 overflow-hidden shadow-sm border border-gray-200">
                                         <?php if(!empty($service['image'])): ?>
                                             <img src="<?= asset($service['image']) ?>" class="w-full h-full object-cover">
                                         <?php else: ?>
@@ -84,22 +87,45 @@
                                         <?php endif; ?>
                                     </div>
                                 </td>
-                                <td class="px-8 py-5">
+                                <td class="px-6 py-5">
                                     <span class="block font-extrabold text-gray-900 group-hover:text-secondary transition-colors"><?= htmlspecialchars($service['title']) ?></span>
                                     <span class="block text-xs text-gray-500 mt-0.5 line-clamp-1"><?= htmlspecialchars(mb_strimwidth(strip_tags($service['consists_of'] ?? ''), 0, 120, '...')) ?></span>
                                 </td>
-                                <td class="px-8 py-5">
-                                    <code class="text-[10px] bg-gray-100 px-2 py-1 rounded text-gray-500 font-bold">/services/<?= htmlspecialchars($service['slug']) ?></code>
+                                <td class="px-6 py-5">
+                                    <a href="<?= url('servicios/' . $service['slug']) ?>" target="_blank" class="inline-flex items-center gap-1.5 text-[10px] bg-gray-100 hover:bg-emerald-50 text-gray-600 hover:text-emerald-700 px-2.5 py-1 rounded-lg font-bold transition-colors group/link" title="Ver página pública del servicio">
+                                        <code>/servicios/<?= htmlspecialchars($service['slug']) ?></code>
+                                        <svg class="w-3 h-3 text-gray-400 group-hover/link:text-emerald-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                    </a>
                                 </td>
-                                <td class="px-8 py-5 text-center">
-                                    <label class="relative inline-flex items-center cursor-pointer">
+                                <td class="px-6 py-5 text-center">
+                                    <label class="relative inline-flex items-center cursor-pointer" title="Activar clonación SEO por ubicación">
+                                        <input type="checkbox" class="sr-only peer" <?= $isClonedEnabled ? 'checked' : '' ?> 
+                                               onchange="toggleServiceSeoClones(<?= $service['id'] ?>)">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </td>
+                                <td class="px-6 py-5 text-center">
+                                    <label class="relative inline-flex items-center cursor-pointer" title="Activar/Desactivar servicio">
                                         <input type="checkbox" class="sr-only peer" <?= $service['is_active'] ? 'checked' : '' ?> 
                                                onchange="toggleServiceStatus(<?= $service['id'] ?>, this.checked)">
                                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-secondary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
                                     </label>
                                 </td>
-                                <td class="px-8 py-5 text-right">
-                                    <div class="flex justify-end gap-2">
+                                <td class="px-6 py-5 text-right">
+                                    <div class="flex justify-end items-center gap-2">
+                                        <!-- Botón Flecha Acordeón para ver URLs clonadas -->
+                                        <button onclick="toggleCloneAccordion(<?= $service['id'] ?>)" 
+                                                class="px-2.5 py-1.5 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 flex items-center gap-1 transition-all text-xs font-bold shadow-2xs" 
+                                                title="Ver URLs Clonadas por Ubicación">
+                                            <svg id="clones-icon-<?= $service['id'] ?>" class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            <span class="hidden sm:inline">Clones</span>
+                                        </button>
+
+                                        <!-- Botón Ver Página Pública del Servicio Padre -->
+                                        <a href="<?= url('servicios/' . $service['slug']) ?>" target="_blank" class="w-9 h-9 rounded-xl bg-gray-100 text-emerald-600 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all shadow-sm" title="Ver servicio en la web (Página pública)">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                        </a>
+
                                         <button onclick='editService(<?= $service['id'] ?>)' class="w-9 h-9 rounded-xl bg-gray-100 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-all shadow-sm" title="Editar">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                         </button>
@@ -120,10 +146,244 @@
                                     </div>
                                 </td>
                             </tr>
+
+                            <!-- Panel Acordeón de Clones por Ubicación -->
+                            <tr id="clones-panel-<?= $service['id'] ?>" class="hidden bg-purple-50/20 border-b border-gray-100">
+                                <td colspan="7" class="px-8 py-5">
+                                    <div class="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm space-y-3">
+                                        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                                </div>
+                                                <h4 class="text-sm font-extrabold text-gray-900">
+                                                    URLs Clonadas por Ubicación (SEO Programático)
+                                                </h4>
+                                                <?php if($isClonedEnabled && !empty($activeLocations)): ?>
+                                                    <span class="text-xs bg-purple-100 text-purple-800 font-bold px-2.5 py-0.5 rounded-full">
+                                                        <?= count($activeLocations) ?> URLs activas
+                                                    </span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <span class="text-xs text-gray-400">
+                                                Servicio Padre: <strong class="text-gray-700"><?= htmlspecialchars($service['title']) ?></strong>
+                                            </span>
+                                        </div>
+
+                                        <?php if(!$isClonedEnabled): ?>
+                                            <div class="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs flex items-center justify-between">
+                                                <span>La clonación SEO por ubicación está desactivada para este servicio. Activa el switch "Clonar (SEO)" en la tabla para generarlas automáticamente.</span>
+                                                <button onclick="toggleServiceSeoClones(<?= $service['id'] ?>)" class="bg-amber-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-amber-700 transition-colors">
+                                                    Activar Clonación SEO
+                                                </button>
+                                            </div>
+                                        <?php elseif(empty($activeLocations)): ?>
+                                            <div class="p-4 bg-gray-50 text-gray-500 rounded-xl text-xs italic">
+                                                No hay lugares activos en el sistema. Dirígete a <a href="/admin/lugares" class="text-secondary font-bold hover:underline">Lugares (Ciudades/Distritos)</a> para agregar países, departamentos o distritos.
+                                            </div>
+                                        <?php else: 
+                                            // Structuring active locations into hierarchy tree: Country -> Department -> District
+                                            $treeCountries = [];
+                                            $treeDepts = [];
+                                            $treeDistricts = [];
+
+                                            foreach ($activeLocations as $loc) {
+                                                $type = $loc['type'] ?? 'country';
+                                                if ($type === 'country') {
+                                                    $treeCountries[$loc['id']] = [
+                                                        'data' => $loc,
+                                                        'departments' => []
+                                                    ];
+                                                } elseif ($type === 'department') {
+                                                    $treeDepts[$loc['id']] = [
+                                                        'data' => $loc,
+                                                        'districts' => []
+                                                    ];
+                                                } else {
+                                                    $treeDistricts[] = $loc;
+                                                }
+                                            }
+
+                                            $unattachedDistricts = [];
+                                            foreach ($treeDistricts as $dist) {
+                                                $pId = $dist['parent_id'] ?? null;
+                                                if ($pId && isset($treeDepts[$pId])) {
+                                                    $treeDepts[$pId]['districts'][] = $dist;
+                                                } else {
+                                                    $unattachedDistricts[] = $dist;
+                                                }
+                                            }
+
+                                            $unattachedDepts = [];
+                                            foreach ($treeDepts as $deptId => $deptNode) {
+                                                $pId = $deptNode['data']['parent_id'] ?? null;
+                                                if ($pId && isset($treeCountries[$pId])) {
+                                                    $treeCountries[$pId]['departments'][] = $deptNode;
+                                                } else {
+                                                    $unattachedDepts[] = $deptNode;
+                                                }
+                                            }
+                                        ?>
+                                            <div class="space-y-3 max-h-72 overflow-y-auto pr-2.5 custom-scrollbar-visible">
+                                                <?php foreach ($treeCountries as $cId => $cNode): 
+                                                    $country = $cNode['data'];
+                                                    $cCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $country['slug']);
+                                                ?>
+                                                    <div class="bg-emerald-50/30 border border-emerald-200/80 rounded-2xl p-3 space-y-2">
+                                                        <!-- Country Row -->
+                                                        <div class="flex items-center justify-between p-2.5 bg-white rounded-xl border border-emerald-200 shadow-2xs text-xs">
+                                                            <div class="flex items-center gap-2 truncate pr-2">
+                                                                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">
+                                                                    País
+                                                                </span>
+                                                                <span class="font-extrabold text-emerald-950 truncate"><?= htmlspecialchars($service['title']) ?> en <?= htmlspecialchars($country['name']) ?></span>
+                                                            </div>
+                                                            <div class="flex items-center gap-1 flex-shrink-0">
+                                                                <a href="<?= $cCloneUrl ?>" target="_blank" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Abrir URL pública">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                                </a>
+                                                                <button onclick="navigator.clipboard.writeText('<?= $cCloneUrl ?>'); alert('URL copiada al portapapeles');" class="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors" title="Copiar URL">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012 2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Departments -->
+                                                        <?php if (!empty($cNode['departments'])): ?>
+                                                            <div class="pl-3 md:pl-5 border-l-2 border-emerald-300/80 ml-2 space-y-2">
+                                                                <?php foreach ($cNode['departments'] as $dNode): 
+                                                                    $dept = $dNode['data'];
+                                                                    $dCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dept['slug']);
+                                                                ?>
+                                                                    <div class="bg-blue-50/40 border border-blue-200/80 rounded-xl p-2.5 space-y-2 shadow-2xs">
+                                                                        <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-blue-200 text-xs shadow-2xs">
+                                                                            <div class="flex items-center gap-2 truncate pr-2">
+                                                                                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border bg-blue-50 text-blue-700 border-blue-200">
+                                                                                    Dept.
+                                                                                </span>
+                                                                                <span class="font-bold text-blue-950 truncate"><?= htmlspecialchars($service['title']) ?> en <?= htmlspecialchars($dept['name']) ?></span>
+                                                                            </div>
+                                                                            <div class="flex items-center gap-1 flex-shrink-0">
+                                                                                <a href="<?= $dCloneUrl ?>" target="_blank" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Abrir URL pública">
+                                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                                                </a>
+                                                                                <button onclick="navigator.clipboard.writeText('<?= $dCloneUrl ?>'); alert('URL copiada al portapapeles');" class="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors" title="Copiar URL">
+                                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012 2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Districts -->
+                                                                        <?php if (!empty($dNode['districts'])): ?>
+                                                                            <div class="pl-3 md:pl-4 border-l-2 border-blue-300/80 ml-2 space-y-1.5">
+                                                                                <?php foreach ($dNode['districts'] as $dist): 
+                                                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dist['slug']);
+                                                                                ?>
+                                                                                    <div class="flex items-center justify-between p-2 bg-white hover:bg-purple-50/50 rounded-lg border border-purple-200/80 text-xs transition-colors shadow-2xs">
+                                                                                        <div class="flex items-center gap-2 truncate pr-2">
+                                                                                            <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border bg-purple-50 text-purple-700 border-purple-200">
+                                                                                                Distrito
+                                                                                            </span>
+                                                                                            <span class="font-medium text-gray-800 truncate"><?= htmlspecialchars($service['title']) ?> en <?= htmlspecialchars($dist['name']) ?></span>
+                                                                                        </div>
+                                                                                        <div class="flex items-center gap-1 flex-shrink-0">
+                                                                                            <a href="<?= $distCloneUrl ?>" target="_blank" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Abrir URL pública">
+                                                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                                                            </a>
+                                                                                            <button onclick="navigator.clipboard.writeText('<?= $distCloneUrl ?>'); alert('URL copiada al portapapeles');" class="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors" title="Copiar URL">
+                                                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012 2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                <?php endforeach; ?>
+                                                                            </div>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                <?php endforeach; ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endforeach; ?>
+
+                                                <!-- Unattached Depts -->
+                                                <?php foreach ($unattachedDepts as $dNode): 
+                                                    $dept = $dNode['data'];
+                                                    $dCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dept['slug']);
+                                                ?>
+                                                    <div class="bg-blue-50/40 border border-blue-200/80 rounded-xl p-2.5 space-y-2 shadow-2xs">
+                                                        <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-blue-200 text-xs shadow-2xs">
+                                                            <div class="flex items-center gap-2 truncate pr-2">
+                                                                <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border bg-blue-50 text-blue-700 border-blue-200">
+                                                                    Dept.
+                                                                </span>
+                                                                <span class="font-bold text-blue-950 truncate"><?= htmlspecialchars($service['title']) ?> en <?= htmlspecialchars($dept['name']) ?></span>
+                                                            </div>
+                                                            <div class="flex items-center gap-1 flex-shrink-0">
+                                                                <a href="<?= $dCloneUrl ?>" target="_blank" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Abrir URL pública">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                                </a>
+                                                                <button onclick="navigator.clipboard.writeText('<?= $dCloneUrl ?>'); alert('URL copiada al portapapeles');" class="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors" title="Copiar URL">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012 2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <?php if (!empty($dNode['districts'])): ?>
+                                                            <div class="pl-3 md:pl-4 border-l-2 border-blue-300/80 ml-2 space-y-1.5">
+                                                                <?php foreach ($dNode['districts'] as $dist): 
+                                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dist['slug']);
+                                                                ?>
+                                                                    <div class="flex items-center justify-between p-2 bg-white hover:bg-purple-50/50 rounded-lg border border-purple-200/80 text-xs transition-colors shadow-2xs">
+                                                                        <div class="flex items-center gap-2 truncate pr-2">
+                                                                            <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border bg-purple-50 text-purple-700 border-purple-200">
+                                                                                Distrito
+                                                                            </span>
+                                                                            <span class="font-medium text-gray-800 truncate"><?= htmlspecialchars($service['title']) ?> en <?= htmlspecialchars($dist['name']) ?></span>
+                                                                        </div>
+                                                                        <div class="flex items-center gap-1 flex-shrink-0">
+                                                                            <a href="<?= $distCloneUrl ?>" target="_blank" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Abrir URL pública">
+                                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                                            </a>
+                                                                            <button onclick="navigator.clipboard.writeText('<?= $distCloneUrl ?>'); alert('URL copiada al portapapeles');" class="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors" title="Copiar URL">
+                                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012 2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                <?php endforeach; ?>
+                                                            </div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endforeach; ?>
+
+                                                <!-- Unattached Districts -->
+                                                <?php foreach ($unattachedDistricts as $dist): 
+                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dist['slug']);
+                                                ?>
+                                                    <div class="flex items-center justify-between p-2 bg-white hover:bg-purple-50/50 rounded-lg border border-purple-200/80 text-xs transition-colors shadow-2xs">
+                                                        <div class="flex items-center gap-2 truncate pr-2">
+                                                            <span class="text-[9px] px-2 py-0.5 rounded-full font-bold border bg-purple-50 text-purple-700 border-purple-200">
+                                                                Distrito
+                                                            </span>
+                                                            <span class="font-medium text-gray-800 truncate"><?= htmlspecialchars($service['title']) ?> en <?= htmlspecialchars($dist['name']) ?></span>
+                                                        </div>
+                                                        <div class="flex items-center gap-1 flex-shrink-0">
+                                                            <a href="<?= $distCloneUrl ?>" target="_blank" class="p-1.5 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Abrir URL pública">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                            </a>
+                                                            <button onclick="navigator.clipboard.writeText('<?= $distCloneUrl ?>'); alert('URL copiada al portapapeles');" class="p-1.5 text-gray-500 hover:bg-gray-200 rounded-lg transition-colors" title="Copiar URL">
+                                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012 2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="px-8 py-20 text-center text-gray-400 italic bg-gray-50/30">No se encontraron servicios configurados.</td>
+                            <td colspan="7" class="px-8 py-20 text-center text-gray-400 italic bg-gray-50/30">No se encontraron servicios configurados.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -139,7 +399,13 @@
         <form id="service-form" action="<?= url('admin/servicios') ?>" method="POST" enctype="multipart/form-data" class="flex flex-col h-full overflow-hidden">
             <!-- Header Fijo -->
             <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 flex-none z-20">
-                <h4 id="modal-title" class="text-xl font-extrabold text-gray-900">Nuevo Servicio</h4>
+                <div class="flex items-center gap-3">
+                    <h4 id="modal-title" class="text-xl font-extrabold text-gray-900">Nuevo Servicio</h4>
+                    <a id="modal-view-live-btn" href="#" target="_blank" class="hidden px-3 py-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border border-emerald-200 shadow-2xs" title="Ver página pública en la web">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        <span>Ver en la web</span>
+                    </a>
+                </div>
                 <button type="button" onclick="closeServiceModal()" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-white rounded-xl">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -517,7 +783,7 @@
             </button>
         </div>
 
-        <form action="<?= url('admin/servicios/settings') ?>" method="POST" class="p-8 space-y-6 overflow-y-auto flex-1">
+        <form action="<?= url('admin/servicios/settings') ?>" method="POST" enctype="multipart/form-data" class="p-8 space-y-6 overflow-y-auto flex-1">
             <input type="hidden" name="csrf_token" value="<?= \Core\Security::generateCSRFToken() ?>">
             
             <!-- SECCIÓN EN INICIO -->
@@ -572,6 +838,40 @@
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Descripción de la Página</label>
                     <textarea name="page_services_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Descripción para la página de servicios..."><?= htmlspecialchars($settings['page_services_description'] ?? 'Catálogo completo de servicios corporativos enfocados en la innovación tecnológica, diseñados modularmente para adaptarse a la escala de tu negocio.') ?></textarea>
+                </div>
+            </div>
+
+            <hr class="border-gray-100">
+
+            <!-- SECCIÓN DE COBERTURA GEOGRÁFICA (UBICACIONES) -->
+            <div class="space-y-4">
+                <h5 class="text-xs font-black text-secondary uppercase tracking-widest pl-2 border-l-4 border-secondary">Sección Cobertura por Ubicación (Enlaces SEO)</h5>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Título de la Sección</label>
+                    <input type="text" name="services_locations_title" value="<?= htmlspecialchars($settings['services_locations_title'] ?? 'Este servicio también se brinda en:') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: Este servicio también se brinda en:">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Mapa / Imagen de Fondo para la Sección (Fondo Oscuro)</label>
+                    <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <?php if (!empty($settings['services_locations_bg_image'])): ?>
+                            <div class="w-24 h-16 rounded-xl bg-slate-900 border border-gray-200 overflow-hidden relative group shadow-sm flex-shrink-0">
+                                <img src="<?= asset($settings['services_locations_bg_image']) ?>" class="w-full h-full object-cover opacity-60">
+                            </div>
+                            <div class="flex-1">
+                                <span class="text-xs font-bold text-gray-700 block">Mapa de Fondo Actual</span>
+                                <label class="inline-flex items-center gap-1.5 text-xs text-red-600 font-bold hover:underline cursor-pointer mt-1">
+                                    <input type="checkbox" name="remove_locations_bg_image" value="1" class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                    <span>Eliminar mapa de fondo actual</span>
+                                </label>
+                            </div>
+                        <?php endif; ?>
+                        <div class="flex-1">
+                            <input type="file" name="services_locations_bg_image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gray-200 file:text-gray-700 hover:file:bg-gray-300 cursor-pointer">
+                            <p class="text-[10px] text-gray-400 mt-1 pl-1">Subir imagen de mapa de fondo (PNG, JPG, WEBP o SVG).</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -725,6 +1025,12 @@ function resetServiceForm() {
     galleryDataTransfer = new DataTransfer();
     document.getElementById('gallery-upload').files = galleryDataTransfer.files;
     
+    const liveBtn = document.getElementById('modal-view-live-btn');
+    if (liveBtn) {
+        liveBtn.classList.add('hidden');
+        liveBtn.href = '#';
+    }
+
     // Resetear posición del scroll al inicio
     const formBody = document.getElementById('service-form-scroll-body');
     if (formBody) formBody.scrollTop = 0;
@@ -870,6 +1176,14 @@ async function editService(id) {
         }
         
         document.getElementById('modal-title').innerText = 'Editar Servicio';
+        
+        const liveBtn = document.getElementById('modal-view-live-btn');
+        if (liveBtn && service.slug) {
+            let baseUrl = '<?= rtrim(url(), '/') ?>';
+            liveBtn.href = `${baseUrl}/servicios/${service.slug}`;
+            liveBtn.classList.remove('hidden');
+        }
+
         openServiceModal();
     } catch (error) {
         console.error('Error al cargar servicio:', error);
@@ -1331,6 +1645,37 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+function toggleServiceSeoClones(id) {
+    fetch('<?= url('admin/servicios/toggle-clones') ?>', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: id })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            location.reload();
+        } else {
+            alert('No se pudo actualizar el estado de la clonación SEO.');
+        }
+    })
+    .catch(() => alert('Error de conexión con el servidor.'));
+}
+
+function toggleCloneAccordion(serviceId) {
+    const el = document.getElementById('clones-panel-' + serviceId);
+    const icon = document.getElementById('clones-icon-' + serviceId);
+    if (el) {
+        if (el.classList.contains('hidden')) {
+            el.classList.remove('hidden');
+            if (icon) icon.classList.add('rotate-180');
+        } else {
+            el.classList.add('hidden');
+            if (icon) icon.classList.remove('rotate-180');
+        }
+    }
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 

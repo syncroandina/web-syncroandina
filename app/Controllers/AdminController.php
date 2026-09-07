@@ -143,12 +143,16 @@ class AdminController extends Controller {
         $services = $serviceModel->all('sort_order ASC, id ASC');
         $projects = $projectModel->where('is_active', 1, '=', 'id ASC');
         $settings = $settingModel->getAll();
+        $locationModel = new \App\Models\Location();
+        $locationModel->ensureTableExists();
+        $activeLocations = $locationModel->getAllActiveFlat();
         
         return $this->adminView('services/index', [
             'title' => 'Gestión de Servicios',
             'services' => $services,
             'projects' => $projects,
-            'settings' => $settings
+            'settings' => $settings,
+            'activeLocations' => $activeLocations
         ]);
     }
 
@@ -169,12 +173,34 @@ class AdminController extends Controller {
             'carousel_services_speed',
             'services_seo_title',
             'services_seo_keywords',
-            'services_seo_description'
+            'services_seo_description',
+            'services_locations_title'
         ];
 
         foreach ($keys as $key) {
             $value = \Core\Security::sanitizeInput($_POST[$key] ?? '');
             $settingModel->updateSetting($key, $value);
+        }
+
+        // Subida de imagen de mapa de fondo para sección de ubicaciones
+        if (isset($_FILES['services_locations_bg_image']) && $_FILES['services_locations_bg_image']['error'] === UPLOAD_ERR_OK) {
+            $allSettings = $settingModel->getAll();
+            $oldImage = $allSettings['services_locations_bg_image'] ?? '';
+            
+            $newPath = \Core\FileHelper::upload($_FILES['services_locations_bg_image'], 'assets/images/services/', ['webp', 'jpg', 'jpeg', 'png', 'svg']);
+            if ($newPath) {
+                if (!empty($oldImage)) {
+                    \Core\FileHelper::delete($oldImage);
+                }
+                $settingModel->updateSetting('services_locations_bg_image', $newPath);
+            }
+        } elseif (isset($_POST['remove_locations_bg_image']) && $_POST['remove_locations_bg_image'] == '1') {
+            $allSettings = $settingModel->getAll();
+            $oldImage = $allSettings['services_locations_bg_image'] ?? '';
+            if (!empty($oldImage)) {
+                \Core\FileHelper::delete($oldImage);
+            }
+            $settingModel->updateSetting('services_locations_bg_image', '');
         }
 
         header('Location: /admin/servicios?success=settings_saved');
@@ -2898,5 +2924,119 @@ class AdminController extends Controller {
         echo json_encode(['success' => false]);
         exit;
     }
+
+    // ==========================================
+    // LUGARES (CIUDADES Y DISTRITOS)
+    // ==========================================
+    public function locations() {
+        $locationModel = new \App\Models\Location();
+        $locationModel->ensureTableExists();
+        
+        $countries = $locationModel->getCountries();
+        $departments = $locationModel->getAllDepartments();
+        $hierarchy = $locationModel->getAllHierarchy();
+
+        return $this->adminView('locations/index', [
+            'title' => 'Lugares (Países, Departamentos y Distritos)',
+            'countries' => $countries,
+            'departments' => $departments,
+            'hierarchy' => $hierarchy
+        ]);
+    }
+
+    public function saveLocation() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+                die('Token CSRF inválido.');
+            }
+
+            $locationModel = new \App\Models\Location();
+            $data = [
+                'id' => $_POST['id'] ?? null,
+                'name' => $_POST['name'] ?? '',
+                'parent_id' => !empty($_POST['parent_id']) ? $_POST['parent_id'] : null,
+                'type' => $_POST['type'] ?? null,
+                'is_active' => isset($_POST['is_active']) ? 1 : 0
+            ];
+
+            $result = $locationModel->save($data);
+
+            if ($result) {
+                header('Location: /admin/lugares?success=' . (empty($_POST['id']) ? 'created' : 'updated'));
+            } else {
+                header('Location: /admin/lugares?error=invalid_data');
+            }
+            exit;
+        }
+    }
+
+    public function deleteLocation() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!\Core\Security::verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+                die('Token CSRF inválido.');
+            }
+
+            $id = $_POST['id'] ?? null;
+            if ($id) {
+                $locationModel = new \App\Models\Location();
+                $locationModel->delete($id);
+                header('Location: /admin/lugares?success=deleted');
+                exit;
+            }
+        }
+        header('Location: /admin/lugares?error=delete_failed');
+        exit;
+    }
+
+    public function toggleLocationStatus() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $id = $data['id'] ?? null;
+
+            if ($id) {
+                $locationModel = new \App\Models\Location();
+                $success = $locationModel->toggleStatus($id);
+                echo json_encode(['success' => (bool)$success]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
+        exit;
+    }
+
+    public function reorderLocations() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $order = $data['order'] ?? [];
+
+            if (!empty($order)) {
+                $locationModel = new \App\Models\Location();
+                $locationModel->reorder($order);
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+        echo json_encode(['success' => false]);
+        exit;
+    }
+
+    public function toggleServiceSeoClones() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $id = $data['id'] ?? null;
+
+            if ($id) {
+                $serviceModel = new \App\Models\Service();
+                $success = $serviceModel->toggleSeoClones($id);
+                echo json_encode(['success' => (bool)$success]);
+                exit;
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false]);
+        exit;
+    }
 }
+
 
