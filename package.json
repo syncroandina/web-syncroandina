@@ -1,0 +1,19 @@
+{
+  "name": "syncroandina-web",
+  "version": "1.0.0",
+  "description": "Aplicación Web Corporativa y CMS Modular Syncro Andina",
+  "main": "public/index.php",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "php -S localhost:8000 -t public",
+    "backup_db": "php backup.php"
+  },
+  "keywords": [
+    "cms",
+    "syncroandina",
+    "installer",
+    "php"
+  ],
+  "author": "Syncro Andina",
+  "license": "ISC"
+}
