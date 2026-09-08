@@ -204,8 +204,18 @@ class GitHubUpdaterService {
         // Actualizar archivo de versión local
         $remoteCheck = self::checkRemoteUpdate();
         $newSha = $remoteCheck['remote_commit'] ?? 'latest';
+
+        $newVersion = '1.0.0';
+        $extractedVersionFile = $sourceRoot . '/storage/version.json';
+        if (file_exists($extractedVersionFile)) {
+            $extData = json_decode(file_get_contents($extractedVersionFile), true);
+            if (!empty($extData['version'])) {
+                $newVersion = $extData['version'];
+            }
+        }
+
         $versionData = [
-            'version' => '1.0.0',
+            'version' => $newVersion,
             'commit_hash' => $newSha,
             'updated_at' => date('Y-m-d H:i:s')
         ];

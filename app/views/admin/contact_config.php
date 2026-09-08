@@ -35,17 +35,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Meta Title (Título SEO)</label>
-                    <input type="text" name="contact_seo_title" value="<?= htmlspecialchars($settings['contact_seo_title'] ?? 'Contacto - Syncro Andina') ?>" placeholder="Título mostrado en la pestaña del navegador..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
+                    <input type="text" name="contact_seo_title" value="<?= htmlspecialchars($settings['contact_seo_title'] ?? 'Contacto') ?>" placeholder="Título mostrado en la pestaña del navegador..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
                 </div>
 
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Meta Keywords (Palabras clave)</label>
-                    <input type="text" name="contact_seo_keywords" value="<?= htmlspecialchars($settings['contact_seo_keywords'] ?? 'contacto, cotización, soporte corporativo, syncro andina') ?>" placeholder="Separadas por comas (ej. contacto, soporte, software)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
+                    <input type="text" name="contact_seo_keywords" value="<?= htmlspecialchars($settings['contact_seo_keywords'] ?? 'contacto, cotización, soporte corporativo') ?>" placeholder="Separadas por comas (ej. contacto, soporte, software)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
                 </div>
 
                 <div class="space-y-2 md:col-span-2">
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Meta Description (Descripción SEO)</label>
-                    <textarea name="contact_seo_description" rows="3" placeholder="Descripción breve de la sección de contacto para Google..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['contact_seo_description'] ?? 'Ponte en contacto con Syncro Andina. Solicita información comercial o de soporte técnico para escalar la tecnología de tu empresa.') ?></textarea>
+                    <textarea name="contact_seo_description" rows="3" placeholder="Descripción breve de la sección de contacto para Google..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['contact_seo_description'] ?? 'Ponte en contacto con nosotros. Solicita información comercial o de soporte técnico para escalar la tecnología de tu empresa.') ?></textarea>
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@
                                 </div>
                                 <div class="space-y-2">
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Email</label>
-                                    <input type="text" name="contact_email_value" value="<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?>" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 bg-white text-xs">
+                                    <input type="text" name="contact_email_value" value="<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@empresa.com') ?>" class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 bg-white text-xs">
                                 </div>
                             </div>
 

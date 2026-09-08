@@ -33,8 +33,8 @@
                     <div class="space-y-6">
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Nombre del Remitente</label>
-                            <input type="text" name="notification_sender_name" value="<?= htmlspecialchars($settings['notification_sender_name'] ?? 'Syncro Andina - Notificaciones') ?>" placeholder="Nombre visible en la bandeja de entrada..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white" required>
-                            <p class="text-xs text-gray-400">Ejemplo: <i>Syncro Andina - Sistema de Consultas</i></p>
+                            <input type="text" name="notification_sender_name" value="<?= htmlspecialchars($settings['notification_sender_name'] ?? 'Notificaciones del Sistema') ?>" placeholder="Nombre visible en la bandeja de entrada..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white" required>
+                            <p class="text-xs text-gray-400">Ejemplo: <i>Sistema de Consultas - Notificaciones</i></p>
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                     <div class="space-y-6">
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Correos de Recepción</label>
-                            <textarea name="notification_emails" rows="3" placeholder="ventas@syncroandina.com, comercial@syncroandina.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none" required><?= htmlspecialchars($settings['notification_emails'] ?? 'contacto@syncroandina.com') ?></textarea>
+                            <textarea name="notification_emails" rows="3" placeholder="ventas@midominio.com, comercial@midominio.com" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none" required><?= htmlspecialchars($settings['notification_emails'] ?? 'contacto@midominio.com') ?></textarea>
                             <p class="text-xs text-gray-400">Ingresa una o más direcciones de correo electrónico separadas por comas (,).</p>
                         </div>
                     </div>

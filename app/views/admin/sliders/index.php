@@ -158,7 +158,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Etiqueta Superior</label>
-                        <input type="text" name="top_label" id="slider-top-label" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: SYNCRO ANDINA">
+                        <input type="text" name="top_label" id="slider-top-label" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: TECNOLOGÍA & INNOVACIÓN">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Título Principal</label>
@@ -198,7 +198,7 @@
 
                     <div>
                         <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Texto Alternativo de la Imagen (SEO ALT)</label>
-                        <input type="text" name="image_alt" id="slider-image-alt" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: Equipo de ingenieros de Syncro Andina trabajando en subestación">
+                        <input type="text" name="image_alt" id="slider-image-alt" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm transition-all bg-gray-50 focus:bg-white" placeholder="Ej: Equipo corporativo trabajando en soluciones tecnológicas">
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -273,7 +273,7 @@ function closeSliderModal() {
 function resetSliderForm() {
     document.getElementById('slider-id').value = '';
     document.getElementById('slider-title').value = '';
-    document.getElementById('slider-top-label').value = 'SYNCRO ANDINA INGENIERÍA';
+    document.getElementById('slider-top-label').value = 'SOLUCIONES CORPORATIVAS';
     document.getElementById('slider-subtitle').value = '';
     document.getElementById('slider-btn-text').value = '';
     document.getElementById('slider-btn-link').value = '';

@@ -1,7 +1,7 @@
 <div class="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
     <div>
         <h1 class="text-3xl font-extrabold text-gray-900">Logos de Clientes</h1>
-        <p class="text-gray-500 text-sm mt-1">Configura y gestiona los logotipos de las marcas corporativas que respaldan a Syncro Andina. Arrastra las filas para reordenar el carrusel.</p>
+        <p class="text-gray-500 text-sm mt-1">Configura y gestiona los logotipos de las marcas corporativas que respaldan a tu empresa. Arrastra las filas para reordenar el carrusel.</p>
     </div>
     <button onclick="openClientModal()" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-lg shadow-primary/30">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -32,7 +32,7 @@
             </div>
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Título de la Sección</label>
-                <input type="text" name="clients_slider_title" value="<?= htmlspecialchars($settings['clients_slider_title'] ?? 'Confían en Syncro Andina') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium" placeholder="Ej: Confían en Syncro Andina">
+                <input type="text" name="clients_slider_title" value="<?= htmlspecialchars($settings['clients_slider_title'] ?? 'Marcas que Confían en Nosotros') ?>" required class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3 text-sm bg-gray-50 font-medium" placeholder="Ej: Marcas que Confían en Nosotros">
             </div>
         </div>
 

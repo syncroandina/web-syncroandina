@@ -313,17 +313,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Title (Título SEO)</label>
-                        <input type="text" name="products_seo_title" value="<?= htmlspecialchars($settings['products_seo_title'] ?? 'Nuestros Productos - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
+                        <input type="text" name="products_seo_title" value="<?= htmlspecialchars($settings['products_seo_title'] ?? 'Nuestros Productos') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Keywords (Palabras clave)</label>
-                        <input type="text" name="products_seo_keywords" value="<?= htmlspecialchars($settings['products_seo_keywords'] ?? 'productos, piezas, andina, componentes') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. productos, calidad, componentes)...">
+                        <input type="text" name="products_seo_keywords" value="<?= htmlspecialchars($settings['products_seo_keywords'] ?? 'productos, piezas, componentes, tecnología') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. productos, calidad, componentes)...">
                     </div>
                 </div>
                 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Description (Descripción SEO)</label>
-                    <textarea name="products_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['products_seo_description'] ?? 'Catálogo de productos originales de alta durabilidad y performance garantizada ofrecidos por Syncro Andina.') ?></textarea>
+                    <textarea name="products_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['products_seo_description'] ?? 'Catálogo de productos y soluciones de alta durabilidad y rendimiento garantizado.') ?></textarea>
                 </div>
             </div>
             

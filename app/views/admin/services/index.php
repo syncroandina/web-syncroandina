@@ -738,7 +738,7 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Meta Title (Título del Buscador)</label>
-                            <input type="text" name="seo_title" id="service-seo-title" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: Servicio de Energía Ininterrumpida | Syncro Andina">
+                            <input type="text" name="seo_title" id="service-seo-title" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Ej: Servicio de Consultoría Tecnológica">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2 pl-1">Meta Keywords (Palabras Clave)</label>
@@ -884,17 +884,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Title (Título SEO)</label>
-                        <input type="text" name="services_seo_title" value="<?= htmlspecialchars($settings['services_seo_title'] ?? 'Nuestros Servicios - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
+                        <input type="text" name="services_seo_title" value="<?= htmlspecialchars($settings['services_seo_title'] ?? 'Nuestros Servicios') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Keywords (Palabras clave)</label>
-                        <input type="text" name="services_seo_keywords" value="<?= htmlspecialchars($settings['services_seo_keywords'] ?? 'servicios, software, tecnología, andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. software, andina, servicios)...">
+                        <input type="text" name="services_seo_keywords" value="<?= htmlspecialchars($settings['services_seo_keywords'] ?? 'servicios, software, tecnología, ingeniería') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. software, servicios)...">
                     </div>
                 </div>
                 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Description (Descripción SEO)</label>
-                    <textarea name="services_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['services_seo_description'] ?? 'Syncro Andina ofrece servicios especializados en ingeniería de software, consultoría y desarrollo a medida.') ?></textarea>
+                    <textarea name="services_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['services_seo_description'] ?? 'Ofrecemos servicios especializados en ingeniería de software, consultoría y desarrollo a medida.') ?></textarea>
                 </div>
             </div>
 

@@ -35,17 +35,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Meta Title (Título SEO)</label>
-                    <input type="text" name="about_seo_title" value="<?= htmlspecialchars($settings['about_seo_title'] ?? 'La Empresa - Syncro Andina') ?>" placeholder="Título mostrado en pestañas e índices de búsqueda..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
+                    <input type="text" name="about_seo_title" value="<?= htmlspecialchars($settings['about_seo_title'] ?? 'La Empresa') ?>" placeholder="Título mostrado en pestañas e índices de búsqueda..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
                 </div>
 
                 <div class="space-y-2">
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Meta Keywords (Palabras clave)</label>
-                    <input type="text" name="about_seo_keywords" value="<?= htmlspecialchars($settings['about_seo_keywords'] ?? 'transformación digital, desarrollo web, software a medida, aplicaciones corporativas') ?>" placeholder="Separadas por comas (ej. software, andina, tecnología)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
+                    <input type="text" name="about_seo_keywords" value="<?= htmlspecialchars($settings['about_seo_keywords'] ?? 'transformación digital, desarrollo web, software a medida, aplicaciones corporativas') ?>" placeholder="Separadas por comas (ej. software, tecnología)..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white">
                 </div>
 
                 <div class="space-y-2 md:col-span-2">
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Meta Description (Descripción SEO)</label>
-                    <textarea name="about_seo_description" rows="3" placeholder="Breve resumen de 150 a 160 caracteres para Google..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['about_seo_description'] ?? 'Syncro Andina: Desarrollo de software premium, transformación digital y modernización cloud para corporaciones.') ?></textarea>
+                    <textarea name="about_seo_description" rows="3" placeholder="Breve resumen de 150 a 160 caracteres para Google..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['about_seo_description'] ?? 'Desarrollo de software premium, transformación digital y soluciones tecnológicas para corporaciones.') ?></textarea>
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
 
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Descripción Corporativa</label>
-                            <textarea name="about_description" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['about_description'] ?? 'En Syncro Andina creemos que la tecnología no es solo una herramienta, sino el pilar fundamental que impulsa el crecimiento corporativo sostenible.') ?></textarea>
+                            <textarea name="about_description" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['about_description'] ?? 'En nuestra empresa creemos que la tecnología no es solo una herramienta, sino el pilar fundamental que impulsa el crecimiento corporativo sostenible.') ?></textarea>
                         </div>
                     </div>
                 </div>
@@ -163,7 +163,7 @@
 
                                 <div class="space-y-1">
                                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">Texto Alternativo (SEO ALT)</label>
-                                    <input type="text" name="about_image_alt" value="<?= htmlspecialchars($settings['about_image_alt'] ?? 'Equipo corporativo de Syncro Andina trabajando juntos') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-xs bg-gray-50 focus:bg-white" placeholder="Ej: Ingenieros trabajando en oficina">
+                                    <input type="text" name="about_image_alt" value="<?= htmlspecialchars($settings['about_image_alt'] ?? 'Equipo corporativo trabajando juntos') ?>" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-xs bg-gray-50 focus:bg-white" placeholder="Ej: Ingenieros trabajando en oficina">
                                 </div>
                             </div>
                         </div>

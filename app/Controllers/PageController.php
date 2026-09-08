@@ -12,8 +12,8 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
         
         return $this->view('pages/about', [
-            'title' => $settings['about_seo_title'] ?? 'La Empresa - Syncro Andina',
-            'description' => $settings['about_seo_description'] ?? 'Syncro Andina: Desarrollo de software premium, transformación digital y modernización cloud para corporaciones.',
+            'title' => $settings['about_seo_title'] ?? 'La Empresa',
+            'description' => $settings['about_seo_description'] ?? 'Desarrollo de software premium, transformación digital y soluciones tecnológicas para corporaciones.',
             'keywords' => $settings['about_seo_keywords'] ?? 'transformación digital, desarrollo web, software a medida, aplicaciones corporativas',
             'settings' => $settings
         ]);
@@ -29,7 +29,7 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
         
         return $this->view('pages/services', [
-            'title' => !empty($settings['services_seo_title']) ? $settings['services_seo_title'] : 'Servicios - Syncro Andina',
+            'title' => !empty($settings['services_seo_title']) ? $settings['services_seo_title'] : 'Servicios',
             'description' => !empty($settings['services_seo_description']) ? $settings['services_seo_description'] : null,
             'keywords' => !empty($settings['services_seo_keywords']) ? $settings['services_seo_keywords'] : null,
             'services' => $services,
@@ -52,7 +52,8 @@ class PageController extends Controller {
         $service = $serviceModel->getFullDetails($service['id']);
         $settings = $settingModel->getAll();
         
-        $seoTitle = !empty($service['seo_title']) ? $service['seo_title'] : ($service['title'] . ' - Syncro Andina');
+        $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
+        $seoTitle = !empty($service['seo_title']) ? $service['seo_title'] : ($service['title'] . $siteSuffix);
         $seoDescription = !empty($service['seo_description']) ? $service['seo_description'] : null;
         $seoKeywords = !empty($service['seo_keywords']) ? $service['seo_keywords'] : null;
         $allActiveLocations = (new \App\Models\Location())->getAllActiveFlat();
@@ -101,7 +102,8 @@ class PageController extends Controller {
         
         // Construir metadatos SEO dinámicos "Servicio en Lugar"
         $localizedName = $location['name'];
-        $seoTitle = $service['title'] . ' en ' . $localizedName . ' - Syncro Andina';
+        $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
+        $seoTitle = $service['title'] . ' en ' . $localizedName . $siteSuffix;
         $seoDescription = !empty($service['seo_description']) 
             ? ($service['seo_description'] . ' Cobertura y atención especializada en ' . $localizedName . '.') 
             : ('Servicios de ' . $service['title'] . ' en ' . $localizedName . '. Soluciones profesionales diseñadas a la medida.');
@@ -129,7 +131,7 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
 
         return $this->view('pages/projects', [
-            'title' => !empty($settings['projects_seo_title']) ? $settings['projects_seo_title'] : 'Proyectos - Syncro Andina',
+            'title' => !empty($settings['projects_seo_title']) ? $settings['projects_seo_title'] : 'Proyectos',
             'description' => !empty($settings['projects_seo_description']) ? $settings['projects_seo_description'] : null,
             'keywords' => !empty($settings['projects_seo_keywords']) ? $settings['projects_seo_keywords'] : null,
             'projects' => $projects,
@@ -153,7 +155,8 @@ class PageController extends Controller {
         $galleryModel = new \App\Models\ProjectGallery();
         $gallery = $galleryModel->getByProject($project['id']);
         
-        $seoTitle = !empty($project['seo_title']) ? $project['seo_title'] : ($project['title'] . ' - Syncro Andina');
+        $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
+        $seoTitle = !empty($project['seo_title']) ? $project['seo_title'] : ($project['title'] . $siteSuffix);
         $seoDescription = !empty($project['seo_description']) ? $project['seo_description'] : null;
         $seoKeywords = !empty($project['seo_keywords']) ? $project['seo_keywords'] : null;
         
@@ -190,9 +193,10 @@ class PageController extends Controller {
         $products = $productModel->getAllActive($categoryId);
         $settings = $settingModel->getAll();
         
-        $seoTitle = !empty($settings['products_seo_title']) ? $settings['products_seo_title'] : (($settings['page_products_title'] ?? 'Productos y Componentes') . ' - Syncro Andina');
+        $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
+        $seoTitle = !empty($settings['products_seo_title']) ? $settings['products_seo_title'] : (($settings['page_products_title'] ?? 'Productos y Componentes') . $siteSuffix);
         if ($selectedCategory) {
-            $seoTitle = $selectedCategory['name'] . ' - ' . ($settings['page_products_title'] ?? 'Productos') . ' - Syncro Andina';
+            $seoTitle = $selectedCategory['name'] . ' - ' . ($settings['page_products_title'] ?? 'Productos') . $siteSuffix;
         }
 
         return $this->view('pages/products', [
@@ -221,8 +225,9 @@ class PageController extends Controller {
         $galleryModel = new \App\Models\ProductGallery();
         $gallery = $galleryModel->getByProduct($product['id']);
         
+        $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
         return $this->view('pages/product_detail', [
-            'title' => $product['title'] . ' - Syncro Andina',
+            'title' => $product['title'] . $siteSuffix,
             'product' => $product,
             'settings' => $settings,
             'gallery' => $gallery
@@ -265,7 +270,7 @@ class PageController extends Controller {
         $settings = $settingModel->getAll();
 
         return $this->view('pages/blog', [
-            'title' => !empty($settings['blog_seo_title']) ? $settings['blog_seo_title'] : 'Blog - Syncro Andina',
+            'title' => !empty($settings['blog_seo_title']) ? $settings['blog_seo_title'] : 'Blog',
             'description' => !empty($settings['blog_seo_description']) ? $settings['blog_seo_description'] : null,
             'keywords' => !empty($settings['blog_seo_keywords']) ? $settings['blog_seo_keywords'] : null,
             'posts' => $posts,
@@ -312,8 +317,9 @@ class PageController extends Controller {
 
         $settings = $settingModel->getAll();
 
+        $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
         return $this->view('pages/blog_detail', [
-            'title' => $post['title'] . ' - Syncro Andina',
+            'title' => $post['title'] . $siteSuffix,
             'post' => $post,
             'recommended' => $recommended,
             'settings' => $settings

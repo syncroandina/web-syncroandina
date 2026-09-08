@@ -251,17 +251,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Title (Título SEO)</label>
-                        <input type="text" name="blog_seo_title" value="<?= htmlspecialchars($settings['blog_seo_title'] ?? 'Nuestro Blog - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
+                        <input type="text" name="blog_seo_title" value="<?= htmlspecialchars($settings['blog_seo_title'] ?? 'Nuestro Blog') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Keywords (Palabras clave)</label>
-                        <input type="text" name="blog_seo_keywords" value="<?= htmlspecialchars($settings['blog_seo_keywords'] ?? 'blog, tecnología, software, andina, artículos') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. blog, tecnología, artículos)...">
+                        <input type="text" name="blog_seo_keywords" value="<?= htmlspecialchars($settings['blog_seo_keywords'] ?? 'blog, tecnología, software, artículos, novedades') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. blog, tecnología, artículos)...">
                     </div>
                 </div>
                 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Description (Descripción SEO)</label>
-                    <textarea name="blog_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['blog_seo_description'] ?? 'Lee las últimas novedades, guías tecnológicas y artículos de opinión corporativos en el blog oficial de Syncro Andina.') ?></textarea>
+                    <textarea name="blog_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['blog_seo_description'] ?? 'Lee las últimas novedades, guías tecnológicas y artículos de opinión corporativos en nuestro blog oficial.') ?></textarea>
                 </div>
             </div>
 

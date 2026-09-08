@@ -253,7 +253,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Meta Title (Título del Buscador)</label>
-                        <input type="text" name="seo_title" id="project-seo-title" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow" placeholder="Ej: Implementación de Tableros | Syncro Andina">
+                        <input type="text" name="seo_title" id="project-seo-title" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent text-sm font-medium transition-shadow" placeholder="Ej: Implementación de Plataforma Cloud">
                     </div>
                     <div>
                         <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-500 mb-2">Meta Keywords (Palabras Clave)</label>
@@ -340,17 +340,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Title (Título SEO)</label>
-                        <input type="text" name="projects_seo_title" value="<?= htmlspecialchars($settings['projects_seo_title'] ?? 'Nuestros Proyectos - Syncro Andina') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
+                        <input type="text" name="projects_seo_title" value="<?= htmlspecialchars($settings['projects_seo_title'] ?? 'Nuestros Proyectos') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Título para la pestaña del navegador...">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Keywords (Palabras clave)</label>
-                        <input type="text" name="projects_seo_keywords" value="<?= htmlspecialchars($settings['projects_seo_keywords'] ?? 'proyectos, casos de éxito, andina, ingeniería') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. proyectos, tecnología)...">
+                        <input type="text" name="projects_seo_keywords" value="<?= htmlspecialchars($settings['projects_seo_keywords'] ?? 'proyectos, casos de éxito, tecnología, ingeniería') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50" placeholder="Separadas por comas (ej. proyectos, tecnología)...">
                     </div>
                 </div>
                 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 pl-1">Meta Description (Descripción SEO)</label>
-                    <textarea name="projects_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['projects_seo_description'] ?? 'Explora el portafolio de proyectos de Syncro Andina. Casos de éxito y soluciones de ingeniería aplicadas a grandes industrias.') ?></textarea>
+                    <textarea name="projects_seo_description" rows="3" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-4 text-sm bg-gray-50 resize-none" placeholder="Breve resumen de 150 a 160 caracteres para Google..."><?= htmlspecialchars($settings['projects_seo_description'] ?? 'Explora nuestro portafolio de proyectos. Casos de éxito y soluciones de ingeniería aplicadas a grandes industrias.') ?></textarea>
                 </div>
             </div>
             

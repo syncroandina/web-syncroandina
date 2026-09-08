@@ -37,7 +37,7 @@
             
             <div class="md:col-span-3">
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Pie de Página (Copyright/Info)</label>
-                <input type="text" name="call_center_footer_text" value="<?= htmlspecialchars($settings['call_center_footer_text'] ?? '© Syncro Andina - Soluciones Industriales') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
+                <input type="text" name="call_center_footer_text" value="<?= htmlspecialchars($settings['call_center_footer_text'] ?? '© Todos los derechos reservados') ?>" class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50">
             </div>
 
             <div class="md:col-span-3">
@@ -58,7 +58,7 @@
                 <textarea name="call_center_whatsapp_message" rows="3" placeholder="Ej: Hola, estoy interesado en más información..." class="w-full border-gray-200 rounded-2xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary p-3.5 text-sm bg-gray-50"><?= htmlspecialchars($settings['call_center_whatsapp_message'] ?? 'Hola, me gustaría recibir más información.') ?></textarea>
                 <p class="text-gray-450 text-xs mt-2 flex items-center gap-1.5 leading-relaxed">
                     <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <span><strong>Nota:</strong> Al final de este mensaje se adjuntará automáticamente la URL de la página actual desde la cual navega el usuario (ej: <em>Referencia: https://syncroandina.com/productos/nombre-de-producto</em>).</span>
+                    <span><strong>Nota:</strong> Al final de este mensaje se adjuntará automáticamente la URL de la página actual desde la cual navega el usuario (ej: <em>Referencia: https://miempresa.com/productos/nombre-de-producto</em>).</span>
                 </p>
             </div>
             <div class="md:col-span-3 pt-6 md:pt-[28px] flex justify-end">

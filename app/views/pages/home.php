@@ -126,11 +126,11 @@
                     </div>
                     <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors"><?= htmlspecialchars($settings['contact_phone_value'] ?? '+57 300 123 4567') ?></span>
                 </a>
-                <a href="mailto:<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?>" class="flex items-center gap-4 group">
+                <a href="mailto:<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@empresa.com') ?>" class="flex items-center gap-4 group">
                     <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     </div>
-                    <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?></span>
+                    <span class="text-sm font-bold text-gray-300 group-hover:text-white transition-colors"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@empresa.com') ?></span>
                 </a>
             </div>
         </div>
@@ -364,7 +364,7 @@
                 <div class="snap-start shrink-0 w-[85vw] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] group">
                     <div class="relative rounded-[2rem] border border-gray-200 group-hover:border-primary/40 transition-all duration-300 cursor-pointer home-gallery-trigger group-hover:-translate-y-1 h-80 bg-gray-100 after:content-[''] after:absolute after:-bottom-4 after:left-0 after:right-0 after:h-8 after:bg-transparent after:pointer-events-auto" data-src="<?= asset($item['image_path']) ?>" data-title="<?= htmlspecialchars($item['title'] ?? '') ?>" data-index="<?= $index ?>" style="transform: translate3d(0,0,0); -webkit-backface-visibility: hidden; backface-visibility: hidden;">
                         <div class="absolute inset-0 overflow-hidden rounded-[2rem] gpu-clip-fix">
-                            <img src="<?= asset($item['image_path']) ?>" alt="<?= htmlspecialchars($item['image_alt'] ?: ($item['title'] ?: 'Syncro Andina Galería')) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 gpu-image-fix">
+                            <img src="<?= asset($item['image_path']) ?>" alt="<?= htmlspecialchars($item['image_alt'] ?: ($item['title'] ?: 'Galería Corporativa')) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 gpu-image-fix">
                             
                             <!-- Overlay Premium -->
                             <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
