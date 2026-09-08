@@ -1,7 +1,7 @@
         <!-- Sidebar -->
         <aside class="flex-shrink-0 w-64 bg-primary text-white transition-all duration-300 shadow-2xl relative z-20" :class="{'w-64': sidebarOpen, 'w-20': !sidebarOpen, 'hidden md:block': !sidebarOpen}">
             <div class="h-16 flex items-center justify-center border-b border-white/10 bg-black/20">
-                <span class="text-xl font-black tracking-tight" x-show="sidebarOpen">PANEL ADMIN</span>
+                <span class="text-xl font-black tracking-tight" x-show="sidebarOpen">PANEL DEL ADMIN</span>
                 <span class="text-2xl font-black tracking-tight text-secondary" x-show="!sidebarOpen">A</span>
             </div>
             
