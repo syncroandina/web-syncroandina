@@ -3142,6 +3142,9 @@ class AdminController extends Controller {
     }
 
     public function backupSiteExport() {
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(0);
+
         try {
             $zipPath = \App\Services\SiteBackupService::generateBackupZip();
             if (!file_exists($zipPath)) {
@@ -3149,22 +3152,31 @@ class AdminController extends Controller {
             }
 
             $filename = basename($zipPath);
+            if (ob_get_length()) ob_clean();
+
             header('Content-Type: application/zip');
             header('Content-Disposition: attachment; filename="' . $filename . '"');
             header('Content-Length: ' . filesize($zipPath));
             header('Pragma: no-cache');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Expires: 0');
 
             readfile($zipPath);
             @unlink($zipPath);
             exit;
-        } catch (\Exception $e) {
-            header('Location: ' . url('admin/backup-site?error=' . urlencode($e->getMessage())));
+        } catch (\Throwable $e) {
+            if (ob_get_length()) ob_clean();
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $e->getMessage()]);
             exit;
         }
     }
 
     public function backupSiteImport() {
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(0);
+
         if (ob_get_length()) ob_clean();
         ob_start();
 

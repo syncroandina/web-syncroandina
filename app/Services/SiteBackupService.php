@@ -14,6 +14,9 @@ class SiteBackupService {
     }
 
     public static function generateBackupZip() {
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(0);
+
         $dbConfigPath = __DIR__ . '/../../config/database.php';
         if (!file_exists($dbConfigPath)) {
             throw new \Exception('No se encontró el archivo de configuración de base de datos.');
@@ -196,6 +199,9 @@ class SiteBackupService {
     }
 
     public static function restoreBackupZip($zipFilePath) {
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(0);
+
         $tempExtractDir = __DIR__ . '/../../storage/temp_import/' . time();
         if (!file_exists($tempExtractDir)) {
             @mkdir($tempExtractDir, 0755, true);

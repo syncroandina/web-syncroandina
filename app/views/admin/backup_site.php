@@ -145,8 +145,12 @@ $pageTitle = $title ?? 'Exportar e Importar Sitio Web';
             const response = await fetch('<?= url("admin/backup-site/export") ?>');
 
             if (!response.ok) {
-                const errJson = await response.json().catch(() => ({ error: 'Error desconocido al servidor' }));
-                throw new Error(errJson.error || 'Error al generar la descarga');
+                let errorMsg = 'Error al generar la descarga';
+                try {
+                    const errJson = await response.json();
+                    if (errJson.error) errorMsg = errJson.error;
+                } catch (jsonErr) {}
+                throw new Error(errorMsg);
             }
 
             const blob = await response.blob();
@@ -185,9 +189,13 @@ $pageTitle = $title ?? 'Exportar e Importar Sitio Web';
 
         } catch (e) {
             clearInterval(progressInterval);
+            let userMsg = e.message || 'No se pudo completar la exportación del sitio.';
+            if (userMsg.toLowerCase().includes('failed to fetch')) {
+                userMsg = 'No se pudo conectar con el servidor web local. Por favor verifica que el servidor dev (php -S) esté activo.';
+            }
             Swal.fire({
                 title: 'Error al Exportar',
-                text: e.message || 'No se pudo completar la exportación del sitio.',
+                text: userMsg,
                 icon: 'error',
                 confirmButtonText: 'Cerrar'
             });
@@ -298,9 +306,13 @@ $pageTitle = $title ?? 'Exportar e Importar Sitio Web';
             }
         } catch (e) {
             clearInterval(progressInterval);
+            let userMsg = e.message || 'Ocurrió un error al procesar el archivo.';
+            if (userMsg.toLowerCase().includes('failed to fetch')) {
+                userMsg = 'No se pudo conectar con el servidor web local. Por favor verifica que el servidor dev (php -S) esté activo.';
+            }
             Swal.fire({
                 title: 'Error de Servidor',
-                text: 'Ocurrió un error al procesar el archivo: ' + e.message,
+                text: userMsg,
                 icon: 'error',
                 confirmButtonText: 'Cerrar'
             });
