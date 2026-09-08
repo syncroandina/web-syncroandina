@@ -104,6 +104,9 @@ class GitHubUpdaterService {
     }
 
     public static function performUpdate() {
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(300);
+
         $log = [];
         $log[] = "[" . date('Y-m-d H:i:s') . "] 🚀 Iniciando proceso de actualización desde GitHub...";
 
@@ -184,6 +187,7 @@ class GitHubUpdaterService {
             'storage/installed.lock',
             'public/uploads',
             'storage/temp_update',
+            'dist',
             '.git'
         ];
 
@@ -348,7 +352,7 @@ class GitHubUpdaterService {
             $zipWin = str_replace('/', '\\', realpath($zipPath) ?: $zipPath);
             $parentDir = realpath(dirname($extractDir)) ?: dirname($extractDir);
             $extWin = str_replace('/', '\\', $parentDir . '/extracted');
-            $cmd = 'powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path ' . escapeshellarg($zipWin) . ' -DestinationPath ' . escapeshellarg($extWin) . ' -Force"';
+            $cmd = 'powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Path \'' . $zipWin . '\' -DestinationPath \'' . $extWin . '\' -Force"';
             @exec($cmd, $output, $returnVar);
             if ($returnVar === 0 && count(glob($extractDir . '/*')) > 0) {
                 $log[] = "[" . date('Y-m-d H:i:s') . "] ⚡ ZIP extraído utilizando PowerShell nativo de Windows.";
