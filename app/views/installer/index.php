@@ -219,7 +219,7 @@
                         </a>
                         <button type="submit" id="btn-run-install" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-[0_4px_25px_rgba(225,29,72,0.35)] flex items-center justify-center gap-2 group">
                             <svg class="w-4 h-4 animate-spin hidden" id="spinner-install" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                            <span id="btn-run-text" class="tracking-wide">🚀 Instalar Sistema Ahora</span>
+                            <span id="btn-run-text" class="tracking-wide">Instalar Sistema Ahora</span>
                         </button>
                     </div>
                 </form>
@@ -227,13 +227,13 @@
             <!-- STEP 4: SUCCESS -->
             <?php elseif ($step === 4): ?>
                 <div class="text-center py-6 space-y-5">
-                    <div class="w-20 h-20 rounded-3xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center text-3xl mx-auto shadow-[0_0_30px_rgba(16,185,129,0.15)]">
-                        🎉
+                    <div class="w-20 h-20 rounded-3xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     </div>
                     <div>
                         <h2 class="text-2xl font-black text-white mb-1.5 tracking-tight">¡Instalación Completada con Éxito!</h2>
                         <p class="text-slate-400 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">
-                            Las 35 migraciones de la base de datos se ejecutaron correctamente. El sitio web y el panel CMS ya están operativos.
+                            Las migraciones de la base de datos se ejecutaron correctamente. El sitio web y el panel CMS ya están operativos.
                         </p>
                     </div>
 
@@ -260,7 +260,7 @@
                             Iniciar Sesión en el Panel Admin →
                         </a>
                         <a href="<?= url('') ?>" target="_blank" class="w-full sm:w-auto px-7 py-3.5 bg-slate-800/80 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition-all border border-slate-700 text-center">
-                            Ver Sitio Web Público 🌐
+                            Ver Sitio Web Público
                         </a>
                     </div>
                 </div>
@@ -347,13 +347,13 @@
                 } else {
                     showAlert(alertId, data.message, false);
                     if (spinner) spinner.classList.add('hidden');
-                    if (btnText) btnText.innerText = '🚀 Reintentar Instalación';
+                    if (btnText) btnText.innerText = 'Reintentar Instalación';
                     if (btn) btn.disabled = false;
                 }
             } catch (e) {
                 showAlert(alertId, 'Error en la solicitud: ' + e.message, false);
                 if (spinner) spinner.classList.add('hidden');
-                if (btnText) btnText.innerText = '🚀 Reintentar Instalación';
+                if (btnText) btnText.innerText = 'Reintentar Instalación';
                 if (btn) btn.disabled = false;
             }
         }

@@ -27,7 +27,7 @@ class InstallController extends Controller {
         $this->view('installer/index', [
             'step' => $step,
             'requirements' => $requirements,
-            'title' => 'Instalador Web - Syncro Andina'
+            'title' => 'Asistente de Instalación Web'
         ]);
     }
 
@@ -96,7 +96,7 @@ class InstallController extends Controller {
 
         $host = trim($_POST['host'] ?? '127.0.0.1');
         $port = trim($_POST['port'] ?? '3306');
-        $dbname = trim($_POST['dbname'] ?? 'syncroandina_db');
+        $dbname = trim($_POST['dbname'] ?? 'mi_empresa_db');
         $user = trim($_POST['user'] ?? 'root');
         $pass = $_POST['pass'] ?? '';
 
@@ -147,14 +147,14 @@ class InstallController extends Controller {
         // Datos de Base de Datos
         $host = trim($_POST['host'] ?? '127.0.0.1');
         $port = trim($_POST['port'] ?? '3306');
-        $dbname = trim($_POST['dbname'] ?? 'syncroandina_db');
+        $dbname = trim($_POST['dbname'] ?? 'mi_empresa_db');
         $user = trim($_POST['user'] ?? 'root');
         $pass = $_POST['pass'] ?? '';
 
         // Datos del Administrador & Sitio
-        $siteTitle = trim($_POST['site_title'] ?? 'Syncro Andina');
-        $adminName = trim($_POST['admin_name'] ?? 'Administrador');
-        $adminEmail = trim($_POST['admin_email'] ?? 'admin@syncroandina.com');
+        $siteTitle = trim($_POST['site_title'] ?? 'Mi Sitio Web');
+        $adminName = trim($_POST['admin_name'] ?? 'Administrador Principal');
+        $adminEmail = trim($_POST['admin_email'] ?? 'admin@midominio.com');
         $adminPass = $_POST['admin_password'] ?? '';
 
         if (empty($adminName) || empty($adminEmail) || empty($adminPass)) {
