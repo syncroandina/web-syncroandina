@@ -11,7 +11,7 @@ scratch/
 # Carpetas y archivos de compilación / distribución
 dist/*.zip
 !dist/.gitkeep
-*.zip
+!dist/syncroandina_installer.zip
 
 # Backups de Base de Datos
 backup_bd/*.sql
