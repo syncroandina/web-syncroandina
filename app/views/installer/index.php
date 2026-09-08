@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title ?? 'Instalador Web - Syncro Andina') ?></title>
+    <title><?= htmlspecialchars($title ?? 'Asistente de Instalación Web') ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -148,19 +148,19 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Servidor BD (Host)</label>
-                            <input type="text" id="db-host" name="host" value="127.0.0.1" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="127.0.0.1">
+                            <input type="text" id="db-host" name="host" value="" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="127.0.0.1 o localhost">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Puerto MySQL</label>
-                            <input type="text" id="db-port" name="port" value="3306" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+                            <input type="text" id="db-port" name="port" value="" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="3306">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nombre de Base de Datos</label>
-                            <input type="text" id="db-name" name="dbname" value="syncroandina_db" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="syncroandina_db">
+                            <input type="text" id="db-name" name="dbname" value="" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="ej: mi_empresa_db">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Usuario de BD</label>
-                            <input type="text" id="db-user" name="user" value="root" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+                            <input type="text" id="db-user" name="user" value="" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="ej: root">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Contraseña de BD</label>
@@ -197,15 +197,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="md:col-span-2">
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nombre del Sitio Web / Empresa</label>
-                            <input type="text" id="site-title" name="site_title" value="Syncro Andina" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="Ej: Syncro Andina S.A.C.">
+                            <input type="text" id="site-title" name="site_title" value="" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="Ej: Mi Empresa S.A.C.">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nombre del Administrador</label>
-                            <input type="text" id="admin-name" name="admin_name" value="Administrador Director" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+                            <input type="text" id="admin-name" name="admin_name" value="" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="Ej: Administrador Principal">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Correo Electrónico (Login Admin)</label>
-                            <input type="email" id="admin-email" name="admin_email" value="admin@syncroandina.com" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+                            <input type="email" id="admin-email" name="admin_email" value="" required class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all" placeholder="Ej: admin@midominio.com">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Contraseña del Administrador</label>
