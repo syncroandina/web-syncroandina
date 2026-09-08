@@ -9,8 +9,7 @@ storage/*
 scratch/
 
 # Carpetas y archivos de compilación / distribución
-dist/*.zip
-!dist/.gitkeep
+dist/
 *.zip
 
 # Backups de Base de Datos
