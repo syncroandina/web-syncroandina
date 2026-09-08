@@ -273,6 +273,13 @@ class InstallController extends Controller {
             ");
             $stmtSet->execute([$siteTitle]);
 
+            // 6.5 Garantizar que el Dashboard inicie 100% en cero (sin analíticas previas ni contactos de prueba)
+            try {
+                $pdo->exec("TRUNCATE TABLE page_views;");
+                $pdo->exec("TRUNCATE TABLE interactions;");
+                $pdo->exec("TRUNCATE TABLE contacts;");
+            } catch (\Exception $eClean) {}
+
             // 7. Crear candado de instalación y archivo de versión inicial
             $lockContent = json_encode([
                 'installed_at' => date('Y-m-d H:i:s'),
