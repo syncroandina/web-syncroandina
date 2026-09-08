@@ -3,17 +3,17 @@ $settingModel = new \App\Models\Setting();
 $settings = $settingModel->getAll();
 
 // Defaults for social media (visible by default, hidden only if saved as empty string)
-$linkedin = isset($settings['footer_linkedin']) ? $settings['footer_linkedin'] : 'https://linkedin.com/company/syncroandina';
-$facebook = isset($settings['footer_facebook']) ? $settings['footer_facebook'] : 'https://facebook.com/syncroandina';
-$instagram = isset($settings['footer_instagram']) ? $settings['footer_instagram'] : 'https://instagram.com/syncroandina';
-$twitter = isset($settings['footer_twitter']) ? $settings['footer_twitter'] : 'https://twitter.com/syncroandina';
-$youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'https://youtube.com/c/syncroandina';
+$linkedin = isset($settings['footer_linkedin']) ? $settings['footer_linkedin'] : 'https://linkedin.com';
+$facebook = isset($settings['footer_facebook']) ? $settings['footer_facebook'] : 'https://facebook.com';
+$instagram = isset($settings['footer_instagram']) ? $settings['footer_instagram'] : 'https://instagram.com';
+$twitter = isset($settings['footer_twitter']) ? $settings['footer_twitter'] : 'https://twitter.com';
+$youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'https://youtube.com';
 ?>
     <footer class="bg-primary text-gray-300 py-12 mt-20 border-t border-gray-800">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div class="col-span-1 md:col-span-2">
-                    <p class="text-2xl font-bold text-white mb-4"><?= htmlspecialchars($settings['footer_brand_name'] ?? $settings['identity_name'] ?? 'Syncro Andina') ?></p>
+                    <p class="text-2xl font-bold text-white mb-4"><?= htmlspecialchars($settings['footer_brand_name'] ?? $settings['identity_name'] ?? 'Empresa Corporativa') ?></p>
                     <p class="max-w-md text-gray-400"><?= htmlspecialchars($settings['footer_description'] ?? 'Transformando negocios con soluciones tecnológicas innovadoras. Llevamos tu corporación al siguiente nivel de eficiencia y seguridad.') ?></p>
                     
                     <?php if(!empty($linkedin) || !empty($facebook) || !empty($instagram) || !empty($twitter) || !empty($youtube)): ?>
@@ -81,7 +81,7 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-white tracking-wide"><?= htmlspecialchars($settings['contact_email_label'] ?? 'Correo Corporativo:') ?></p>
-                                <a href="mailto:<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?>" onclick="trackInteraction('email', this.href)" class="text-xs text-gray-400 hover:text-secondary transition-colors mt-0.5 block break-all"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?></a>
+                                <a href="mailto:<?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@midominio.com') ?>" onclick="trackInteraction('email', this.href)" class="text-xs text-gray-400 hover:text-secondary transition-colors mt-0.5 block break-all"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@midominio.com') ?></a>
                             </div>
                         </div>
 
@@ -99,7 +99,7 @@ $youtube = isset($settings['footer_youtube']) ? $settings['footer_youtube'] : 'h
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 md:pr-32 relative">
-                <p class="mb-4 md:mb-0"><?= htmlspecialchars($settings['footer_copyright'] ?? '© 2026 ' . ($settings['identity_name'] ?? 'Syncro Andina') . '. Todos los derechos reservados.') ?></p>
+                <p class="mb-4 md:mb-0"><?= htmlspecialchars($settings['footer_copyright'] ?? '© 2026 ' . ($settings['identity_name'] ?? 'Empresa Corporativa') . '. Todos los derechos reservados.') ?></p>
                 <a href="<?= url('iniciar-sesion') ?>" onclick="window.location.href='<?= url('iniciar-sesion') ?>';" class="text-gray-300 hover:text-white bg-gray-800/50 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700/50 transition-all flex items-center gap-2 cursor-pointer" style="position: relative; z-index: 10000 !important; pointer-events: auto !important;" title="Acceso Interno">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                     <span class="text-xs font-medium">Admin</span>

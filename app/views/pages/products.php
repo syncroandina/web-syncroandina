@@ -179,7 +179,7 @@
                                 </div>
                                 <div>
                                     <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Escríbenos</p>
-                                    <p class="text-xs font-extrabold text-gray-900 truncate max-w-[180px]"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?></p>
+                                    <p class="text-xs font-extrabold text-gray-900 truncate max-w-[180px]"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@midominio.com') ?></p>
                                 </div>
                             </div>
                         </div>

@@ -12,7 +12,7 @@ if (($ccSettings['call_center_is_visible'] ?? '1') == '0' || empty($ccContacts))
 
 $mainTitle = $ccSettings['call_center_main_title'] ?? 'Central de Atención';
 $mainSubtitle = $ccSettings['call_center_main_subtitle'] ?? 'ESTAMOS LISTOS PARA AYUDARTE';
-$footerText = $ccSettings['call_center_footer_text'] ?? '© Syncro Andina - Soluciones Industriales';
+$footerText = $ccSettings['call_center_footer_text'] ?? ('© ' . ($ccSettings['identity_name'] ?? 'Empresa Corporativa') . ' - Atención 24/7');
 ?>
 
 <!-- Estilos Localizados del Widget de Call Center -->

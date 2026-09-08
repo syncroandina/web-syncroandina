@@ -1,5 +1,5 @@
 <?php $this->component('header', [
-    'title' => $title ?? '¡Muchas Gracias! - Syncro Andina',
+    'title' => $title ?? '¡Muchas Gracias!',
     'description' => $description ?? null,
     'keywords' => $keywords ?? null
 ]); ?>

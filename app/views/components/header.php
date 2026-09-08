@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title ?? 'Syncro Andina | Innovación Corporativa') ?></title>
-    <meta name="description" content="<?= htmlspecialchars($description ?? 'Syncro Andina: Desarrollo de software premium, transformación digital y modernización cloud para corporaciones.') ?>">
+    <title><?= htmlspecialchars($title ?? ($settings['identity_name'] ?? 'Sitio Web Corporativo')) ?></title>
+    <meta name="description" content="<?= htmlspecialchars($description ?? ($settings['about_description'] ?? 'Soluciones integrales tecnológicas diseñadas para impulsar el crecimiento corporativo.')) ?>">
     <meta name="keywords" content="<?= htmlspecialchars($keywords ?? 'transformación digital, desarrollo web, software a medida, aplicaciones corporativas') ?>">
-    <meta name="author" content="Syncro Andina">
+    <meta name="author" content="<?= htmlspecialchars($settings['identity_name'] ?? 'Empresa Corporativa') ?>">
     
     <!-- Preconexiones de Rendimiento (PageSpeed Optimizations) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,7 +51,7 @@
     <link rel="stylesheet" href="<?= asset('assets/css/theme.css') ?>?v=<?= file_exists(__DIR__ . '/../../../public/assets/css/theme.css') ? filemtime(__DIR__ . '/../../../public/assets/css/theme.css') : '1.0.2' ?>">
     
     <!-- Open Graph (Redes Sociales) -->
-    <meta property="og:title" content="<?= htmlspecialchars($title ?? 'Syncro Andina') ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($title ?? ($settings['identity_name'] ?? 'Sitio Web Corporativo')) ?>">
     <meta property="og:description" content="<?= htmlspecialchars($description ?? 'Soluciones integrales diseñadas para impulsar el crecimiento corporativo.') ?>">
     <meta property="og:type" content="website">
     

@@ -4,7 +4,7 @@ $menuLinkModel = new \App\Models\MenuLink();
 
 $logoUrl = $settingModel->get('logo_url', '/assets/images/logo.webp');
 $contactPhone = $settingModel->get('contact_phone_value', '+57 300 123 4567');
-$logoAlt = $settingModel->get('logo_alt', 'Syncro Andina Logo');
+$logoAlt = $settingModel->get('logo_alt', 'Logotipo Corporativo');
 $menuLinks = $menuLinkModel->getActive();
 ?>
 <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 transition-all duration-300 border-b border-gray-100">
@@ -17,7 +17,7 @@ $menuLinks = $menuLinkModel->getActive();
                         <img src="<?= asset($logoUrl) ?>" alt="<?= htmlspecialchars($logoAlt) ?>" fetchpriority="high" class="h-28 md:h-32 lg:h-38 w-auto object-contain transition-transform">
                     <?php else: ?>
                         <div class="w-14 h-14 bg-secondary rounded-xl flex items-center justify-center">
-                            <span class="text-white text-3xl font-bold">S</span>
+                            <span class="text-white text-3xl font-bold">N</span>
                         </div>
                     <?php endif; ?>
                 </a>
@@ -81,7 +81,7 @@ $menuLinks = $menuLinkModel->getActive();
             <?php if(!empty($logoUrl)): ?>
                 <img src="<?= asset($logoUrl) ?>" alt="<?= htmlspecialchars($logoAlt) ?>" class="h-10 w-auto object-contain">
             <?php else: ?>
-                <span class="text-primary text-xl font-bold">Syncro Andina</span>
+                <span class="text-primary text-xl font-bold"><?= htmlspecialchars($settingModel->get('identity_name', 'Tech Corporate')) ?></span>
             <?php endif; ?>
         </a>
         <button id="mobile-menu-close-btn" class="p-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">

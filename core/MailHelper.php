@@ -12,7 +12,7 @@ class MailHelper {
      * @param string $fromEmail Correo del remitente
      * @return bool True si se envió correctamente, False en caso contrario.
      */
-    public static function send($to, $subject, $htmlContent, $fromName = "Syncro Andina", $fromEmail = "no-reply@syncroandina.com") {
+    public static function send($to, $subject, $htmlContent, $fromName = "Notificaciones Web", $fromEmail = "no-reply@midominio.com") {
         $boundary = "----=_NextPart_" . md5(uniqid(rand(), true));
         $hasCidLogo = false;
         $mimeType = 'image/png';
@@ -398,7 +398,7 @@ class MailHelper {
                     </div>
                     <div class='footer'>
                         <p class='footer-text'>
-                            &copy; " . date('Y') . " <strong>Syncro Andina</strong> - Soluciones Industriales.<br>
+                            &copy; " . date('Y') . " <strong>" . htmlspecialchars($fromName) . "</strong>. Todos los derechos reservados.<br>
                             Este es un correo automático generado por el sistema. Por favor, no respondas a esta dirección.
                         </p>
                     </div>

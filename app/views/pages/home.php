@@ -269,7 +269,7 @@
     <section class="py-24 bg-gray-50 border-t border-b border-gray-100 overflow-hidden relative">
         <div class="container mx-auto px-4 mb-16 text-center">
             <p class="text-xs font-bold tracking-[0.2em] text-secondary uppercase mb-3 animate-fade-in"><?= htmlspecialchars($settings['clients_slider_tagline'] ?? 'RESPALDO CORPORATIVO') ?></p>
-            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['clients_slider_title'] ?? 'Confían en Syncro Andina') ?></h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-primary mb-6 max-w-5xl mx-auto animate-fade-in"><?= htmlspecialchars($settings['clients_slider_title'] ?? ('Empresas que Confían en ' . ($settings['identity_name'] ?? 'Nosotros'))) ?></h2>
             <div class="w-24 h-1.5 bg-secondary mx-auto rounded-full animate-fade-in"></div>
         </div>
 
@@ -531,7 +531,7 @@
                                         <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary font-bold text-xs">
                                             <?= substr($post['author_name'] ?? 'S', 0, 1) ?>
                                         </div>
-                                        <span class="text-xs font-bold text-gray-400"><?= htmlspecialchars($post['author_name'] ?? 'Syncro Team') ?></span>
+                                        <span class="text-xs font-bold text-gray-400"><?= htmlspecialchars($post['author_name'] ?? 'Equipo Editorial') ?></span>
                                     </div>
                                     <a href="<?= url('blog/' . $post['slug']) ?>" class="text-secondary font-black text-xs uppercase tracking-widest hover:underline">Leer más</a>
                                 </div>

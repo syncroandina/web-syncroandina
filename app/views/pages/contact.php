@@ -58,7 +58,7 @@
                                     <?= htmlspecialchars($settings['contact_email_label'] ?? 'Correo Corporativo') ?>
                                 </h2>
                                 <p class="text-gray-400 mt-1">
-                                    <?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?>
+                                    <?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@midominio.com') ?>
                                 </p>
                             </div>
                         </div>

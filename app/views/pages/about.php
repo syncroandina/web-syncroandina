@@ -12,7 +12,7 @@
                 <?= htmlspecialchars($settings['about_title'] ?? 'Nuestra Visión hacia el Futuro') ?>
             </h1>
             <p class="text-xl text-gray-600 leading-relaxed">
-                <?= htmlspecialchars($settings['about_description'] ?? 'En Syncro Andina creemos que la tecnología no es solo una herramienta, sino el pilar fundamental que impulsa el crecimiento corporativo sostenible. Diseñamos soluciones que trascienden fronteras.') ?>
+                <?= htmlspecialchars($settings['about_description'] ?? 'Creemos que la tecnología no es solo una herramienta, sino el pilar fundamental que impulsa el crecimiento corporativo sostenible. Diseñamos soluciones que trascienden fronteras.') ?>
             </p>
         </div>
 

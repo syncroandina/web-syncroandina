@@ -25,7 +25,7 @@
         <?php if(!empty($logoUrl)): ?>
             <div class="flex justify-center mb-6">
                 <a href="/" class="flex items-center justify-center hover:scale-105 transition-transform">
-                    <img src="<?= asset($logoUrl) ?>" alt="Syncro Andina Logo" class="h-16 w-auto object-contain">
+                    <img src="<?= asset($logoUrl) ?>" alt="Logotipo Corporativo" class="h-16 w-auto object-contain">
                 </a>
             </div>
         <?php endif; ?>
@@ -44,7 +44,7 @@
                 
                 <?php if(isset($_GET['error'])): ?>
                     <div class="bg-red-50 text-red-500 p-3 rounded-xl text-sm font-semibold border border-red-100">
-                        Credenciales incorrectas. Intenta nuevamente (admin@syncroandina.com / admin123).
+                        Credenciales incorrectas. Intenta nuevamente.
                     </div>
                 <?php endif; ?>
                 <div>

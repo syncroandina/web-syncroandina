@@ -20,10 +20,10 @@
                     $primaryColorHex = ltrim($topbarSettings['color_primary'] ?? '0ea5e9', '#');
                     ?>
                     <button @click="userMenu = !userMenu" class="flex items-center gap-3 hover:bg-gray-50 p-1.5 pr-3 rounded-full border border-transparent hover:border-gray-200 transition-all">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=<?= $primaryColorHex ?>&color=fff&bold=true" alt="Admin" class="w-8 h-8 rounded-full shadow-sm">
+                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['user']['name'] ?? 'Admin') ?>&background=<?= $primaryColorHex ?>&color=fff&bold=true" alt="Admin" class="w-8 h-8 rounded-full shadow-sm">
                         <div class="text-left hidden md:block">
-                            <span class="block font-bold text-sm text-gray-700 leading-tight">Admin</span>
-                            <span class="block text-[10px] text-gray-400 uppercase font-bold">Director</span>
+                            <span class="block font-bold text-sm text-gray-700 leading-tight"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Administrador') ?></span>
+                            <span class="block text-[10px] text-gray-400 uppercase font-bold"><?= htmlspecialchars($_SESSION['user']['role'] ?? 'Director') ?></span>
                         </div>
                         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
@@ -39,8 +39,8 @@
                          class="absolute top-14 right-0 w-56 bg-white rounded-2xl shadow-xl py-2 border border-gray-100 z-50">
                         
                         <div class="px-4 py-3 border-b border-gray-100">
-                            <p class="text-sm font-bold text-gray-900">Hola, Administrador</p>
-                            <p class="text-xs text-gray-500 truncate">admin@syncroandina.com</p>
+                            <p class="text-sm font-bold text-gray-900"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Administrador') ?></p>
+                            <p class="text-xs text-gray-500 truncate"><?= htmlspecialchars($_SESSION['user']['email'] ?? 'admin@midominio.com') ?></p>
                         </div>
                         
                         <div class="py-1">

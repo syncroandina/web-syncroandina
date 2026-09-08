@@ -1,7 +1,7 @@
 <?php
 return [
-    'name' => 'Syncro Andina',
-    'url' => 'http://localhost/syncroandina/public',
-    'env' => 'development',
+    'name' => 'Empresa Corporativa',
+    'url' => '/',
+    'env' => 'production',
     'timezone' => 'America/Bogota'
 ];

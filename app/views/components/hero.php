@@ -18,7 +18,7 @@ if (!$hasSliders) return;
                 <div class="relative container mx-auto px-4 py-20 sm:py-32 flex flex-col items-center sm:items-start text-center sm:text-left z-10">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-[10px] font-bold tracking-widest mb-4 sm:mb-8 backdrop-blur-sm transform transition-all duration-700 translate-y-8 opacity-0 swiper-lazy-content">
                         <span class="flex h-2 w-2 rounded-full bg-secondary animate-pulse"></span>
-                        <?= htmlspecialchars($slider['top_label'] ?? 'SYNCRO ANDINA INGENIERÍA') ?>
+                        <?= htmlspecialchars($slider['top_label'] ?? 'SOLUCIONES CORPORATIVAS') ?>
                     </div>
                     
                     <p class="text-3xl sm:text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-4 sm:mb-6 leading-tight max-w-4xl transform transition-all duration-700 delay-100 translate-y-8 opacity-0 swiper-lazy-content">

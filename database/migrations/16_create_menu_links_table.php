@@ -12,9 +12,10 @@ CREATE TABLE IF NOT EXISTS menu_links (
 
 INSERT IGNORE INTO menu_links (title, url, order_index) VALUES 
 ('Inicio', '/', 1),
-('La Empresa', '/about', 2),
-('Servicios', '/services', 3),
-('Proyectos', '/projects', 4),
-('Blog', '/blog', 5),
-('Contacto', '/contact', 6);
+('La Empresa', '/nosotros', 2),
+('Servicios', '/servicios', 3),
+('Proyectos', '/proyectos', 4),
+('Productos', '/productos', 5),
+('Blog', '/blog', 6),
+('Contacto', '/contacto', 7);
 ";

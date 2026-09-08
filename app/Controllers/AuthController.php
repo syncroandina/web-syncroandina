@@ -22,15 +22,24 @@ class AuthController extends Controller {
             exit;
         }
 
-        // Simulación rápida de Auth para el prototipo (Luego se conecta al User Model)
-        if ($email === 'admin@syncroandina.com' && $password === 'admin123') {
-            $_SESSION['user'] = [
-                'id' => 1,
-                'name' => 'Administrador Syncro',
-                'role' => 'admin'
-            ];
-            header('Location: /admin/escritorio');
-            exit;
+        if (!empty($email) && !empty($password)) {
+            try {
+                $userModel = new \App\Models\User();
+                $user = $userModel->findByEmail($email);
+
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user'] = [
+                        'id' => $user['id'],
+                        'name' => $user['name'],
+                        'email' => $user['email'],
+                        'role' => $user['role'] ?? 'admin'
+                    ];
+                    header('Location: /admin/escritorio');
+                    exit;
+                }
+            } catch (\Exception $e) {
+                // Database fallback
+            }
         }
 
         header('Location: /iniciar-sesion?error=1');

@@ -427,7 +427,7 @@
                                 </div>
                                 <div>
                                     <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">Escríbenos</p>
-                                    <p class="text-sm font-extrabold text-gray-900"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@syncroandina.com') ?></p>
+                                    <p class="text-sm font-extrabold text-gray-900"><?= htmlspecialchars($settings['contact_email_value'] ?? 'contacto@midominio.com') ?></p>
                                 </div>
                             </div>
                         </div>
