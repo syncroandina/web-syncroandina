@@ -2,6 +2,17 @@
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
+
+// Configuración de duración de sesión prolongada (7 días)
+$sessionLifetime = 604800; // 7 días en segundos
+ini_set('session.gc_maxlifetime', (string)$sessionLifetime);
+session_set_cookie_params([
+    'lifetime' => $sessionLifetime,
+    'path' => '/',
+    'httponly' => true,
+    'samesite' => 'Lax'
+]);
+
 session_start();
 
 // Si se usa el servidor integrado de PHP, permitir que sirva archivos estáticos directamente
