@@ -502,7 +502,7 @@
                     <?php if (!empty($countries)): ?>
                         <?php foreach ($countries as $cLoc): 
                             $isCurrentC = isset($location) && $location['id'] == $cLoc['id'];
-                            $cUrl = url('servicios/' . $service['slug'] . '/en-' . $cLoc['slug']);
+                            $cUrl = url('servicios/' . $service['slug'] . '-en-' . $cLoc['slug']);
                             $childDepts = $deptByParent[$cLoc['id']] ?? [];
                         ?>
                             <div class="space-y-3 bg-slate-900/50 backdrop-blur-xs p-6 rounded-3xl border border-slate-800/60">
@@ -523,7 +523,7 @@
                                     <div class="pl-4 md:pl-6 space-y-4 border-l-2 border-slate-800/80 ml-2">
                                         <?php foreach ($childDepts as $dLoc): 
                                             $isCurrentD = isset($location) && $location['id'] == $dLoc['id'];
-                                            $dUrl = url('servicios/' . $service['slug'] . '/en-' . $dLoc['slug']);
+                                            $dUrl = url('servicios/' . $service['slug'] . '-en-' . $dLoc['slug']);
                                             $childDistricts = $distByParent[$dLoc['id']] ?? [];
                                         ?>
                                             <div class="space-y-2">
@@ -546,7 +546,7 @@
                                                         $distLinks = [];
                                                         foreach ($childDistricts as $disLoc) {
                                                             $isCurrentDis = isset($location) && $location['id'] == $disLoc['id'];
-                                                            $disUrl = url('servicios/' . $service['slug'] . '/en-' . $disLoc['slug']);
+                                                            $disUrl = url('servicios/' . $service['slug'] . '-en-' . $disLoc['slug']);
                                                             if ($isCurrentDis) {
                                                                 $distLinks[] = '<span aria-current="page" class="font-bold text-secondary underline cursor-default">' . htmlspecialchars($disLoc['name']) . '</span>';
                                                             } else {
@@ -574,7 +574,7 @@
                                         $deptLinks = [];
                                         foreach ($departments as $dLoc) {
                                             $isCurrentD = isset($location) && $location['id'] == $dLoc['id'];
-                                            $dUrl = url('servicios/' . $service['slug'] . '/en-' . $dLoc['slug']);
+                                            $dUrl = url('servicios/' . $service['slug'] . '-en-' . $dLoc['slug']);
                                             if ($isCurrentD) {
                                                 $deptLinks[] = '<span aria-current="page" class="font-bold text-secondary underline cursor-default">' . htmlspecialchars($dLoc['name']) . '</span>';
                                             } else {
@@ -595,7 +595,7 @@
                                         $distLinks = [];
                                         foreach ($districts as $disLoc) {
                                             $isCurrentDis = isset($location) && $location['id'] == $disLoc['id'];
-                                            $disUrl = url('servicios/' . $service['slug'] . '/en-' . $disLoc['slug']);
+                                            $disUrl = url('servicios/' . $service['slug'] . '-en-' . $disLoc['slug']);
                                             if ($isCurrentDis) {
                                                 $distLinks[] = '<span aria-current="page" class="font-bold text-secondary underline cursor-default">' . htmlspecialchars($disLoc['name']) . '</span>';
                                             } else {

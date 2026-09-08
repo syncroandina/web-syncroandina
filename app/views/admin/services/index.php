@@ -227,7 +227,7 @@
                                             <div class="space-y-3 max-h-72 overflow-y-auto pr-2.5 custom-scrollbar-visible">
                                                 <?php foreach ($treeCountries as $cId => $cNode): 
                                                     $country = $cNode['data'];
-                                                    $cCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $country['slug']);
+                                                    $cCloneUrl = url('servicios/' . $service['slug'] . '-en-' . $country['slug']);
                                                 ?>
                                                     <div class="bg-emerald-50/30 border border-emerald-200/80 rounded-2xl p-3 space-y-2">
                                                         <!-- Country Row -->
@@ -253,7 +253,7 @@
                                                             <div class="pl-3 md:pl-5 border-l-2 border-emerald-300/80 ml-2 space-y-2">
                                                                 <?php foreach ($cNode['departments'] as $dNode): 
                                                                     $dept = $dNode['data'];
-                                                                    $dCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dept['slug']);
+                                                                    $dCloneUrl = url('servicios/' . $service['slug'] . '-en-' . $dept['slug']);
                                                                 ?>
                                                                     <div class="bg-blue-50/40 border border-blue-200/80 rounded-xl p-2.5 space-y-2 shadow-2xs">
                                                                         <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-blue-200 text-xs shadow-2xs">
@@ -277,7 +277,7 @@
                                                                         <?php if (!empty($dNode['districts'])): ?>
                                                                             <div class="pl-3 md:pl-4 border-l-2 border-blue-300/80 ml-2 space-y-1.5">
                                                                                 <?php foreach ($dNode['districts'] as $dist): 
-                                                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dist['slug']);
+                                                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '-en-' . $dist['slug']);
                                                                                 ?>
                                                                                     <div class="flex items-center justify-between p-2 bg-white hover:bg-purple-50/50 rounded-lg border border-purple-200/80 text-xs transition-colors shadow-2xs">
                                                                                         <div class="flex items-center gap-2 truncate pr-2">
@@ -308,7 +308,7 @@
                                                 <!-- Unattached Depts -->
                                                 <?php foreach ($unattachedDepts as $dNode): 
                                                     $dept = $dNode['data'];
-                                                    $dCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dept['slug']);
+                                                    $dCloneUrl = url('servicios/' . $service['slug'] . '-en-' . $dept['slug']);
                                                 ?>
                                                     <div class="bg-blue-50/40 border border-blue-200/80 rounded-xl p-2.5 space-y-2 shadow-2xs">
                                                         <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-blue-200 text-xs shadow-2xs">
@@ -330,7 +330,7 @@
                                                         <?php if (!empty($dNode['districts'])): ?>
                                                             <div class="pl-3 md:pl-4 border-l-2 border-blue-300/80 ml-2 space-y-1.5">
                                                                 <?php foreach ($dNode['districts'] as $dist): 
-                                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dist['slug']);
+                                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '-en-' . $dist['slug']);
                                                                 ?>
                                                                     <div class="flex items-center justify-between p-2 bg-white hover:bg-purple-50/50 rounded-lg border border-purple-200/80 text-xs transition-colors shadow-2xs">
                                                                         <div class="flex items-center gap-2 truncate pr-2">
@@ -356,7 +356,7 @@
 
                                                 <!-- Unattached Districts -->
                                                 <?php foreach ($unattachedDistricts as $dist): 
-                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '/en-' . $dist['slug']);
+                                                    $distCloneUrl = url('servicios/' . $service['slug'] . '-en-' . $dist['slug']);
                                                 ?>
                                                     <div class="flex items-center justify-between p-2 bg-white hover:bg-purple-50/50 rounded-lg border border-purple-200/80 text-xs transition-colors shadow-2xs">
                                                         <div class="flex items-center gap-2 truncate pr-2">

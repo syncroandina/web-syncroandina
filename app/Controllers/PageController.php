@@ -40,23 +40,88 @@ class PageController extends Controller {
     public function serviceDetail($slug) {
         $serviceModel = new \App\Models\Service();
         $settingModel = new \App\Models\Setting();
+        $locationModel = new \App\Models\Location();
         
+        // 1. Intentar buscar el servicio directamente por su slug exacto
         $results = $serviceModel->where('slug', $slug);
         $service = !empty($results) ? $results[0] : null;
-        
+        $location = null;
+
+        // 2. Si no existe un servicio directo con este slug exacto, comprobar si es un slug concatenado de clonación SEO ("serviceSlug-en-locationSlug")
         if (!$service) {
-            $this->error404('El servicio solicitado no existe o no se encuentra disponible.');
+            $allActiveLocations = $locationModel->getAllActiveFlat();
+            
+            // Ordenar ubicaciones de mayor a menor longitud de slug para evitar falsos positivos
+            usort($allActiveLocations, function($a, $b) {
+                return strlen($b['slug'] ?? '') <=> strlen($a['slug'] ?? '');
+            });
+
+            foreach ($allActiveLocations as $locItem) {
+                if (empty($locItem['slug'])) continue;
+                $locSlug = $locItem['slug'];
+                $suffix = '-en-' . $locSlug;
+                if (substr($slug, -strlen($suffix)) === $suffix) {
+                    $possibleServiceSlug = substr($slug, 0, -strlen($suffix));
+                    $foundServices = $serviceModel->where('slug', $possibleServiceSlug);
+                    if (!empty($foundServices)) {
+                        $candidateService = $foundServices[0];
+                        if (!empty($candidateService['is_active'])) {
+                            $service = $candidateService;
+                            $location = $locItem;
+                            break;
+                        }
+                    }
+                }
+            }
         }
         
+        if (!$service || !$service['is_active']) {
+            $this->error404('El servicio solicitado no existe o no se encuentra disponible.');
+        }
+
+        // Si es un clon SEO por ubicación
+        if ($location) {
+            if (empty($service['enable_seo_clones']) || !$location['is_active']) {
+                header('Location: ' . url('servicios/' . $service['slug']));
+                exit;
+            }
+
+            (new Analytics())->logPageView('service_localized', $service['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
+            $service = $serviceModel->getFullDetails($service['id']);
+            $settings = $settingModel->getAll();
+            $allActiveLocations = $locationModel->getAllActiveFlat();
+            
+            $localizedName = $location['name'];
+            $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
+            $seoTitle = $service['title'] . ' en ' . $localizedName . $siteSuffix;
+            $seoDescription = !empty($service['seo_description']) 
+                ? ($service['seo_description'] . ' Cobertura y atención especializada en ' . $localizedName . '.') 
+                : ('Servicios de ' . $service['title'] . ' en ' . $localizedName . '. Soluciones profesionales diseñadas a la medida.');
+            $seoKeywords = !empty($service['seo_keywords']) 
+                ? ($service['seo_keywords'] . ', ' . $localizedName) 
+                : ($service['title'] . ' ' . $localizedName);
+
+            return $this->view('pages/service_detail', [
+                'title' => $seoTitle,
+                'description' => $seoDescription,
+                'keywords' => $seoKeywords,
+                'service' => $service,
+                'location' => $location,
+                'allLocations' => $allActiveLocations,
+                'settings' => $settings
+            ]);
+        }
+        
+        // Flujo normal de servicio base
         (new Analytics())->logPageView('service', $service['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
         $service = $serviceModel->getFullDetails($service['id']);
         $settings = $settingModel->getAll();
+        $allActiveLocations = $locationModel->getAllActiveFlat();
         
         $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
         $seoTitle = !empty($service['seo_title']) ? $service['seo_title'] : ($service['title'] . $siteSuffix);
         $seoDescription = !empty($service['seo_description']) ? $service['seo_description'] : null;
         $seoKeywords = !empty($service['seo_keywords']) ? $service['seo_keywords'] : null;
-        $allActiveLocations = (new \App\Models\Location())->getAllActiveFlat();
         
         return $this->view('pages/service_detail', [
             'title' => $seoTitle,
@@ -69,57 +134,10 @@ class PageController extends Controller {
     }
 
     public function serviceDetailLocalized($serviceSlug, $locationSlug) {
-        $serviceModel = new \App\Models\Service();
-        $settingModel = new \App\Models\Setting();
-        $locationModel = new \App\Models\Location();
-        
-        $results = $serviceModel->where('slug', $serviceSlug);
-        $service = !empty($results) ? $results[0] : null;
-        
-        if (!$service || !$service['is_active']) {
-            $this->error404('El servicio solicitado no existe o no se encuentra disponible.');
-        }
-
-        // Si la clonación SEO está desactivada, redirigir al servicio base
-        if (empty($service['enable_seo_clones'])) {
-            header('Location: ' . url('servicios/' . $serviceSlug));
-            exit;
-        }
-
-        // Limpiar prefijo 'en-' si vino en el slug
         $cleanLocationSlug = preg_replace('/^en-/', '', $locationSlug);
-        $location = $locationModel->findBySlug($cleanLocationSlug);
-
-        if (!$location || !$location['is_active']) {
-            header('Location: ' . url('servicios/' . $serviceSlug));
-            exit;
-        }
-
-        (new Analytics())->logPageView('service_localized', $service['id'], $_SERVER['REQUEST_URI'] ?? '', $_SERVER['REMOTE_ADDR'] ?? '', $_SERVER['HTTP_USER_AGENT'] ?? '');
-        $service = $serviceModel->getFullDetails($service['id']);
-        $settings = $settingModel->getAll();
-        $allActiveLocations = $locationModel->getAllActiveFlat();
-        
-        // Construir metadatos SEO dinámicos "Servicio en Lugar"
-        $localizedName = $location['name'];
-        $siteSuffix = !empty($settings['site_name']) ? (' - ' . $settings['site_name']) : '';
-        $seoTitle = $service['title'] . ' en ' . $localizedName . $siteSuffix;
-        $seoDescription = !empty($service['seo_description']) 
-            ? ($service['seo_description'] . ' Cobertura y atención especializada en ' . $localizedName . '.') 
-            : ('Servicios de ' . $service['title'] . ' en ' . $localizedName . '. Soluciones profesionales diseñadas a la medida.');
-        $seoKeywords = !empty($service['seo_keywords']) 
-            ? ($service['seo_keywords'] . ', ' . $localizedName) 
-            : ($service['title'] . ' ' . $localizedName);
-
-        return $this->view('pages/service_detail', [
-            'title' => $seoTitle,
-            'description' => $seoDescription,
-            'keywords' => $seoKeywords,
-            'service' => $service,
-            'location' => $location,
-            'allLocations' => $allActiveLocations,
-            'settings' => $settings
-        ]);
+        header('HTTP/1.1 301 Moved Permanently');
+        header('Location: ' . url('servicios/' . $serviceSlug . '-en-' . $cleanLocationSlug));
+        exit;
     }
 
     public function projects() {
@@ -654,7 +672,7 @@ class PageController extends Controller {
                     if (!empty($service['enable_seo_clones']) && !empty($activeLocations)) {
                         foreach ($activeLocations as $locationItem) {
                             if (!empty($locationItem['slug'])) {
-                                $locLocalized = $baseUrl . url('servicios/' . $service['slug'] . '/en-' . $locationItem['slug']);
+                                $locLocalized = $baseUrl . url('servicios/' . $service['slug'] . '-en-' . $locationItem['slug']);
                                 $xml .= "  <url>\n";
                                 $xml .= "    <loc>" . htmlspecialchars($locLocalized) . "</loc>\n";
                                 $xml .= "    <changefreq>weekly</changefreq>\n";
