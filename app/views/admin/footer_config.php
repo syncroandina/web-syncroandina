@@ -38,17 +38,17 @@
                     <div class="space-y-5">
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Nombre de la Marca</label>
-                            <input type="text" name="footer_brand_name" value="<?= htmlspecialchars($settings['footer_brand_name'] ?? 'Syncro Andina') ?>" placeholder="Syncro Andina" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white">
+                            <input type="text" name="footer_brand_name" value="<?= htmlspecialchars($settings['footer_brand_name'] ?? '') ?>" placeholder="Ej: Mi Empresa S.A.C." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white">
                         </div>
 
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Descripción del Footer</label>
-                            <textarea name="footer_description" rows="3" placeholder="Escribe aquí el texto del footer..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['footer_description'] ?? 'Transformando negocios con soluciones tecnológicas innovadoras. Llevamos tu corporación al siguiente nivel de eficiencia y seguridad.') ?></textarea>
+                            <textarea name="footer_description" rows="3" placeholder="Escribe aquí la descripción de la empresa para el footer..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white resize-none"><?= htmlspecialchars($settings['footer_description'] ?? '') ?></textarea>
                         </div>
 
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Texto de Derechos Reservados (Copyright)</label>
-                            <input type="text" name="footer_copyright" value="<?= htmlspecialchars($settings['footer_copyright'] ?? '© 2026 Syncro Andina. Todos los derechos reservados.') ?>" placeholder="© 2026 Syncro Andina. Todos los derechos reservados." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white">
+                            <input type="text" name="footer_copyright" value="<?= htmlspecialchars($settings['footer_copyright'] ?? '') ?>" placeholder="Ej: © <?= date('Y') ?> Todos los derechos reservados." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-secondary/20 text-sm transition-all bg-gray-50 focus:bg-white">
                         </div>
                     </div>
                 </div>

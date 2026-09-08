@@ -39,15 +39,15 @@ class Router {
     }
 
     protected function callAction($controller, $action, ...$parameters) {
-        $controller = "App\\Controllers\\{$controller}";
-        $controller = new $controller;
+        $className = "App\\Controllers\\{$controller}";
+        $instance = new $className;
 
-        if (! method_exists($controller, $action)) {
+        if (! method_exists($instance, $action)) {
             throw new \Exception(
-                "El controlador {$controller} no responde a la acción {$action}."
+                "El controlador {$className} no responde a la acción {$action}."
             );
         }
 
-        return $controller->$action(...$parameters);
+        return $instance->$action(...$parameters);
     }
 }

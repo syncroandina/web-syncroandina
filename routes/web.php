@@ -24,6 +24,7 @@ $router->post('contacto', 'PageController@saveContact');
 $router->get('gracias', 'PageController@thanks');
 $router->get('sitemap.xml', 'PageController@sitemap');
 $router->get('iniciar-sesion', 'AuthController@login');
+$router->get('admin/login', 'AuthController@login');
 $router->post('iniciar-sesion', 'AuthController@authenticate');
 $router->get('cerrar-sesion', 'AuthController@logout');
 
@@ -174,6 +175,16 @@ $router->post('admin/lugares/save', 'AdminController@saveLocation');
 $router->post('admin/lugares/delete', 'AdminController@deleteLocation');
 $router->post('admin/lugares/toggle', 'AdminController@toggleLocationStatus');
 $router->post('admin/lugares/reorder', 'AdminController@reorderLocations');
+
+// Módulo de Actualizaciones desde GitHub & Webhook
+$router->get('admin/actualizaciones', 'AdminController@updaterConfig');
+$router->post('admin/actualizaciones/check', 'AdminController@checkGitHubUpdate');
+$router->post('admin/actualizaciones/run', 'AdminController@runGitHubUpdate');
+$router->post('admin/actualizaciones/settings', 'AdminController@saveGitHubSettings');
+// Módulo de Exportación e Importación de Sitio Web
+$router->get('admin/backup-site', 'BackupController@index');
+$router->get('admin/backup-site/export', 'BackupController@export');
+$router->post('admin/backup-site/import', 'BackupController@import');
 
 
 

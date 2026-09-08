@@ -3037,6 +3037,170 @@ class AdminController extends Controller {
         echo json_encode(['success' => false]);
         exit;
     }
+
+    public function updaterConfig() {
+        $settingModel = new \App\Models\Setting();
+        $settings = $settingModel->getAll();
+        $effectiveSettings = \App\Services\GitHubUpdaterService::getSettings();
+
+        $localVersion = \App\Services\GitHubUpdaterService::getLocalVersionInfo();
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $webhookUrl = $protocol . $host . '/api/github/webhook';
+
+        $this->adminView('updater', [
+            'title' => 'Centro de Actualizaciones - Panel Admin',
+            'settings' => $settings,
+            'effectiveSettings' => $effectiveSettings,
+            'localVersion' => $localVersion,
+            'webhookUrl' => $webhookUrl
+        ]);
+    }
+
+    public function checkGitHubUpdate() {
+        if (ob_get_length()) ob_clean();
+        ob_start();
+        try {
+            $result = \App\Services\GitHubUpdaterService::checkRemoteUpdate();
+        } catch (\Throwable $e) {
+            $result = [
+                'success' => false,
+                'message' => 'Error al consultar GitHub: ' . $e->getMessage()
+            ];
+        }
+        if (ob_get_length()) ob_end_clean();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+
+    public function runGitHubUpdate() {
+        if (ob_get_length()) ob_clean();
+        ob_start();
+        try {
+            $result = \App\Services\GitHubUpdaterService::performUpdate();
+        } catch (\Throwable $e) {
+            $result = [
+                'success' => false,
+                'message' => 'Error durante la actualización: ' . $e->getMessage(),
+                'log' => ['❌ Error fatal: ' . $e->getMessage()]
+            ];
+        }
+        if (ob_get_length()) ob_end_clean();
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+
+    public function saveGitHubSettings() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $settingModel = new \App\Models\Setting();
+            $settingModel->updateSetting('github_repo_owner', trim($_POST['github_repo_owner'] ?? ''));
+            $settingModel->updateSetting('github_repo_name', trim($_POST['github_repo_name'] ?? ''));
+            $settingModel->updateSetting('github_branch', trim($_POST['github_branch'] ?? 'main'));
+            $settingModel->updateSetting('github_token', trim($_POST['github_token'] ?? ''));
+            
+            $secret = trim($_POST['github_webhook_secret'] ?? '');
+            if (empty($secret)) {
+                $secret = bin2hex(random_bytes(16));
+            }
+            $settingModel->updateSetting('github_webhook_secret', $secret);
+
+            header('Location: ' . url('admin/actualizaciones?success=1'));
+            exit;
+        }
+    }
+
+    public function backupSiteIndex() {
+        $limits = \App\Services\SiteBackupService::getPHPUploadLimits();
+        $uploadsDir = __DIR__ . '/../../public/uploads';
+        $uploadsSizeMb = 0;
+        $filesCount = 0;
+
+        if (is_dir($uploadsDir)) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($uploadsDir, \RecursiveDirectoryIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+            foreach ($iterator as $file) {
+                if ($file->isFile()) {
+                    $uploadsSizeMb += $file->getSize();
+                    $filesCount++;
+                }
+            }
+        }
+        $uploadsSizeMb = round($uploadsSizeMb / 1024 / 1024, 2);
+
+        $this->adminView('backup_site', [
+            'title' => 'Exportar e Importar Sitio Web - Panel Admin',
+            'limits' => $limits,
+            'uploadsSizeMb' => $uploadsSizeMb,
+            'filesCount' => $filesCount
+        ]);
+    }
+
+    public function backupSiteExport() {
+        try {
+            $zipPath = \App\Services\SiteBackupService::generateBackupZip();
+            if (!file_exists($zipPath)) {
+                throw new \Exception('No se pudo localizar el archivo comprimido para la descarga.');
+            }
+
+            $filename = basename($zipPath);
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Length: ' . filesize($zipPath));
+            header('Pragma: no-cache');
+            header('Expires: 0');
+
+            readfile($zipPath);
+            @unlink($zipPath);
+            exit;
+        } catch (\Exception $e) {
+            header('Location: ' . url('admin/backup-site?error=' . urlencode($e->getMessage())));
+            exit;
+        }
+    }
+
+    public function backupSiteImport() {
+        if (ob_get_length()) ob_clean();
+        ob_start();
+
+        try {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['backup_file'])) {
+                throw new \Exception('Por favor selecciona un archivo ZIP de respaldo válido.');
+            }
+
+            $file = $_FILES['backup_file'];
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                throw new \Exception('Error al subir el archivo (Código de error PHP: ' . $file['error'] . ').');
+            }
+
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if ($ext !== 'zip') {
+                throw new \Exception('Formato no permitido. Únicamente se aceptan archivos comprimidos .ZIP.');
+            }
+
+            $success = \App\Services\SiteBackupService::restoreBackupZip($file['tmp_name']);
+
+            $result = [
+                'success' => true,
+                'message' => '¡El sitio web ha sido restaurado con éxito! Se han actualizado los datos y archivos multimedia.'
+            ];
+        } catch (\Throwable $e) {
+            $result = [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+
+        if (ob_get_length()) ob_end_clean();
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
 }
 
 

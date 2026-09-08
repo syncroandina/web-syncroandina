@@ -240,7 +240,7 @@
                     <div class="bg-slate-950/80 border border-slate-800/80 p-5 rounded-2xl max-w-md mx-auto text-left space-y-2.5 text-xs">
                         <div class="flex justify-between border-b border-slate-900 pb-2">
                             <span class="text-slate-400">Panel de Administración:</span>
-                            <span class="text-red-400 font-bold">/admin/login</span>
+                            <span class="text-red-400 font-bold">/iniciar-sesion</span>
                         </div>
                         <div class="flex justify-between border-b border-slate-900 pb-2">
                             <span class="text-slate-400">Base de Datos:</span>
@@ -256,7 +256,7 @@
                     </div>
 
                     <div class="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
-                        <a href="<?= url('admin/login') ?>" class="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-[0_4px_25px_rgba(225,29,72,0.3)] text-center">
+                        <a href="<?= url('iniciar-sesion') ?>" class="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-[0_4px_25px_rgba(225,29,72,0.3)] text-center">
                             Iniciar Sesión en el Panel Admin →
                         </a>
                         <a href="<?= url('') ?>" target="_blank" class="w-full sm:w-auto px-7 py-3.5 bg-slate-800/80 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition-all border border-slate-700 text-center">

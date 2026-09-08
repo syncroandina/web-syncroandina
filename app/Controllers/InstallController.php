@@ -15,7 +15,7 @@ class InstallController extends Controller {
 
     public function index() {
         if ($this->isInstalled()) {
-            header('Location: ' . url('admin/login'));
+            header('Location: ' . url('iniciar-sesion'));
             exit;
         }
 
@@ -273,13 +273,20 @@ class InstallController extends Controller {
             ");
             $stmtSet->execute([$siteTitle]);
 
-            // 7. Crear candado de instalación storage/installed.lock
+            // 7. Crear candado de instalación y archivo de versión inicial
             $lockContent = json_encode([
                 'installed_at' => date('Y-m-d H:i:s'),
                 'version' => '1.0.0',
                 'admin_email' => $adminEmail
             ], JSON_PRETTY_PRINT);
             file_put_contents($storageDir . '/installed.lock', $lockContent);
+
+            $versionContent = json_encode([
+                'version' => '1.0.0',
+                'commit_hash' => 'initial',
+                'updated_at' => date('Y-m-d H:i:s')
+            ], JSON_PRETTY_PRINT);
+            file_put_contents($storageDir . '/version.json', $versionContent);
 
             echo json_encode([
                 'success' => true,

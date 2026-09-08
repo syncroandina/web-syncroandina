@@ -45,7 +45,7 @@ if (!$isInstalled) {
     }
 } else {
     if (strpos($uri, 'install') === 0) {
-        header('Location: ' . url('admin/login'));
+        header('Location: ' . url('iniciar-sesion'));
         exit;
     }
 }
