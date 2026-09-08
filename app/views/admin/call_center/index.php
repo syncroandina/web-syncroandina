@@ -46,7 +46,7 @@
                     <span class="text-xs font-bold text-gray-600">Visibilidad Web</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" name="call_center_is_visible" value="1" class="sr-only peer" <?= ($settings['call_center_is_visible'] ?? '1') == '1' ? 'checked' : '' ?>>
-                        <div class="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-secondary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary"></div>
                     </label>
                 </div>
             </div>
