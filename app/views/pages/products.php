@@ -54,25 +54,25 @@
                     </div>
                 </div>
 
-                <!-- Grid de Productos en 2 columnas -->
+                <!-- Grid de Productos en 3 columnas -->
                 <?php if(!empty($products)): ?>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         <?php foreach($products as $index => $product): ?>
                         <a href="/productos/<?= htmlspecialchars($product['slug']) ?>" class="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 animate-fade-in-up flex flex-col" style="animation-delay: <?= ($index % 6) * 80 ?>ms;">
-                            <div class="relative bg-gray-100 overflow-hidden border-b border-gray-100 aspect-w-4 aspect-h-3">
-                                <img src="<?= htmlspecialchars($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" loading="lazy" class="w-full h-60 object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="relative bg-gray-100 overflow-hidden border-b border-gray-100 aspect-square">
+                                <img src="<?= htmlspecialchars($product['main_image']) ?>" alt="<?= htmlspecialchars($product['image_alt'] ?: $product['title']) ?>" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 <div class="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             </div>
-                            <div class="p-6 flex-1 flex flex-col">
+                            <div class="p-5 flex-1 flex flex-col">
                                 <?php if(!empty($product['category_name'])): ?>
                                     <span class="inline-block text-[10px] font-black uppercase tracking-wider text-secondary bg-secondary/10 px-2.5 py-1 rounded-full border border-secondary/5 mb-3 self-start">
                                         <?= htmlspecialchars($product['category_name']) ?>
                                     </span>
                                 <?php endif; ?>
-                                <h2 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                                <h2 class="text-base font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors leading-snug line-clamp-2">
                                     <?= htmlspecialchars($product['title']) ?>
                                 </h2>
-                                <p class="text-gray-500 text-sm line-clamp-3 mb-6 flex-1 leading-relaxed">
+                                <p class="text-gray-500 text-xs line-clamp-3 mb-5 flex-1 leading-relaxed">
                                     <?= htmlspecialchars($product['description']) ?>
                                 </p>
                                 <div class="flex items-center text-xs font-extrabold uppercase tracking-wider text-primary group-hover:text-secondary transition-colors mt-auto pt-4 border-t border-gray-100">
