@@ -98,20 +98,34 @@ try {
     $timestamp = date('Y-m-d_H-i-s');
     $backupFilename = "backup_{$config['dbname']}_{$timestamp}.sql";
     $latestFilename = "latest_backup.sql";
+    $backupBdFilename = "backup_bd.sql";
+
+    $backupDir = __DIR__ . '/backup_bd';
+
+    if (!is_dir($backupDir)) {
+        @mkdir($backupDir, 0755, true);
+    }
 
     $backupPath = $backupDir . '/' . $backupFilename;
     $latestPath = $backupDir . '/' . $latestFilename;
+    $backupBdSqlPath = $backupDir . '/backup_bd.sql';
 
     file_put_contents($backupPath, $sqlDump);
     file_put_contents($latestPath, $sqlDump);
+    file_put_contents($backupBdSqlPath, $sqlDump);
 
-    $sizeKb = round(filesize($backupPath) / 1024, 2);
+    // Eliminar archivo legacy backup-db.sql si existe dentro de backup_bd/
+    if (file_exists($backupDir . '/backup-db.sql')) {
+        @unlink($backupDir . '/backup-db.sql');
+    }
+
+    $sizeKb = round(filesize($backupBdSqlPath) / 1024, 2);
 
     echo "=========================================================\n";
     echo " ✅ ¡Backup de Base de Datos generado exitosamente!\n";
     echo " 📂 Carpeta: backup_bd/\n";
-    echo " 📄 Archivo con fecha: {$backupFilename}\n";
-    echo " 📄 Archivo acumulado: latest_backup.sql\n";
+    echo " 📄 Archivo SQL: backup_bd/backup_bd.sql\n";
+    echo " 📄 Archivo acumulado: backup_bd/latest_backup.sql\n";
     echo " 📊 Tamaño: {$sizeKb} KB\n";
     echo " 📋 Tablas respaldadas: " . count($tables) . "\n";
     echo "=========================================================\n";
