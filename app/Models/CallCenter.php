@@ -7,11 +7,18 @@ class CallCenter extends Model {
     protected $table = 'call_center_contacts';
 
     public function getActive() {
-        // order_index ASC matches existing conventions
-        return $this->where('is_active', 1, '=', 'order_index ASC, id DESC');
+        try {
+            return $this->where('is_active', 1, '=', 'order_index ASC, id DESC');
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 
     public function getAll() {
-        return $this->all('order_index ASC, id DESC');
+        try {
+            return $this->all('order_index ASC, id DESC');
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 }
