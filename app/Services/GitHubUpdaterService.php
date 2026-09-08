@@ -48,7 +48,7 @@ class GitHubUpdaterService {
         }
 
         $branch = !empty($config['branch']) ? $config['branch'] : 'main';
-        $url = "https://api.github.com/repos/{$config['owner']}/{$config['repo']}/commits/{$branch}";
+        $url = "https://api.github.com/repos/{$config['owner']}/{$config['repo']}/commits/{$branch}?t=" . time();
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -57,7 +57,11 @@ class GitHubUpdaterService {
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        $headers = ['Accept: application/vnd.github.v3+json'];
+        $headers = [
+            'Accept: application/vnd.github.v3+json',
+            'Cache-Control: no-cache, no-store, must-revalidate',
+            'Pragma: no-cache'
+        ];
         if (!empty($config['token'])) {
             $headers[] = "Authorization: Bearer {$config['token']}";
         }
